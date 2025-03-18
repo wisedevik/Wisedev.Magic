@@ -1,0 +1,2 @@
+# Wisedev.Magic
+ Magic
