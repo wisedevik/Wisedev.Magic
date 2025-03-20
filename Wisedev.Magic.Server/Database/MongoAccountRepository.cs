@@ -1,0 +1,82 @@
+﻿using Microsoft.Extensions.Logging;
+using MongoDB.Bson;
+using MongoDB.Driver;
+using System.Security.Cryptography;
+using Wisedev.Magic.Server.Database.Model;
+using Wisedev.Magic.Titam.Logic;
+
+namespace Wisedev.Magic.Server.Database;
+
+class MongoAccountRepository : IAccountRepository
+{
+    private readonly IMongoCollection<Account> _collection;
+
+    public MongoAccountRepository(
+        IMongoClient mongoClient,
+        string databaseName)
+    {
+        var database = mongoClient.GetDatabase(databaseName);
+        _collection = database.GetCollection<Account>("accounts");
+
+        EnsureIndexes();
+    }
+
+    private void EnsureIndexes()
+    {
+        var indexKeys = Builders<Account>
+            .IndexKeys
+            .Ascending(a => a.Id.High)
+            .Ascending(a => a.Id.Low);
+
+        var indexOptions = new CreateIndexOptions { Background = false };
+        _collection.Indexes.CreateOne(
+            new CreateIndexModel<Account>(indexKeys, indexOptions),
+            new CreateOneIndexOptions { MaxTime = TimeSpan.FromSeconds(30) });
+    }
+
+    public async Task<Account> CreateAsync()
+    {
+        var account = new Account
+        {
+            InternalId = ObjectId.GenerateNewId(),
+            Id = await GenerateNewLogicLongId(),
+            PassToken = GenerateSecureToken(32)
+        };
+
+        await _collection.InsertOneAsync(account);
+        return account;
+    }
+
+    public async Task<Account?> GetByIdAsync(LogicLong accountId)
+    {
+        return await _collection
+            .Find(a => a.Id.High == accountId.High && a.Id.Low == accountId.Low)
+            .FirstOrDefaultAsync();
+    }
+
+    private async Task<LogicLong> GenerateNewLogicLongId()
+    {
+        var counters = _collection.Database.GetCollection<BsonDocument>("counters");
+
+        var filter = Builders<BsonDocument>.Filter.Eq("_id", "accountId");
+        var update = Builders<BsonDocument>.Update.Inc("seq", 1);
+        var options = new FindOneAndUpdateOptions<BsonDocument>
+        {
+            ReturnDocument = ReturnDocument.After,
+            IsUpsert = true
+        };
+
+        var result = await counters.FindOneAndUpdateAsync(filter, update, options);
+        var sequence = result["seq"].AsInt32;
+
+        return new LogicLong(0, sequence);
+    }
+
+    private static string GenerateSecureToken(int length)
+    {
+        using var rng = RandomNumberGenerator.Create();
+        var tokenData = new byte[length / 2];
+        rng.GetBytes(tokenData);
+        return BitConverter.ToString(tokenData).Replace("-", "").ToLower();
+    }
+}

@@ -1,5 +1,8 @@
-﻿using System.Net;
+﻿using Microsoft.Extensions.Logging;
+using MongoDB.Driver;
+using System.Net;
 using System.Net.Sockets;
+using Wisedev.Magic.Server.Database;
 using Wisedev.Magic.Server.Network.Connection;
 using Wisedev.Magic.Server.Network.Extensions;
 using Wisedev.Magic.Titan.Debug;
@@ -18,7 +21,9 @@ internal class TCPGateway : IServerGateway
     {
         this._socket = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         this._tokenSource = new();
-        this._manager = new();
+
+        var accountRepository = new MongoAccountRepository(new MongoClient("mongodb://localhost:27017"), "MagicDatabase");
+        this._manager = new(accountRepository);
     }
 
     public void Start()

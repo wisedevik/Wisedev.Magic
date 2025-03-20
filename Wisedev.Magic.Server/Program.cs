@@ -1,8 +1,6 @@
 ﻿using Wisedev.Magic.Server.Debugging;
-using Wisedev.Magic.Server.HTTP;
 using Wisedev.Magic.Server.Network.TCP;
-using Wisedev.Magic.Titam.DataStream;
-using Wisedev.Magic.Titam.JSON;
+using Wisedev.Magic.Server.Resources;
 using Wisedev.Magic.Titan.Debug;
 
 Console.Title = $"Wisedev.Magic | integration | 5.2.1";
@@ -34,6 +32,7 @@ Console.CancelKeyPress += (sender, eventArgs) =>
 };
 
 Debugger.SetListener(new ServerDebuggerListener());
+ResourceManager.Init();
 
 TCPGateway tcpGateway = new();
 tcpGateway.Start();

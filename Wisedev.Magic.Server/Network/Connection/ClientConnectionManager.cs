@@ -1,13 +1,16 @@
 ﻿using System.Net.Sockets;
+using Wisedev.Magic.Server.Database;
 using Wisedev.Magic.Titan.Debug;
 
 namespace Wisedev.Magic.Server.Network.Connection;
 
 internal class ClientConnectionManager
 {
-    public ClientConnectionManager()
+    private readonly IAccountRepository _accountRepository;
+
+    public ClientConnectionManager(IAccountRepository accountRepository)
     {
-        ;
+        this._accountRepository = accountRepository;
     }
 
     public void OnConnect(Socket client)
@@ -18,7 +21,7 @@ internal class ClientConnectionManager
 
     private async Task RunSessionAsync(Socket client)
     {
-        ClientConnection session = new ClientConnection(client);
+        ClientConnection session = new ClientConnection(client, this._accountRepository);
         try
         {
             await session.Receive();

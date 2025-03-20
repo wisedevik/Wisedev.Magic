@@ -1,4 +1,5 @@
-﻿using Wisedev.Magic.Titam.DataStream;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using Wisedev.Magic.Titam.DataStream;
 
 namespace Wisedev.Magic.Titam.Logic
 {
@@ -6,6 +7,12 @@ namespace Wisedev.Magic.Titam.Logic
     {
         private int m_highInteger;
         private int m_lowInteger;
+
+        [BsonElement("high")]
+        public int High => this.m_highInteger;
+
+        [BsonElement("low")]
+        public int Low => this.m_lowInteger;
 
         public LogicLong()
         {

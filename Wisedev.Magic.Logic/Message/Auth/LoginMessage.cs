@@ -13,10 +13,18 @@ public class LoginMessage : PiranhaMessage
     private int _majorVersion;
     private int _minorVersion;
     private int _build;
-    public string? ResourceSHA;
+    private string? _resourceSHA;
+    private string? _preferredDeviceLanguage;
 
     public LoginMessage() : base(0)
     {
+        this._accountId = new LogicLong();
+        this._passToken = null;
+        this._majorVersion = 0;
+        this._minorVersion = 0;
+        this._build = 0;
+        this._resourceSHA = null;
+        this._preferredDeviceLanguage = null;
     }
 
     public override void Decode()
@@ -27,7 +35,13 @@ public class LoginMessage : PiranhaMessage
         this._majorVersion = this._stream.ReadInt();
         this._minorVersion = this._stream.ReadInt(); // hardcode by sc
         this._build = this._stream.ReadInt();
-        this.ResourceSHA = this._stream.ReadString();
+        this._resourceSHA = this._stream.ReadString();
+        this._stream.ReadString(); // TODO!;
+        this._stream.ReadString(); // TODO!;
+        this._stream.ReadString(); // TODO!;
+        this._stream.ReadString(); // TODO!;
+        this._stream.ReadInt();
+        this._preferredDeviceLanguage = this._stream.ReadString();
     }
 
     public LogicLong RemoveAccountId()
@@ -67,6 +81,23 @@ public class LoginMessage : PiranhaMessage
     public int GetBuild()
     {
         return this._build;
+    }
+
+    public string GetResourceSHA()
+    {
+        return this._resourceSHA!;
+    }
+
+    public string GetPreferredDeviceLanguage()
+    {
+        return this._preferredDeviceLanguage!;
+    }
+
+    public string RemovePreferredDeviceLanguage()
+    {
+        string? preferredDeviceLanguage = this._preferredDeviceLanguage;
+        this._preferredDeviceLanguage = null;
+        return preferredDeviceLanguage!;
     }
 
     public override short GetMessageType()

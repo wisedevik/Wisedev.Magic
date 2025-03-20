@@ -1,5 +1,6 @@
 ﻿using System.Net.Sockets;
 using System.Threading.Tasks;
+using Wisedev.Magic.Server.Database;
 using Wisedev.Magic.Server.Protocol;
 using Wisedev.Magic.Titam.Message;
 using Wisedev.Magic.Titan.Debug;
@@ -14,11 +15,11 @@ class ClientConnection
 
     private byte[] _receiveBuffer;
 
-    public ClientConnection(Socket socket)
+    public ClientConnection(Socket socket, IAccountRepository accountRepository)
     {
         this._socket = socket;
         this._messaging = new Messaging(this);
-        this._messageManager = new MessageManager(this);
+        this._messageManager = new MessageManager(this, accountRepository);
         this._receiveBuffer = GC.AllocateUninitializedArray<byte>(4096);
     }
 

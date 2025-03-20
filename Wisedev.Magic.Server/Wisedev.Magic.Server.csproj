@@ -8,8 +8,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MongoDB.Driver" Version="3.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Wisedev.Magic.Logic\Wisedev.Magic.Logic.csproj" />
     <ProjectReference Include="..\Wisedev.Magic.Titan\Wisedev.Magic.Titan.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Assets\fingerprint.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
