@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Wisedev.Magic.Logic;
 using Wisedev.Magic.Logic.Message.Auth;
+using Wisedev.Magic.Logic.Message.Home;
 using Wisedev.Magic.Server.Database;
 using Wisedev.Magic.Server.Database.Model;
 using Wisedev.Magic.Server.Network.Connection;
@@ -84,6 +85,13 @@ class MessageManager
         loginOkMessage.SetGoogleServiceId(null);
 
         await _connection.SendMessage(loginOkMessage);
+
+        OwnHomeDataMessage ownHomeDataMessage = new OwnHomeDataMessage();
+        ownHomeDataMessage.SetSecondsSinceLastSave(-1);
+        ownHomeDataMessage.SetLogicClientHome(account.Home);
+        ownHomeDataMessage.SetLogicClientAvatar(account.ClientAvatar);
+
+        await this._connection.SendMessage(ownHomeDataMessage);
     }
 
     private async ValueTask<bool> CheckClientVersion(int majorVersion, int build, string resourceSha)
@@ -92,7 +100,7 @@ class MessageManager
         {
             LoginFailedMessage loginFailedMessage = new LoginFailedMessage();
             loginFailedMessage.SetErrorCode(LoginFailedMessage.ErrorCode.CLIENT_VERSION);
-            loginFailedMessage.SetUpdateURL("https://1488.com");
+            loginFailedMessage.SetUpdateURL("http://wisedev.magic.api.bladewise.xyz");
 
             await this._connection.SendMessage(loginFailedMessage);
             return false;
@@ -102,7 +110,7 @@ class MessageManager
         {
             LoginFailedMessage loginFailedMessage = new LoginFailedMessage();
             loginFailedMessage.SetErrorCode(LoginFailedMessage.ErrorCode.DATA_VERSION);
-            loginFailedMessage.SetContentURL("https://1337.com"); // TODO!
+            loginFailedMessage.SetContentURL("http://wisedev.magic.api.bladewise.xyz");
             loginFailedMessage.SetResourceFingerprintData(ResourceManager.FINGERPRINT_JSON);
 
             await this._connection.SendMessage(loginFailedMessage);

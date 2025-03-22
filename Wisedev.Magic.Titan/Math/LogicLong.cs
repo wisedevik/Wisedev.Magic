@@ -8,10 +8,10 @@ namespace Wisedev.Magic.Titam.Logic
         private int m_highInteger;
         private int m_lowInteger;
 
-        [BsonElement("high")]
+        [BsonElement("High")]
         public int High => this.m_highInteger;
 
-        [BsonElement("low")]
+        [BsonElement("Low")]
         public int Low => this.m_lowInteger;
 
         public LogicLong()

@@ -3,7 +3,10 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Security.Cryptography;
 using Wisedev.Magic.Server.Database.Model;
+using Wisedev.Magic.Server.Resources;
 using Wisedev.Magic.Titam.Logic;
+using Wisedev.Magic.Logic.Home;
+using Wisedev.Magic.Logic.Avatar;
 
 namespace Wisedev.Magic.Server.Database;
 
@@ -40,8 +43,20 @@ class MongoAccountRepository : IAccountRepository
         {
             InternalId = ObjectId.GenerateNewId(),
             Id = await GenerateNewLogicLongId(),
-            PassToken = GenerateSecureToken(32)
+            PassToken = GenerateSecureToken(32),
+            Home = new LogicClientHome(),
+            ClientAvatar = new LogicClientAvatar()
         };
+
+        account.Home.SetId(account.Id);
+        account.Home.SetHomeJSON(ResourceManager.STARTING_HOME_JSON);
+        account.ClientAvatar.SetId(account.Id);
+        account.ClientAvatar.SetCurrentHomeId(account.Id);
+        account.ClientAvatar.SetAllianceId(0);
+        account.ClientAvatar.SetLastLeagueInstanceId(0);
+        account.ClientAvatar.SetLeagueInstanceId(0);
+        account.ClientAvatar.SetName("wisedev <3");
+        account.ClientAvatar.SetExpLevel(1);
 
         await _collection.InsertOneAsync(account);
         return account;

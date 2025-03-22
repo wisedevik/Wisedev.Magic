@@ -11,9 +11,24 @@ class ResourceManager
     public static string FINGERPRINT_SHA;
     public static string FINGERPRINT_VERSION;
 
+    public static string STARTING_HOME_JSON;
+
     public static void Init()
     {
         ResourceManager.LoadFingerprint();
+        ResourceManager.LoadStartingHome();
+    }
+
+    private static void LoadStartingHome()
+    {
+        ResourceManager.STARTING_HOME_JSON = File.ReadAllText("Assets/level/starting_home.json");
+        if (ResourceManager.STARTING_HOME_JSON == null)
+        {
+            Debugger.Error("ResourceManager.LoadStartingHome: starting_home.json not exist");
+            return;
+        }
+
+        Debugger.Print("Starting home is loaded!");
     }
 
     private static void LoadFingerprint()

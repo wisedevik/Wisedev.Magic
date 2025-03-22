@@ -29,7 +29,7 @@ internal class ClientConnectionManager
         catch (OperationCanceledException ex) { }
         catch (Exception ex)
         {
-            //Debugger.Error($"Unhandled exception occurred while processing session, trace:\n{ex}");
+            Debugger.Error($"Unhandled exception occurred while processing session, trace:\n{ex}");
         }
         finally
         {
