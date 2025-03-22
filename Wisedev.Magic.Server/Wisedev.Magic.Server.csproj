@@ -16,17 +16,4 @@
     <ProjectReference Include="..\Wisedev.Magic.Titan\Wisedev.Magic.Titan.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="Assets\fingerprint.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Assets\level\starting_home.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Assets\level\" />
-  </ItemGroup>
-
 </Project>

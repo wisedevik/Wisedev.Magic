@@ -1,17 +1,18 @@
-﻿using Wisedev.Magic.Titam.JSON;
+﻿using Wisedev.Magic.Server.HTTP;
+using Wisedev.Magic.Titam.JSON;
 using Wisedev.Magic.Titan.Debug;
 
 namespace Wisedev.Magic.Server.Resources;
 
 class ResourceManager
 {
-    public static string FINGERPRINT_PATH = "Assets/fingerprint.json";
+    public const string PATH = "assets";
 
-    public static string FINGERPRINT_JSON;
-    public static string FINGERPRINT_SHA;
-    public static string FINGERPRINT_VERSION;
+    public static string? FINGERPRINT_JSON;
+    public static string? FINGERPRINT_SHA;
+    public static string? FINGERPRINT_VERSION;
 
-    public static string STARTING_HOME_JSON;
+    public static string? STARTING_HOME_JSON;
 
     public static void Init()
     {
@@ -21,20 +22,19 @@ class ResourceManager
 
     private static void LoadStartingHome()
     {
-        ResourceManager.STARTING_HOME_JSON = File.ReadAllText("Assets/level/starting_home.json");
+        ResourceManager.STARTING_HOME_JSON = ServerHttpClient.DownloadString($"{ResourceManager.PATH}/level/starting_home.json");
         if (ResourceManager.STARTING_HOME_JSON == null)
         {
-            Debugger.Error("ResourceManager.LoadStartingHome: starting_home.json not exist");
+            Debugger.Error("ResourceManager.LoadStartingHome: Unable to download the starting_home.json!");
             return;
         }
 
-        Debugger.Print("Starting home is loaded!");
+        Debugger.Print("Starting home has been downloaded!");
     }
 
     private static void LoadFingerprint()
     {
-        ResourceManager.FINGERPRINT_JSON = File.ReadAllText(ResourceManager.FINGERPRINT_PATH);
-
+        ResourceManager.FINGERPRINT_JSON = ServerHttpClient.DownloadString($"{ResourceManager.PATH}/fingerprint.json");
         if (ResourceManager.FINGERPRINT_JSON != null )
         {
             LogicJSONObject jsonObject = (LogicJSONObject)LogicJSONParser.Parse(ResourceManager.FINGERPRINT_JSON!);
@@ -44,10 +44,10 @@ class ResourceManager
         }
         else
         {
-            Debugger.Error($"ResourceManager.LoadFingerprint: {ResourceManager.FINGERPRINT_PATH} not exist");
+            Debugger.Error($"ResourceManager.LoadFingerprint: Unable to download the fingerprint.json!");
             return;
         }
 
-        Debugger.Print($"Fingerprint is loaded! server sha={ResourceManager.FINGERPRINT_SHA} server fingerprint version={ResourceManager.FINGERPRINT_VERSION}");
+        Debugger.Print($"Fingerprint has been downloaded! server sha={ResourceManager.FINGERPRINT_SHA} server fingerprint version={ResourceManager.FINGERPRINT_VERSION}");
     }
 }

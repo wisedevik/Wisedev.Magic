@@ -44,7 +44,11 @@ class MessageManager
         Debugger.Print($"Tryna login id={accountId}, passToken={passToken}, client version={loginMessage.GetMajorVersion()}.{loginMessage.GetBuild()}.{loginMessage.GetMinorVersion() + 1}, server version={LogicVersion.MAJOR_VERSION}.{LogicVersion.BUILD}.{LogicVersion.CONTENT_VERSION}, device language={loginMessage.GetPreferredDeviceLanguage()}");
         Debugger.Print($"client sha={loginMessage.GetResourceSHA()}");
 
-        await this.CheckClientVersion(loginMessage.GetMajorVersion(), loginMessage.GetBuild(), loginMessage.GetResourceSHA());
+        if (await this.CheckClientVersion(loginMessage.GetMajorVersion(), loginMessage.GetBuild(), loginMessage.GetResourceSHA()))
+        {
+            Debugger.Print("Client version is invalid, rejecting login.");
+            return;
+        }
 
         Account? account = null;
 
@@ -71,9 +75,9 @@ class MessageManager
         loginOkMessage.SetPassToken(account.PassToken);
         loginOkMessage.SetFacebookId(null);
         loginOkMessage.SetGamecenterId(null);
-        loginOkMessage.SetMajorVersion(5);
-        loginOkMessage.SetBuild(2);
-        loginOkMessage.SetContentVersion(1);
+        loginOkMessage.SetMajorVersion(LogicVersion.MAJOR_VERSION);
+        loginOkMessage.SetBuild(LogicVersion.BUILD);
+        loginOkMessage.SetContentVersion(LogicVersion.CONTENT_VERSION);
         loginOkMessage.SetEnvironment("int");
         loginOkMessage.SetSessionCount(1);
         loginOkMessage.SetPlayTimeSeconds(0);
@@ -100,7 +104,7 @@ class MessageManager
         {
             LoginFailedMessage loginFailedMessage = new LoginFailedMessage();
             loginFailedMessage.SetErrorCode(LoginFailedMessage.ErrorCode.CLIENT_VERSION);
-            loginFailedMessage.SetUpdateURL("http://wisedev.magic.api.bladewise.xyz");
+            loginFailedMessage.SetUpdateURL("https://api.bladewise.xyz/supercell");
 
             await this._connection.SendMessage(loginFailedMessage);
             return false;
@@ -110,7 +114,7 @@ class MessageManager
         {
             LoginFailedMessage loginFailedMessage = new LoginFailedMessage();
             loginFailedMessage.SetErrorCode(LoginFailedMessage.ErrorCode.DATA_VERSION);
-            loginFailedMessage.SetContentURL("http://wisedev.magic.api.bladewise.xyz");
+            loginFailedMessage.SetContentURL("https://api.bladewise.xyz/supercell");
             loginFailedMessage.SetResourceFingerprintData(ResourceManager.FINGERPRINT_JSON);
 
             await this._connection.SendMessage(loginFailedMessage);
