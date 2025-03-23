@@ -12,9 +12,16 @@ class Account
     public ObjectId InternalId { get; set; }
     public LogicLong Id { get; set; }
     public string PassToken { get; set; }
+    public int SessionCount { get; set; }
+    public int PlayTimeSeconds { get; set; }
+    public int DaysSinceStartedPlaying { get; set; }
+    public int StartupCooldownSeconds { get; set; }
     public LogicClientHome Home { get; set; }
     public LogicClientAvatar ClientAvatar { get; set; }
 
     [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
+    public DateTime LastLoginAt { get; set; }
 }

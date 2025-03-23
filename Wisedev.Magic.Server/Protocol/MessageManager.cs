@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using MongoDB.Driver;
+using System.Threading.Tasks;
 using Wisedev.Magic.Logic;
 using Wisedev.Magic.Logic.Message.Auth;
 using Wisedev.Magic.Logic.Message.Home;
@@ -6,6 +7,7 @@ using Wisedev.Magic.Server.Database;
 using Wisedev.Magic.Server.Database.Model;
 using Wisedev.Magic.Server.Network.Connection;
 using Wisedev.Magic.Server.Resources;
+using Wisedev.Magic.Server.Util;
 using Wisedev.Magic.Titam.Logic;
 using Wisedev.Magic.Titam.Message;
 using Wisedev.Magic.Titan.Debug;
@@ -44,7 +46,7 @@ class MessageManager
         Debugger.Print($"Tryna login id={accountId}, passToken={passToken}, client version={loginMessage.GetMajorVersion()}.{loginMessage.GetBuild()}.{loginMessage.GetMinorVersion() + 1}, server version={LogicVersion.MAJOR_VERSION}.{LogicVersion.BUILD}.{LogicVersion.CONTENT_VERSION}, device language={loginMessage.GetPreferredDeviceLanguage()}");
         Debugger.Print($"client sha={loginMessage.GetResourceSHA()}");
 
-        if (await this.CheckClientVersion(loginMessage.GetMajorVersion(), loginMessage.GetBuild(), loginMessage.GetResourceSHA()))
+        if (!await this.CheckClientVersion(loginMessage.GetMajorVersion(), loginMessage.GetBuild(), loginMessage.GetResourceSHA()))
         {
             Debugger.Print("Client version is invalid, rejecting login.");
             return;
@@ -54,18 +56,31 @@ class MessageManager
 
         if (accountId.High != 0 || accountId.Low != 0)
         {
-            account = await _accountRepository.GetByIdAsync(accountId);
+            account = await this._accountRepository.GetByIdAsync(accountId);
 
             if (account == null || account.PassToken != passToken)
             {
                 Debugger.Print("Invalid account or passToken, rejecting login.");
                 return;
             }
+
+            await _accountRepository.UpdateAccountAsync(accountId, Builders<Account>.Update
+                                        .Set(a => a.LastLoginAt, DateTime.UtcNow));
+
+            var timeSinceLastLogin = DateTime.UtcNow - account.LastLoginAt;
+            var totalPlayTime = account.PlayTimeSeconds + (int)timeSinceLastLogin.TotalSeconds;
+
+            await _accountRepository.UpdateAccountAsync(accountId, Builders<Account>.Update
+                                        .Set(a => a.PlayTimeSeconds, totalPlayTime));
+
+            var daysSinceStarted = (DateTime.UtcNow - account.CreatedAt).Days;
+            await _accountRepository.UpdateAccountAsync(accountId, Builders<Account>.Update
+                                        .Set(a => a.DaysSinceStartedPlaying, daysSinceStarted));
         }
         else
         {
             Debugger.Print("Creating new account...");
-            account = await _accountRepository.CreateAsync();
+            account = await this._accountRepository.CreateAsync();
         }
 
 
@@ -78,14 +93,14 @@ class MessageManager
         loginOkMessage.SetMajorVersion(LogicVersion.MAJOR_VERSION);
         loginOkMessage.SetBuild(LogicVersion.BUILD);
         loginOkMessage.SetContentVersion(LogicVersion.CONTENT_VERSION);
-        loginOkMessage.SetEnvironment("int");
-        loginOkMessage.SetSessionCount(1);
-        loginOkMessage.SetPlayTimeSeconds(0);
-        loginOkMessage.SetDaysSinceStartedPlaying(0);
+        loginOkMessage.SetEnvironment(EnvironmentUtil.GetEnvironmentAbbreviation(Config.Environment));
+        loginOkMessage.SetSessionCount(account.SessionCount);
+        loginOkMessage.SetPlayTimeSeconds(account.PlayTimeSeconds);
+        loginOkMessage.SetDaysSinceStartedPlaying(account.DaysSinceStartedPlaying);
         loginOkMessage.SetFacebookAppId(null);
         loginOkMessage.SetServerTime(DateTime.UtcNow.ToString());
         loginOkMessage.SetAccountCreatedDate(account.CreatedAt.ToString());
-        loginOkMessage.SetStartupCooldownSeconds(0);
+        loginOkMessage.SetStartupCooldownSeconds(account.StartupCooldownSeconds);
         loginOkMessage.SetGoogleServiceId(null);
 
         await _connection.SendMessage(loginOkMessage);
@@ -115,7 +130,7 @@ class MessageManager
             LoginFailedMessage loginFailedMessage = new LoginFailedMessage();
             loginFailedMessage.SetErrorCode(LoginFailedMessage.ErrorCode.DATA_VERSION);
             loginFailedMessage.SetContentURL("https://api.bladewise.xyz/supercell");
-            loginFailedMessage.SetResourceFingerprintData(ResourceManager.FINGERPRINT_JSON);
+            loginFailedMessage.SetResourceFingerprintData(ResourceManager.FINGERPRINT_JSON!);
 
             await this._connection.SendMessage(loginFailedMessage);
             return false;

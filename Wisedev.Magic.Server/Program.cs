@@ -1,9 +1,17 @@
-﻿using Wisedev.Magic.Server.Debugging;
+﻿using Wisedev.Magic.Logic;
+using Wisedev.Magic.Server;
+using Wisedev.Magic.Server.Debugging;
 using Wisedev.Magic.Server.Network.TCP;
 using Wisedev.Magic.Server.Resources;
+using Wisedev.Magic.Server.Util;
 using Wisedev.Magic.Titan.Debug;
 
-Console.Title = $"Wisedev.Magic | integration | 5.2.1";
+Console.Title = $"Wisedev.Magic | Initializing...";
+
+Debugger.SetListener(new ServerDebuggerListener());
+Config.Load();
+
+Console.Title = $"Wisedev.Magic | {Config.Environment}";
 
 Console.ForegroundColor = ConsoleColor.Magenta;
 Console.WriteLine("""
@@ -31,7 +39,6 @@ Console.CancelKeyPress += (sender, eventArgs) =>
     exitEvent.TrySetResult(true);
 };
 
-Debugger.SetListener(new ServerDebuggerListener());
 ResourceManager.Init();
 
 TCPGateway tcpGateway = new();

@@ -6,7 +6,7 @@ namespace Wisedev.Magic.Logic.Avatar;
 
 public class LogicAvatar : LogicBase
 {
-    protected LogicAvatarChangeListener _listener;
+    protected LogicAvatarChangeListener? _listener;
 
     public LogicAvatar()
     {

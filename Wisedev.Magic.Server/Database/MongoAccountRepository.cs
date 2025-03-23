@@ -45,11 +45,13 @@ class MongoAccountRepository : IAccountRepository
             Id = await GenerateNewLogicLongId(),
             PassToken = GenerateSecureToken(32),
             Home = new LogicClientHome(),
-            ClientAvatar = new LogicClientAvatar()
+            ClientAvatar = new LogicClientAvatar(),
+            LastLoginAt = DateTime.UtcNow,
+            SessionCount = 1,
         };
 
         account.Home.SetId(account.Id);
-        account.Home.SetHomeJSON(ResourceManager.STARTING_HOME_JSON);
+        account.Home.SetHomeJSON(ResourceManager.STARTING_HOME_JSON!);
         account.ClientAvatar.SetId(account.Id);
         account.ClientAvatar.SetCurrentHomeId(account.Id);
         account.ClientAvatar.SetAllianceId(0);
@@ -93,5 +95,11 @@ class MongoAccountRepository : IAccountRepository
         var tokenData = new byte[length / 2];
         rng.GetBytes(tokenData);
         return BitConverter.ToString(tokenData).Replace("-", "").ToLower();
+    }
+
+    public async Task UpdateAccountAsync(LogicLong accountId, UpdateDefinition<Account> update)
+    {
+        var filter = Builders<Account>.Filter.Eq(a => a.Id, accountId);
+        await _collection.UpdateOneAsync(filter, update);
     }
 }

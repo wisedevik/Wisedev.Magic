@@ -1,0 +1,9 @@
+{
+  "ApiUrl": "https://api.bladewise.xyz/supercell",
+  "ApiToken": "LH5qflhvrTMQrxIEsa-IG4C1mB9?x-PZiHflMhbQ2-UkGMenad1rAE?0p7VMqd9q",
+  "MongoConnectionString": "mongodb://localhost:27017",
+  "DatabaseName": "MagicDatabase",
+  "ServerPort": 9339,
+  "AssetsPath": "assets",
+  "Environment": "integration"
+}
