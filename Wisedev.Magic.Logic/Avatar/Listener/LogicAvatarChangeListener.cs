@@ -1,4 +1,4 @@
-﻿namespace Wisedev.Magic.Logic.Avatar;
+﻿namespace Wisedev.Magic.Logic.Avatar.Listener;
 
 public class LogicAvatarChangeListener
 {

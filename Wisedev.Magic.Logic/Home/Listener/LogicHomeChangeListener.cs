@@ -1,4 +1,4 @@
-﻿namespace Wisedev.Magic.Logic.Home;
+﻿namespace Wisedev.Magic.Logic.Home.Listener;
 
 public class LogicHomeChangeListener
 {

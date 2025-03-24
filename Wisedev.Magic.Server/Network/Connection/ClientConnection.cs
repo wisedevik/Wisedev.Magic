@@ -1,7 +1,9 @@
 ﻿using System.Net.Sockets;
 using System.Threading.Tasks;
+using Wisedev.Magic.Logic.Mode;
 using Wisedev.Magic.Server.Database;
 using Wisedev.Magic.Server.Protocol;
+using Wisedev.Magic.Titam.Logic;
 using Wisedev.Magic.Titam.Message;
 using Wisedev.Magic.Titan.Debug;
 
@@ -15,17 +17,35 @@ class ClientConnection
 
     private byte[] _receiveBuffer;
 
+    private LogicGameMode _logicGameMode = new();
+    private LogicLong _currentAccountId;
+
     public ClientConnection(Socket socket, IAccountRepository accountRepository)
     {
         this._socket = socket;
         this._messaging = new Messaging(this);
         this._messageManager = new MessageManager(this, accountRepository);
-        this._receiveBuffer = GC.AllocateUninitializedArray<byte>(4096);
+        this._receiveBuffer = GC.AllocateUninitializedArray<byte>(4096 * 2);
     }
 
     public bool IsConnected()
     {
         return _socket.Connected;
+    }
+
+    public LogicGameMode GetLogicGameMode()
+    {
+        return _logicGameMode;
+    }
+
+    public void SetCurrentAccountId(LogicLong accountId)
+    {
+        _currentAccountId = accountId;
+    }
+
+    public LogicLong GetCurrentAccountId()
+    {
+        return _currentAccountId;
     }
 
     public async Task Receive()

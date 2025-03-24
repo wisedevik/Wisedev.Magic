@@ -1,14 +1,16 @@
-﻿using Wisedev.Magic.Titam.DataStream;
+﻿using Wisedev.Magic.Logic.Data;
+using Wisedev.Magic.Logic.Helper;
+using Wisedev.Magic.Titam.DataStream;
 using Wisedev.Magic.Titam.JSON;
 
 namespace Wisedev.Magic.Logic.Util;
 
 public class LogicDataSlot
 {
-    private int _data;
+    private LogicData _data;
     private int _count;
 
-    public LogicDataSlot(int data, int count)
+    public LogicDataSlot(LogicData data, int count)
     {
         this._data = data;
         this._count = count;
@@ -16,22 +18,22 @@ public class LogicDataSlot
 
     public void Destruct()
     {
-        this._data = 0;
+        this._data = null;
         this._count = 0;
     }
 
     public void Encode(ChecksumEncoder encoder)
     {
-        encoder.WriteInt(this._data);
+        ByteStreamHelper.WriteDataReference(encoder, this._data);
         encoder.WriteInt(this._count);
     }
 
-    public void SetData(int data)
+    public void SetData(LogicData data)
     {
         this._data = data;
     }
 
-    public int GetData()
+    public LogicData GetData()
     {
         return this._data;
     }
@@ -48,7 +50,7 @@ public class LogicDataSlot
 
     public void WriteToJSON(LogicJSONObject jsonObject)
     {
-        jsonObject.Put("id", new LogicJSONNumber(this._data));
+        jsonObject.Put("id", new LogicJSONNumber(this._data != null ? this._data.GetGlobalID() : 0));
         jsonObject.Put("cnt", new LogicJSONNumber(this._count));
     }
 }

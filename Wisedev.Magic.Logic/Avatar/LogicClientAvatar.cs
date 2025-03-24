@@ -30,26 +30,26 @@ public class LogicClientAvatar : LogicAvatar
     private bool _nameSetByUser;
     private int _cumulativePurchasedDiamonds;
 
-    public LogicLong? Id { get { return this._id; } private set { this._id = value; } }
-    public LogicLong? CurrentHomeId { get { return this._currentHomeId; } private set { this._currentHomeId = value; } }
-    public LogicLong? AllianceId { get { return this._allianceId; } private set { this._allianceId = value; } }
-    public LogicLong? LeagueInstanceId { get { return this._leagueInstanceId; } private set { this._leagueInstanceId = value; } }
-    public LogicLong? LastLeagueInstanceId { get { return this._lastLeagueInstanceId; } private set { this._lastLeagueInstanceId = value; } }
-    public string? Name { get { return this._name; } private set { this._name = value; } }
-    public string? FacebookId { get { return this._facebookId; } private set { this._facebookId = value; } }
-    public int ExpLevel { get { return this._expLevel; } private set { this._expLevel = value; } }
-    public int ExpPoints { get { return this._expPoints; } private set { this._expPoints = value; } }
-    public int Diamonds { get { return this._diamonds; } private set { this._diamonds = value; } }
-    public int FreeDiamonds { get { return this._freeDiamonds; } private set { this._freeDiamonds = value; } }
-    public int AttackRating { get { return this._attackRating; } private set { this._attackRating = value; } }
-    public int AttackKFactor { get { return this._attackKFactor; } private set { this._attackKFactor = value; } }
-    public int Score { get { return this._score; } private set { this._score = value; } }
-    public int AttackWinCount { get { return this._attackWinCount; } private set { this._attackWinCount = value; } }
-    public int AttackLoseCount { get { return this._attackLoseCount; } private set { this._attackLoseCount = value; } }
-    public int DefenseWinCount { get { return this._defenseWinCount; } private set { this._defenseWinCount = value; } }
-    public int DefenseLoseCount { get { return this._defenseLoseCount; } private set { this._defenseLoseCount = value; } }
-    public bool NameSetByUser { get { return this._nameSetByUser; } private set { this._nameSetByUser = value; } }
-    public int CumulativePurchasedDiamonds { get { return this._cumulativePurchasedDiamonds; } private set { this._cumulativePurchasedDiamonds = value; } }
+    public LogicLong? Id { get { return this._id; } set { this._id = value; } }
+    public LogicLong? CurrentHomeId { get { return this._currentHomeId; } set { this._currentHomeId = value; } }
+    public LogicLong? AllianceId { get { return this._allianceId; } set { this._allianceId = value; } }
+    public LogicLong? LeagueInstanceId { get { return this._leagueInstanceId; } set { this._leagueInstanceId = value; } }
+    public LogicLong? LastLeagueInstanceId { get { return this._lastLeagueInstanceId; } set { this._lastLeagueInstanceId = value; } }
+    public string? Name { get { return this._name; } set { this._name = value; } }
+    public string? FacebookId { get { return this._facebookId; } set { this._facebookId = value; } }
+    public int ExpLevel { get { return this._expLevel; } set { this._expLevel = value; } }
+    public int ExpPoints { get { return this._expPoints; } set { this._expPoints = value; } }
+    public int Diamonds { get { return this._diamonds; } set { this._diamonds = value; } }
+    public int FreeDiamonds { get { return this._freeDiamonds; } set { this._freeDiamonds = value; } }
+    public int AttackRating { get { return this._attackRating; } set { this._attackRating = value; } }
+    public int AttackKFactor { get { return this._attackKFactor; } set { this._attackKFactor = value; } }
+    public int Score { get { return this._score; } set { this._score = value; } }
+    public int AttackWinCount { get { return this._attackWinCount; } set { this._attackWinCount = value; } }
+    public int AttackLoseCount { get { return this._attackLoseCount; } set { this._attackLoseCount = value; } }
+    public int DefenseWinCount { get { return this._defenseWinCount; } set { this._defenseWinCount = value; } }
+    public int DefenseLoseCount { get { return this._defenseLoseCount; } set { this._defenseLoseCount = value; } }
+    public bool NameSetByUser { get { return this._nameSetByUser; } set { this._nameSetByUser = value; } }
+    public int CumulativePurchasedDiamonds { get { return this._cumulativePurchasedDiamonds; } set { this._cumulativePurchasedDiamonds = value; } }
 
     public void SetId(LogicLong id)
     {

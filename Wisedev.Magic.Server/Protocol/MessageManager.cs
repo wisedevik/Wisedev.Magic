@@ -1,6 +1,8 @@
 ﻿using MongoDB.Driver;
 using System.Threading.Tasks;
 using Wisedev.Magic.Logic;
+using Wisedev.Magic.Logic.Command;
+using Wisedev.Magic.Logic.Entries;
 using Wisedev.Magic.Logic.Message.Auth;
 using Wisedev.Magic.Logic.Message.Home;
 using Wisedev.Magic.Server.Database;
@@ -28,12 +30,20 @@ class MessageManager
     public async Task ReceiveMessage(PiranhaMessage message)
     {
         int messageType = message.GetMessageType();
-        Debugger.Print($"MessageManager.ReceiveMessage: type={messageType}, name=" + message.GetType().Name);
+
+        if (messageType != 14102)
+            Debugger.Print($"MessageManager.ReceiveMessage: type={messageType}, name=" + message.GetType().Name);
 
         switch (messageType)
         {
             case 10101:
                 await this.OnLoginMessageReceived((LoginMessage)message);
+                break;
+            case 14102:
+                await this.OnEndClientTurnReceived((EndClientTurnMessage)message);
+                break;
+            case 14325:
+                await this.OnAskForAvatarProfileMessage((AskForAvatarProfileMessage)message);
                 break;
         }
     }
@@ -83,6 +93,7 @@ class MessageManager
             account = await this._accountRepository.CreateAsync();
         }
 
+        this._connection.SetCurrentAccountId(account.Id);
 
         LoginOkMessage loginOkMessage = new LoginOkMessage();
         loginOkMessage.SetAccountId(account.Id);
@@ -138,5 +149,37 @@ class MessageManager
 
         Debugger.Print("Client version mathces the server version!");
         return true;
+    }
+
+    private async Task OnAskForAvatarProfileMessage(AskForAvatarProfileMessage askProfileMessage)
+    {
+        Account? account = await this._accountRepository.GetByIdAsync(askProfileMessage.GetAvatarId());
+        if (account == null)
+        {
+            Debugger.Print($"MessageManager.OnAskForAvatarProfileMessage: Account ({askProfileMessage.GetAvatarId()}) not found!");
+            return;
+        }
+
+        AvatarProfileMessage avatarProfileMessage = new AvatarProfileMessage();
+
+        AvatarProfileFullEntry avatarProfileEntry = new AvatarProfileFullEntry();
+        avatarProfileEntry.SetLogicClientAvatar(account.ClientAvatar);
+        avatarProfileEntry.SetDonations(0); // TODO: rewrite hardcode
+        avatarProfileEntry.SetDonationsReceived(0); // TODO: rewrite hardcode
+
+        avatarProfileMessage.SetAvatarProfileFullEntry(avatarProfileEntry);
+
+        await this._connection.SendMessage(avatarProfileMessage);
+    }
+
+    private async Task OnEndClientTurnReceived(EndClientTurnMessage message)
+    {
+        var visitor = new CommandVisitor(_accountRepository, _connection.GetCurrentAccountId());
+
+        foreach (var command in message.GetCommands())
+        {
+            command.Accept(visitor);
+            command.Execute(_connection.GetLogicGameMode().GetLevel());
+        }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using Wisedev.Magic.Logic;
+using Wisedev.Magic.Logic.Data;
+using Wisedev.Magic.Logic.Level;
 using Wisedev.Magic.Server;
 using Wisedev.Magic.Server.Debugging;
 using Wisedev.Magic.Server.Network.TCP;

@@ -30,6 +30,8 @@ class Messaging : IConnectionListener
 
         _incomingQueue = new ConcurrentQueue<PiranhaMessage>();
         _outgoingQueue = new ConcurrentQueue<PiranhaMessage>();
+
+        this.InitializeEncryption();
     }
 
     public void InitializeEncryption()
@@ -65,8 +67,6 @@ class Messaging : IConnectionListener
 
                 Buffer.BlockCopy(buffer, Messaging.HEADER_SIZE, encryptedBytes, 0, messageLength);
                 int encodingLength = messageLength;
-
-                this.InitializeEncryption();
 
                 this._receiveEncrypter.Decrypt(encryptedBytes, encodingBytes, encodingLength);
 

@@ -4,8 +4,8 @@ namespace Wisedev.Magic.Titam.Math;
 
 public class LogicVector2
 {
-    public int X;
-    public int Y;
+    public int _x;
+    public int _y;
 
 
     public LogicVector2()
@@ -14,32 +14,32 @@ public class LogicVector2
 
     public LogicVector2(int x, int y)
     {
-        X = x;
-        Y = y;
+        _x = x;
+        _y = y;
     }
 
     public void Add(LogicVector2 vector)
     {
-        X += vector.X;
-        Y += vector.Y;
+        _x += vector._x;
+        _y += vector._y;
     }
 
     public void Multiply(LogicVector2 vector2)
     {
-        X *= vector2.X;
-        Y *= vector2.Y;
+        _x *= vector2._x;
+        _y *= vector2._y;
     }
 
     public void Substruct(LogicVector2 vector)
     {
-        X -= vector.X;
-        Y -= vector.Y;
+        _x -= vector._x;
+        _y -= vector._y;
     }
 
     public void Set(int x, int y)
     {
-        X = x;
-        Y = y;
+        _x = x;
+        _y = y;
     }
 
     public int Normalize(int value)
@@ -48,8 +48,8 @@ public class LogicVector2
 
         if (len != 0)
         {
-            X = X * value / len;
-            Y = Y * value / len;
+            _x = _x * value / len;
+            _y = _y * value / len;
         }
 
         return len;
@@ -59,12 +59,12 @@ public class LogicVector2
     {
         int length = 0x7FFFFFFF;
 
-        if ((uint)(46340 - X) <= 92680)
+        if ((uint)(46340 - _x) <= 92680)
         {
-            if ((uint)(46340 - Y) <= 92680)
+            if ((uint)(46340 - _y) <= 92680)
             {
-                int lengthX = X * X;
-                int lengthY = Y * Y;
+                int lengthX = _x * _x;
+                int lengthY = _y * _y;
 
                 if ((uint)lengthY < (lengthX ^ 0x7FFFFFFFu))
                 {
@@ -78,18 +78,18 @@ public class LogicVector2
 
     public int GetAngle()
     {
-        return LogicMath.GetAngle(X, Y);
+        return LogicMath.GetAngle(_x, _y);
     }
 
     public void Encode(ByteStream stream)
     {
-        stream.WriteInt(X);
-        stream.WriteInt(Y);
+        stream.WriteInt(_x);
+        stream.WriteInt(_y);
     }
 
     public void Decode(ByteStream stream)
     {
-        X = stream.ReadInt();
-        Y = stream.ReadInt();
+        _x = stream.ReadInt();
+        _y = stream.ReadInt();
     }
 }

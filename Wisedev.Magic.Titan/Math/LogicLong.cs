@@ -9,10 +9,10 @@ namespace Wisedev.Magic.Titam.Logic
         private int m_lowInteger;
 
         [BsonElement("High")]
-        public int High => this.m_highInteger;
+        public int High { get { return this.m_highInteger; } set { this.m_highInteger = value; } }
 
         [BsonElement("Low")]
-        public int Low => this.m_lowInteger;
+        public int Low { get { return this.m_lowInteger; } set { this.m_lowInteger = value; } }
 
         public LogicLong()
         {

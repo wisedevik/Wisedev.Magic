@@ -5,18 +5,18 @@ namespace Wisedev.Magic.Titam.CSV;
 
 public class CSVNode
 {
-    private string m_name;
-    private CSVTable m_table;
+    private string _name;
+    private CSVTable _table;
 
     public CSVNode(string[] lines, string fileName)
     {
-        m_name = fileName;
-        Load(lines);
+        this._name = fileName;
+        this.Load(lines);
     }
 
     public void Load(string[] lines)
     {
-        m_table = new CSVTable(this, lines.Length);
+        _table = new CSVTable(this, lines.Length);
 
         if (lines.Length >= 2)
         {
@@ -25,7 +25,7 @@ public class CSVNode
 
             for (int i = 0; i < columnNames.Count; i++)
             {
-                m_table.AddColumn(columnNames[i]);
+                _table.AddColumn(columnNames[i]);
             }
 
             for (int i = 0; i < columnTypes.Count; i++)
@@ -49,14 +49,14 @@ public class CSVNode
                     }
                     else
                     {
-                        Console.WriteLine(string.Format("Invalid column type '{0}', column name {1}, file {2}. Expecting: int/string/boolean.", columnTypes[i], columnNames[i], m_name));
+                        Console.WriteLine(string.Format("Invalid column type '{0}', column name {1}, file {2}. Expecting: int/string/boolean.", columnTypes[i], columnNames[i], _name));
                     }
                 }
 
-                m_table.AddColumnType(columnType);
+                _table.AddColumnType(columnType);
             }
 
-            m_table.ValidateColumnTypes();
+            _table.ValidateColumnTypes();
 
             if (lines.Length > 2)
             {
@@ -68,12 +68,12 @@ public class CSVNode
                     {
                         if (!string.IsNullOrEmpty(values[0]))
                         {
-                            m_table.CreateRow();
+                            _table.CreateRow();
                         }
 
                         for (int j = 0; j < values.Count; j++)
                         {
-                            m_table.AddAndConvertValue(values[j], j);
+                            _table.AddAndConvertValue(values[j], j);
                         }
                     }
                 }
@@ -128,16 +128,16 @@ public class CSVNode
 
     public void SetName(string name)
     {
-        m_name = name;
+        _name = name;
     }
     
     public string GetName() 
     {
-        return m_name; 
+        return _name; 
     }
 
     public CSVTable GetTable()
     {
-        return m_table;
+        return _table;
     }
 }

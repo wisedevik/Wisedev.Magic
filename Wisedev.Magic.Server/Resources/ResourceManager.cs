@@ -1,4 +1,5 @@
-﻿using Wisedev.Magic.Server.HTTP;
+﻿using Wisedev.Magic.Logic.Data;
+using Wisedev.Magic.Server.HTTP;
 using Wisedev.Magic.Titam.JSON;
 using Wisedev.Magic.Titan.Debug;
 
@@ -6,7 +7,7 @@ namespace Wisedev.Magic.Server.Resources;
 
 class ResourceManager
 {
-    public const string PATH = "assets";
+    public static string PATH = Config.AssetsPath;
 
     public static string? FINGERPRINT_JSON;
     public static string? FINGERPRINT_SHA;
@@ -18,6 +19,7 @@ class ResourceManager
     {
         ResourceManager.LoadFingerprint();
         ResourceManager.LoadStartingHome();
+        ResourceManager.LoadResources();
     }
 
     private static void LoadStartingHome()
@@ -49,5 +51,17 @@ class ResourceManager
         }
 
         Debugger.Print($"Fingerprint has been downloaded! server sha={ResourceManager.FINGERPRINT_SHA} server fingerprint version={ResourceManager.FINGERPRINT_VERSION}");
+    }
+
+    private static void LoadResources()
+    {
+        LogicDataTables.Init();
+        List<LogicDataTableResource> resources = LogicResources.CreateDataTableResourcesArray();
+
+        for (int i = 0; i < resources.Count; i++)
+        {
+            string fileName = resources[i].GetFileName();
+            LogicResources.Load(resources, i, new Titam.CSV.CSVNode(File.ReadAllLines(fileName), fileName));
+        }
     }
 }
