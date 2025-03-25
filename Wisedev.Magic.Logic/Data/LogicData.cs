@@ -18,7 +18,7 @@ public class LogicData
     {
         this._row = row;
         this._table = table;
-        this._globalId = GlobalID.CreateGlobalID(table.GetTableIndex() + 1, table.GetItemCount());
+        this._globalId = GlobalID.CreateGlobalID((int)table.GetTableIndex() + 1, table.GetItemCount());
     }
 
     public virtual void CreateReferences()
@@ -49,7 +49,7 @@ public class LogicData
         return this._row.GetName();
     }
 
-    public int GetDataType()
+    public LogicDataType GetDataType()
     {
         return this._table.GetTableIndex();
     }
@@ -73,4 +73,37 @@ public class LogicData
     {
         return this._infoTID;
     }
+
+}
+
+public enum LogicDataType
+{
+    BUILDING = 0,
+    LOCALE,
+    RESOURCE,
+    CHARACTER,
+    ANIMATION,
+    PROJECTILE,
+    BUILDING_CLASS,
+    OBSSTACLE,
+    EFFECT,
+    PARTICLE_EMITTER,
+    EXPERIENCE_LEVEL,
+    TRAP,
+    ALLIANCE_BADGE,
+    GLOBAL,
+    TOWN_HALL_LEVEL,
+    ALLIANCE_PORTAL,
+    NPC,
+    DECO,
+    RESOURCE_PACK,
+    SHIELD,
+    MISSION,
+    BILLING_PACKAGES,
+    ACHIEVEMENT,
+    SPELL = 25,
+    HINT,
+    HERO,
+    LEAGUE,
+    NEWS,
 }

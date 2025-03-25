@@ -7,10 +7,12 @@ namespace Wisedev.Magic.Server.Network.Connection;
 internal class ClientConnectionManager
 {
     private readonly IAccountRepository _accountRepository;
+    private readonly IAllianceRepository _allianceRepository;
 
-    public ClientConnectionManager(IAccountRepository accountRepository)
+    public ClientConnectionManager(IAccountRepository accountRepository, IAllianceRepository allianceRepository)
     {
         this._accountRepository = accountRepository;
+        this._allianceRepository = allianceRepository;
     }
 
     public void OnConnect(Socket client)
@@ -21,7 +23,7 @@ internal class ClientConnectionManager
 
     private async Task RunSessionAsync(Socket client)
     {
-        ClientConnection session = new ClientConnection(client, this._accountRepository);
+        ClientConnection session = new ClientConnection(client, this._accountRepository, this._allianceRepository);
         try
         {
             await session.Receive();

@@ -1,6 +1,7 @@
 ﻿using Wisedev.Magic.Logic.Avatar.Listener;
 using Wisedev.Magic.Logic.Data;
 using Wisedev.Magic.Logic.Home;
+using Wisedev.Magic.Logic.Level;
 using Wisedev.Magic.Logic.Util;
 using Wisedev.Magic.Titam.Logic;
 using Wisedev.Magic.Titan.Debug;
@@ -10,6 +11,8 @@ namespace Wisedev.Magic.Logic.Avatar;
 public class LogicAvatar : LogicBase
 {
     protected LogicAvatarChangeListener? _listener;
+
+    protected LogicLevel _level;
 
     private List<LogicDataSlot> _resourceCount;
     private List<LogicDataSlot> _unitCount;
@@ -23,6 +26,11 @@ public class LogicAvatar : LogicBase
     public void InitBase()
     {
         this._listener = new LogicAvatarChangeListener();
+    }
+
+    public void SetLevel(LogicLevel level)
+    {
+        this._level = level;
     }
 
     public void ClearDataSlotArray(List<LogicDataSlot> logicDataSlots)

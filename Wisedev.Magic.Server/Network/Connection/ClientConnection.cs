@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Wisedev.Magic.Logic.Mode;
 using Wisedev.Magic.Server.Database;
+using Wisedev.Magic.Server.Lgoic.Mode;
 using Wisedev.Magic.Server.Protocol;
 using Wisedev.Magic.Titam.Logic;
 using Wisedev.Magic.Titam.Message;
@@ -9,7 +10,7 @@ using Wisedev.Magic.Titan.Debug;
 
 namespace Wisedev.Magic.Server.Network.Connection;
 
-class ClientConnection
+public class ClientConnection
 {
     private Socket _socket;
     private Messaging _messaging;
@@ -19,13 +20,25 @@ class ClientConnection
 
     private LogicGameMode _logicGameMode = new();
     private LogicLong _currentAccountId;
+    private GameMode _gameMode;
 
-    public ClientConnection(Socket socket, IAccountRepository accountRepository)
+    public ClientConnection(Socket socket, IAccountRepository accountRepository, IAllianceRepository allianceRepository)
     {
         this._socket = socket;
         this._messaging = new Messaging(this);
-        this._messageManager = new MessageManager(this, accountRepository);
+        this._messageManager = new MessageManager(this, accountRepository, allianceRepository);
         this._receiveBuffer = GC.AllocateUninitializedArray<byte>(4096 * 2);
+        this._gameMode = new GameMode();
+    }
+
+    public GameMode GetGameMode()
+    {
+        return _gameMode;
+    }
+
+    public void SetGameMode(GameMode mode)
+    {
+        this._gameMode = mode;
     }
 
     public bool IsConnected()

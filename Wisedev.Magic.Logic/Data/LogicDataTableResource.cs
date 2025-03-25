@@ -4,10 +4,10 @@ public class LogicDataTableResource
 {
     private string _fileName;
 
-    private int _tableIndex;
+    private LogicDataType _tableIndex;
     private int _type;
 
-    public LogicDataTableResource(string fileName, int tableIndex, int type)
+    public LogicDataTableResource(string fileName, LogicDataType tableIndex, int type)
     {
         this._fileName = fileName;
         this._tableIndex = tableIndex;
@@ -26,7 +26,7 @@ public class LogicDataTableResource
         return this._fileName;
     }
 
-    public int GetTableIndex()
+    public LogicDataType GetTableIndex()
     {
         return this._tableIndex;
     }

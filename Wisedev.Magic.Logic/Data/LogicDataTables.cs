@@ -15,15 +15,15 @@ public class LogicDataTables
         LogicDataTables._tables = new LogicDataTable[LogicDataTables.TABLE_COUNT];
     }
 
-    public static void InitDataTable(CSVNode node, int index)
+    public static void InitDataTable(CSVNode node, LogicDataType index)
     {
-        if (LogicDataTables._tables[index] != null)
+        if (LogicDataTables._tables[(int)index] != null)
         {
-            LogicDataTables._tables[index].SetTable(node.GetTable());
+            LogicDataTables._tables[(int)index].SetTable(node.GetTable());
         }
         else
         {
-            LogicDataTables._tables[index] = new LogicDataTable(node.GetTable(), index);
+            LogicDataTables._tables[(int)index] = new LogicDataTable(node.GetTable(), index);
         }
     }
 
@@ -38,7 +38,7 @@ public class LogicDataTables
         }
     }
 
-    public static LogicDataTable GetTable(int tableIndex)
+    public static LogicDataTable GetTable(LogicDataType tableIndex)
     {
         return LogicDataTables._tables[(int)tableIndex];
     }
@@ -55,7 +55,7 @@ public class LogicDataTables
         return null;
     }
 
-    public static LogicData GetDataById(int globalId, int dataType)
+    public static LogicData GetDataById(int globalId, LogicDataType dataType)
     {
         LogicData data = LogicDataTables.GetDataById(globalId);
 
@@ -67,6 +67,11 @@ public class LogicDataTables
 
     public static LogicResourceData GetResourceByName(string name, LogicData? caller)
     {
-        return (LogicResourceData)LogicDataTables._tables[2].GetDataByName(name, caller);
+        return (LogicResourceData)LogicDataTables._tables[(int)LogicDataType.RESOURCE].GetDataByName(name, caller);
+    }
+
+    public static LogicAllianceBadgeData GetBadgeByName(string name, LogicData? caller)
+    {
+        return (LogicAllianceBadgeData)LogicDataTables._tables[(int)LogicDataType.ALLIANCE_BADGE].GetDataByName(name, caller);
     }
 }

@@ -213,7 +213,7 @@ public class LogicClientAvatar : LogicAvatar
         foreach (var item in _resources)
         {
             encoder.WriteInt((int)item);
-            encoder.WriteInt(0);
+            encoder.WriteInt(400000);
         }
 
         encoder.WriteInt(0);

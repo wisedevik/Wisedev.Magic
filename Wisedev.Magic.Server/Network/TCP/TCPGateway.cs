@@ -22,8 +22,10 @@ internal class TCPGateway : IServerGateway
         this._socket = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         this._tokenSource = new();
 
-        var accountRepository = new MongoAccountRepository(new MongoClient("mongodb://localhost:27017"), "MagicDatabase");
-        this._manager = new(accountRepository);
+        var mongoClient = new MongoClient("mongodb://localhost:27017");
+        var accountRepository = new MongoAccountRepository(mongoClient, Config.DatabaseName);
+        var allianceRepository = new MongoAllianceRepository(mongoClient, Config.DatabaseName);
+        this._manager = new(accountRepository, allianceRepository);
     }
 
     public void Start()

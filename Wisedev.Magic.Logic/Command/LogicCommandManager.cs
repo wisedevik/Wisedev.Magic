@@ -20,13 +20,13 @@ public class LogicCommandManager
 
     public LogicCommandManager(LogicLevel level)
     {
-        _level = level;
-        _commands = new List<LogicCommand>();
+        this._level = level;
+        this._commands = new List<LogicCommand>();
     }
 
     static LogicCommandManager()
     {
-        _commandsMap = CreateCommandsMap();
+        LogicCommandManager._commandsMap = CreateCommandsMap();
     }
 
     private static ImmutableDictionary<int, Type> CreateCommandsMap()
@@ -106,8 +106,6 @@ public class LogicCommandManager
             if (command.GetExecuteSubTick() < subTick)
             {
                 Debugger.Error($"Execute command failed! Command should have been executed already. (type={command.GetCommandType()} server_tick={subTick} command_tick={command.GetExecuteSubTick()})");
-                this._commands.RemoveAt(i--);
-                continue;
             }
 
             if (command.GetExecuteSubTick() == subTick)
@@ -116,7 +114,7 @@ public class LogicCommandManager
                 {
                     if (command.Execute(this._level) == 0)
                     {
-                        this._listener.CommandExecuted(command);
+                        //this._listener.CommandExecuted(command);
                     }
 
                     this._commands.RemoveAt(i--);
@@ -131,7 +129,7 @@ public class LogicCommandManager
 
     public static LogicCommand? CreateCommand(int commandType)
     {
-        LogicCommand command = _commandsMap.TryGetValue(commandType, out Type? type) ?
+        LogicCommand? command = _commandsMap.TryGetValue(commandType, out Type? type) ?
             Activator.CreateInstance(type) as LogicCommand : null;
 
         if (command != null)
@@ -140,7 +138,7 @@ public class LogicCommandManager
         return command;
     }
 
-    public static LogicCommand DecodeCommand(ByteStream stream)
+    public static LogicCommand? DecodeCommand(ByteStream stream)
     {
         int commandType = stream.ReadInt();
         LogicCommand? command = LogicCommandManager.CreateCommand(commandType);

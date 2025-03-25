@@ -9,8 +9,11 @@ public class LogicResources
     public static List<LogicDataTableResource> CreateDataTableResourcesArray()
     {
         List<LogicDataTableResource> arrayList = new List<LogicDataTableResource>(LogicDataTables.TABLE_COUNT);
-
-        arrayList.Add(new LogicDataTableResource("logic/traps.csv", 11, 0));
+        arrayList.Add(new LogicDataTableResource("assets/logic/buildings.csv", LogicDataType.BUILDING, 0));
+        arrayList.Add(new LogicDataTableResource("assets/logic/traps.csv", LogicDataType.TRAP, 0));
+        arrayList.Add(new LogicDataTableResource("assets/logic/decos.csv", LogicDataType.DECO, 0));
+        arrayList.Add(new LogicDataTableResource("assets/logic/alliance_badges.csv", LogicDataType.ALLIANCE_BADGE, 0));
+        arrayList.Add(new LogicDataTableResource("assets/logic/leagues.csv", LogicDataType.LEAGUE, 0));
 
         return arrayList;
     }

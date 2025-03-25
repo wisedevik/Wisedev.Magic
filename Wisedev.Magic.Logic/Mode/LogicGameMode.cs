@@ -2,6 +2,7 @@
 using Wisedev.Magic.Logic.Command;
 using Wisedev.Magic.Logic.Home;
 using Wisedev.Magic.Logic.Level;
+using Wisedev.Magic.Logic.Message.Home;
 using Wisedev.Magic.Logic.Time;
 using Wisedev.Magic.Titan.Debug;
 
@@ -14,29 +15,47 @@ public class LogicGameMode
     private LogicCommandManager _commandManager;
     private bool _battleOver;
 
+    private int _shieldTime;
+
     public LogicGameMode()
     {
         this._level = new LogicLevel(this);
         this._commandManager = new LogicCommandManager(this._level);
     }
 
-    public void LoadHomeState(LogicClientHome home, LogicAvatar avatar, int value)
+    public void LoadHomeState(LogicClientHome logicHome, LogicAvatar logicAvatar, int secondsSinceLastSave)
     {
+        if (logicHome != null)
+        {
+            this._state = 1;
 
+            this._level.SetHome(logicHome);
+            this._level.SetHomeOwnerAvatar(logicAvatar);
+            // TODO: this._level.FastForwardTime()
+            // TODO: this._level.LoadingFinished()
+
+            logicAvatar.SetLevel(this._level);
+
+            this._shieldTime = 60 * logicHome.GetShieldDurationSeconds();
+        }
     }
 
     public void UpdateOneSubTick()
     {
         LogicTime logicTime = this._level.GetLogicTime();
 
-        this.SubTick();
+        if (this._state != 2 || !this._battleOver)
+        {
+            this._commandManager.SubTick();
+            this._level.SubTick();
+
+            if (logicTime.IsFullTick())
+            {
+                this._level.Tick();
+            }
+        }
 
         logicTime.IncreaseSubTick();
-
-        if (logicTime.IsFullTick())
-        {
-            this._level.Tick();
-        }
     }
 
     public void SubTick()

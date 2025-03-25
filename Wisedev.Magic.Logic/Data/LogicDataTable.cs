@@ -5,14 +5,14 @@ namespace Wisedev.Magic.Logic.Data;
 
 public class LogicDataTable
 {
-    private int _tableIdx;
+    private LogicDataType _tableIdx;
     private string _tableName;
     private bool _isLoaded;
 
     protected CSVTable _table;
     protected List<LogicData> _items;
 
-    public LogicDataTable(CSVTable table, int tableIdx)
+    public LogicDataTable(CSVTable table, LogicDataType tableIdx)
     {
         this._table = table;
         this._tableIdx = tableIdx;
@@ -42,14 +42,34 @@ public class LogicDataTable
         }
     }
 
+    public LogicData GetItemAt(int index)
+    {
+        return this._items[index];
+    }
+
     public LogicData CreateItem(CSVRow row)
     {
         LogicData item = null;
 
         switch (this._tableIdx)
         {
-            case 11:
+            case LogicDataType.BUILDING:
+                item = new LogicBuildingData(row, this);
+                break;
+            case LogicDataType.RESOURCE:
+                item = new LogicResourceData(row, this);
+                break;
+            case LogicDataType.TRAP:
                 item = new LogicTrapData(row, this);
+                break;
+            case LogicDataType.DECO:
+                item = new LogicDecoData(row, this);
+                break;
+            case LogicDataType.ALLIANCE_BADGE:
+                item = new LogicAllianceBadgeData(row, this);
+                break;
+            case LogicDataType.LEAGUE:
+                item = new LogicLeagueData(row, this);
                 break;
             default:
                 {
@@ -76,7 +96,7 @@ public class LogicDataTable
         this._tableName = name;
     }
 
-    public int GetTableIndex()
+    public LogicDataType GetTableIndex()
     {
         return this._tableIdx;
     }
