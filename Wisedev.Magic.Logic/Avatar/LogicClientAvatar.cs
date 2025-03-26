@@ -1,4 +1,5 @@
 ﻿using Wisedev.Magic.Logic.Data;
+using Wisedev.Magic.Logic.Helper;
 using Wisedev.Magic.Logic.Level;
 using Wisedev.Magic.Titam.DataStream;
 using Wisedev.Magic.Titam.Logic;
@@ -12,9 +13,6 @@ public class LogicClientAvatar : LogicAvatar
     private LogicLong? _allianceId;
     private LogicLong? _leagueInstanceId;
     private LogicLong? _lastLeagueInstanceId;
-
-    private int[] _resources = { 3000001, 3000002, 3000003 };
-    public int[] TutorialSteps = Enumerable.Range(21000000, 13).ToArray();
 
     private string? _name;
     private string? _facebookId;
@@ -31,6 +29,7 @@ public class LogicClientAvatar : LogicAvatar
     private int _defenseLoseCount;
     private bool _nameSetByUser;
     private int _cumulativePurchasedDiamonds;
+    private int _leagueType;
 
     public LogicLong? Id { get { return this._id; } set { this._id = value; } }
     public LogicLong? CurrentHomeId { get { return this._currentHomeId; } set { this._currentHomeId = value; } }
@@ -52,6 +51,7 @@ public class LogicClientAvatar : LogicAvatar
     public int DefenseLoseCount { get { return this._defenseLoseCount; } set { this._defenseLoseCount = value; } }
     public bool NameSetByUser { get { return this._nameSetByUser; } set { this._nameSetByUser = value; } }
     public int CumulativePurchasedDiamonds { get { return this._cumulativePurchasedDiamonds; } set { this._cumulativePurchasedDiamonds = value; } }
+    public int LeagueType { get { return this._leagueType; } set { this._leagueType = value; } }
 
     public static LogicClientAvatar GetDefaultAvatar()
     {
@@ -63,6 +63,13 @@ public class LogicClientAvatar : LogicAvatar
 
         avatar.SetResourceCount(LogicDataTables.GetGoldData(), globalsInstance.GetStartingGold());
         avatar.SetResourceCount(LogicDataTables.GetElexirData(), globalsInstance.GetStartingElexir());
+
+        for (int i = 0; i < 13; i++)
+        {
+            LogicMissionData missionData = (LogicMissionData)LogicDataTables.GetDataById(21000000 + i);
+            if (missionData != null)
+                avatar.SetMissionCompleted(missionData, true);
+        }
 
         return avatar;
     }
@@ -202,11 +209,11 @@ public class LogicClientAvatar : LogicAvatar
             encoder.WriteBoolean(false);
         }
 
-        encoder.WriteInt(0);
-        encoder.WriteInt(0);
-        encoder.WriteInt(0);
-        encoder.WriteInt(0);
-        encoder.WriteInt(0);
+        encoder.WriteInt(this._leagueType);
+        encoder.WriteInt(this._allianceCastleLevel);
+        encoder.WriteInt(this._allianceCastleTotalCapacity);
+        encoder.WriteInt(this._allianceCastleUsedCapacity);
+        encoder.WriteInt(this._townHallLevel);
         encoder.WriteString(this._name);
         encoder.WriteString(this._facebookId);
         encoder.WriteInt(this._expLevel);
@@ -224,33 +231,85 @@ public class LogicClientAvatar : LogicAvatar
         encoder.WriteInt(this._cumulativePurchasedDiamonds);
 
 
-        encoder.WriteInt(0);
+        encoder.WriteInt(this._resourceCap.Count);
+        for (int i = 0; i < this._resourceCap.Count; i++)
+        {
+            this._resourceCap[i].Encode(encoder);
+        }
+
         encoder.WriteInt(this._resourceCount.Count);
         for (int i = 0; i < this._resourceCount.Count; i++)
         {
             this._resourceCount[i].Encode(encoder);
         }
 
-        encoder.WriteInt(0);
-        encoder.WriteInt(0);
-        encoder.WriteInt(0);
-        encoder.WriteInt(0);
-        encoder.WriteInt(0);
-        encoder.WriteInt(0);
-        encoder.WriteInt(0);
-        encoder.WriteInt(0);
-
-        encoder.WriteInt(TutorialSteps.Length);
-        foreach (var item in TutorialSteps)
+        encoder.WriteInt(this._unitCount.Count);
+        for (int i = 0; i < this._unitCount.Count; i++)
         {
-            encoder.WriteInt(item);
+            this._unitCount[i].Encode(encoder);
         }
 
-        encoder.WriteInt(0);
-        encoder.WriteInt(0);
-        encoder.WriteInt(0);
-        encoder.WriteInt(0);
-        encoder.WriteInt(0);
+        encoder.WriteInt(this._spellsCount.Count);
+        for (int i = 0; i < this._spellsCount.Count; i++)
+        {
+            this._spellsCount[i].Encode(encoder);
+        }
+
+        encoder.WriteInt(this._unitUpgrade.Count);
+        for (int i = 0; i < this._unitUpgrade.Count; i++)
+        {
+            this._unitUpgrade[i].Encode(encoder);
+        }
+
+        encoder.WriteInt(this._spellUpgrade.Count);
+        for (int i = 0; i < this._spellUpgrade.Count; i++)
+        {
+            this._spellUpgrade[i].Encode(encoder);
+        }
+
+        encoder.WriteInt(this._heroUpgrade.Count);
+        for (int i = 0; i < this._heroUpgrade.Count; i++)
+        {
+            this._heroUpgrade[i].Encode(encoder);
+        }
+
+        encoder.WriteInt(this._heroHealth.Count);
+        for (int i = 0; i < this._heroHealth.Count; i++)
+        {
+            this._heroHealth[i].Encode(encoder);
+        }
+
+        encoder.WriteInt(this._heroState.Count);
+        for (int i = 0; i < this._heroState.Count; i++)
+        {
+            this._heroState[i].Encode(encoder);
+        }
+
+        encoder.WriteInt(this._allianceUnitCount.Count);
+        for (int i = 0; i < this._allianceUnitCount.Count; i++)
+        {
+            this._allianceUnitCount[i].Encode(encoder);
+        }
+
+        encoder.WriteInt(this._missionCompleted.Count);
+        for (int i = 0; i < this._missionCompleted.Count; i++)
+        {
+            ByteStreamHelper.WriteDataReference(encoder, this._missionCompleted[i]);
+        }
+
+
+        //encoder.WriteInt(TutorialSteps.Length);
+        //foreach (int step in TutorialSteps)
+        //{
+        //    encoder.WriteInt(step);
+        //}
+
+        // TODO:
+        encoder.WriteInt(0); // this._achievementRewardClaimed
+        encoder.WriteInt(0); // this._achievementProgress
+        encoder.WriteInt(0); // this._npcStars;
+        encoder.WriteInt(0); // this._lootedNpcGold
+        encoder.WriteInt(0); // this._lootedNpcElixir
     }
 
     public bool HasEnoughDiamonds(int count, bool callListener, LogicLevel level)

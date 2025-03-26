@@ -10,6 +10,9 @@ public class LogicDataSlot
     private LogicData _data;
     private int _count;
 
+    public LogicData Data { get { return _data; } set { this._data = value; } }
+    public int Count { get { return _count; } set { this._count = value; } }
+
     public LogicDataSlot(LogicData data, int count)
     {
         this._data = data;

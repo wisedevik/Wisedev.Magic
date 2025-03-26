@@ -4,7 +4,7 @@ namespace Wisedev.Magic.Logic.Data;
 
 public class LogicData
 {
-    protected readonly int _globalId;
+    protected int _globalId;
 
     protected string _iconSWF;
     protected string _iconExportName;
@@ -14,11 +14,13 @@ public class LogicData
     protected CSVRow _row;
     protected readonly LogicDataTable _table;
 
+    public int GlobalID { get { return this._globalId; } set { this._globalId = value; } }
+
     public LogicData(CSVRow row, LogicDataTable table)
     {
         this._row = row;
         this._table = table;
-        this._globalId = GlobalID.CreateGlobalID((int)table.GetTableIndex() + 1, table.GetItemCount());
+        this._globalId = Data.GlobalID.CreateGlobalID((int)table.GetTableIndex() + 1, table.GetItemCount());
     }
 
     public virtual void CreateReferences()
@@ -41,7 +43,7 @@ public class LogicData
 
     public int GetInstanceID()
     {
-        return GlobalID.GetInstanceID(this._globalId);
+        return Data.GlobalID.GetInstanceID(this._globalId);
     }
 
     public string GetName()

@@ -15,10 +15,10 @@ public class LogicCombatItemData : LogicData
     private List<int> _trainingCost;
     private List<int> _laboratoryLevel;
     private List<LogicResourceData> _upgradeResource;
-    private List<LogicResourceData> _trainingResource;
-    private List<int> _housingSpace;
-    private List<bool> _disableProduction;
-    private List<int> _unitOfType;
+    private LogicResourceData _trainingResource;
+    private int _housingSpace;
+    private bool _disableProduction;
+    private int _unitOfType;
 
     public LogicCombatItemData(CSVRow row, LogicDataTable table) : base(row, table)
     {
@@ -37,10 +37,6 @@ public class LogicCombatItemData : LogicData
         this._trainingCost = new List<int>(lngstArrSize);
         this._laboratoryLevel = new List<int>(lngstArrSize);
         this._upgradeResource = new List<LogicResourceData>(lngstArrSize);
-        this._trainingResource = new List<LogicResourceData>(lngstArrSize);
-        this._housingSpace = new List<int>(lngstArrSize);
-        this._disableProduction = new List<bool>(lngstArrSize);
-        this._unitOfType = new List<int>(lngstArrSize);
 
         if (lngstArrSize >= 1)
         {
@@ -60,19 +56,21 @@ public class LogicCombatItemData : LogicData
                     Debugger.Error($"UpgradeResource is not defined for {this.GetName()}");
                 }
 
-                this._trainingResource.Add(LogicDataTables.GetResourceByName(this._row.GetClampedValue("TrainingResource", i), null));
-
-                if (this._trainingResource[i] == null && this.GetCombatItemType() != 2)
-                {
-                    Debugger.Error($"TrainingResource is not defined for {this.GetName()}");
-                }
-
-                this._housingSpace.Add(this._row.GetClampedIntegerValue("HousingSpace", i));
-                this._disableProduction.Add(this._row.GetClampedBooleanValue("DisableProduction", i));
-                this._unitOfType.Add(this._row.GetClampedIntegerValue("UnitOfType", i));
+                
 
             }
         }
+
+        this._trainingResource = LogicDataTables.GetResourceByName(this._row.GetClampedValue("TrainingResource", 0), null);
+
+        if (this._trainingResource == null && this.GetCombatItemType() != 2)
+        {
+            Debugger.Error($"TrainingResource is not defined for {this.GetName()}");
+        }
+
+        this._housingSpace = this._row.GetClampedIntegerValue("HousingSpace", 0);
+        this._disableProduction = this._row.GetClampedBooleanValue("DisableProduction", 0);
+        this._unitOfType = this._row.GetClampedIntegerValue("UnitOfType", 0);
     }
 
     public int GetUpgradeLevelCount()
@@ -105,7 +103,7 @@ public class LogicCombatItemData : LogicData
         return this._upgradeCost[idx];
     }
 
-    public List<LogicResourceData> GetTrainingResource()
+    public LogicResourceData GetTrainingResource()
     {
         return this._trainingResource;
     }
@@ -120,12 +118,12 @@ public class LogicCombatItemData : LogicData
         return this._trainingTime[idx];
     }
 
-    public List<int> GetHousingSpace()
+    public int GetHousingSpace()
     {
         return this._housingSpace;
     }
 
-    public List<int> GetUnitOfType()
+    public int GetUnitOfType()
     {
         return this._unitOfType;
     }

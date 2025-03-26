@@ -23,8 +23,21 @@ public class LogicAvatar : LogicBase
     protected List<LogicDataSlot> _heroState;
     protected List<LogicDataSlot> _heroHealth;
     protected List<LogicDataSlot> _unitUpgrade;
-    protected LogicArrayList<LogicDataSlot> _spellUpgrade;
-    protected LogicArrayList<LogicDataSlot> _heroUpgrade;
+    protected List<LogicDataSlot> _spellUpgrade;
+    protected List<LogicDataSlot> _heroUpgrade;
+
+    protected List<LogicUnitSlot> _allianceUnitCount;
+
+    protected int _allianceCastleUsedCapacity;
+    protected int _allianceCastleLevel;
+    protected int _allianceCastleTotalCapacity;
+    protected int _allianceCastleFreeCapacity;
+    protected int _townHallLevel;
+
+    public List<LogicDataSlot> ResourceCount { get { return this._resourceCount; } set { this._resourceCount = value; } }
+    public List<LogicData> MissionCompleted { get { return this._missionCompleted; } set { this._missionCompleted = value; } }
+    public List<LogicDataSlot> UnitCount { get { return this._unitCount; } set { this._unitCount = value; } }
+
 
     public LogicAvatar()
     {
@@ -43,7 +56,9 @@ public class LogicAvatar : LogicBase
         this._heroHealth = new List<LogicDataSlot>();
         this._unitUpgrade = new List<LogicDataSlot>();
         this._spellsCount = new List<LogicDataSlot>();
-        this._heroUpgrade = new LogicArrayList<LogicDataSlot>();
+        this._spellUpgrade = new List<LogicDataSlot>();
+        this._heroUpgrade = new List<LogicDataSlot>();
+        this._allianceUnitCount = new List<LogicUnitSlot>();
     }
 
     public void SetLevel(LogicLevel level)
@@ -521,6 +536,48 @@ public class LogicAvatar : LogicBase
             {
                 this._unitUpgrade.Add(new LogicDataSlot(data, cnt));
             }
+        }
+    }
+
+    public virtual void SetAllianceUnitCount(LogicCharacterData data, int upgLvl, int cnt)
+    {
+        int idx = -1;
+
+        for (int i = 0; i < this._allianceUnitCount.Count; i++)
+        {
+            if (this._allianceUnitCount[i].GetData() == data && this._allianceUnitCount[i].GetLevel() == upgLvl)
+            {
+                idx = i; 
+                break;
+            }
+
+            int housingSpace = data.GetHousingSpace();
+            if (idx != -1)
+            {
+                this._allianceCastleUsedCapacity += (cnt - this._allianceUnitCount[idx].GetCount() * housingSpace);
+                this._allianceUnitCount[idx].SetCount(cnt);
+            }
+            else
+            {
+                this._allianceUnitCount.Add(new LogicUnitSlot(data, upgLvl, cnt));
+                this._allianceCastleUsedCapacity += cnt * housingSpace;
+            }
+        }
+    }
+
+    public virtual int GetAllianceCastleUsedCapacity()
+    {
+        return this._allianceCastleUsedCapacity;
+    }
+
+    public virtual void SetAllianceCastleLevel(int lvl)
+    {
+        this._allianceCastleLevel = lvl;
+        if (lvl == -1)
+            this._allianceCastleLevel = 0;
+        else
+        {
+
         }
     }
 }

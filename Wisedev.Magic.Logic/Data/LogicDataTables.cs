@@ -79,6 +79,11 @@ public class LogicDataTables
         return data;
     }
 
+    public static LogicData GetDataByName(string name, LogicDataType dataType, LogicData? caller)
+    {
+        return LogicDataTables._tables[(int)dataType].GetDataByName(name, caller);
+    }
+
     public static LogicResourceData GetResourceByName(string name, LogicData? caller)
     {
         return (LogicResourceData)LogicDataTables._tables[(int)LogicDataType.RESOURCE].GetDataByName(name, caller);
