@@ -9,6 +9,9 @@ public class LogicDataTables
     public const int TABLE_COUNT = 52;
 
     private static LogicDataTable[] _tables;
+    
+    private static LogicResourceData _goldData;
+    private static LogicResourceData _elixirData;
 
     public static void Init()
     {
@@ -23,7 +26,15 @@ public class LogicDataTables
         }
         else
         {
-            LogicDataTables._tables[(int)index] = new LogicDataTable(node.GetTable(), index);
+            switch (index)
+            {
+                case LogicDataType.GLOBAL:
+                    LogicDataTables._tables[(int)index] = new LogicGlobals(node.GetTable(), index);
+                    break;
+                default:
+                    LogicDataTables._tables[(int)index] = new LogicDataTable(node.GetTable(), index);
+                    break;
+            }
         }
     }
 
@@ -36,6 +47,9 @@ public class LogicDataTables
                 LogicDataTables._tables[i].CreateReferences();
             }
         }
+
+        LogicDataTables._goldData = LogicDataTables.GetResourceByName("Gold", null);
+        LogicDataTables._elixirData = LogicDataTables.GetResourceByName("Elixir", null);
     }
 
     public static LogicDataTable GetTable(LogicDataType tableIndex)
@@ -73,5 +87,20 @@ public class LogicDataTables
     public static LogicAllianceBadgeData GetBadgeByName(string name, LogicData? caller)
     {
         return (LogicAllianceBadgeData)LogicDataTables._tables[(int)LogicDataType.ALLIANCE_BADGE].GetDataByName(name, caller);
+    }
+
+    public static LogicGlobals GetGlobals()
+    {
+        return (LogicGlobals)LogicDataTables._tables[(int)LogicDataType.GLOBAL];
+    }
+
+    public static LogicResourceData GetGoldData()
+    {
+        return LogicDataTables._goldData;
+    }
+
+    public static LogicResourceData GetElexirData()
+    {
+        return LogicDataTables._elixirData;
     }
 }

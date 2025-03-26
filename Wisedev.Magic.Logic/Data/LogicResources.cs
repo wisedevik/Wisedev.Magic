@@ -10,9 +10,15 @@ public class LogicResources
     {
         List<LogicDataTableResource> arrayList = new List<LogicDataTableResource>(LogicDataTables.TABLE_COUNT);
         arrayList.Add(new LogicDataTableResource("assets/logic/buildings.csv", LogicDataType.BUILDING, 0));
+        arrayList.Add(new LogicDataTableResource("assets/logic/resources.csv", LogicDataType.RESOURCE, 0));
+        arrayList.Add(new LogicDataTableResource("assets/logic/characters.csv", LogicDataType.CHARACTER, 0));
         arrayList.Add(new LogicDataTableResource("assets/logic/traps.csv", LogicDataType.TRAP, 0));
-        arrayList.Add(new LogicDataTableResource("assets/logic/decos.csv", LogicDataType.DECO, 0));
         arrayList.Add(new LogicDataTableResource("assets/logic/alliance_badges.csv", LogicDataType.ALLIANCE_BADGE, 0));
+        arrayList.Add(new LogicDataTableResource("assets/logic/globals.csv", LogicDataType.GLOBAL, 0));
+        arrayList.Add(new LogicDataTableResource("assets/logic/decos.csv", LogicDataType.DECO, 0));
+        arrayList.Add(new LogicDataTableResource("assets/logic/shields.csv", LogicDataType.SHIELD, 0));
+        arrayList.Add(new LogicDataTableResource("assets/logic/missions.csv", LogicDataType.MISSION, 0));
+        arrayList.Add(new LogicDataTableResource("assets/logic/heroes.csv", LogicDataType.HERO, 0));
         arrayList.Add(new LogicDataTableResource("assets/logic/leagues.csv", LogicDataType.LEAGUE, 0));
 
         return arrayList;

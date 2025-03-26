@@ -1,4 +1,6 @@
-﻿using Wisedev.Magic.Titam.DataStream;
+﻿using Wisedev.Magic.Logic.Data;
+using Wisedev.Magic.Logic.Level;
+using Wisedev.Magic.Titam.DataStream;
 using Wisedev.Magic.Titam.Logic;
 
 namespace Wisedev.Magic.Logic.Avatar;
@@ -50,6 +52,20 @@ public class LogicClientAvatar : LogicAvatar
     public int DefenseLoseCount { get { return this._defenseLoseCount; } set { this._defenseLoseCount = value; } }
     public bool NameSetByUser { get { return this._nameSetByUser; } set { this._nameSetByUser = value; } }
     public int CumulativePurchasedDiamonds { get { return this._cumulativePurchasedDiamonds; } set { this._cumulativePurchasedDiamonds = value; } }
+
+    public static LogicClientAvatar GetDefaultAvatar()
+    {
+        LogicClientAvatar avatar = new LogicClientAvatar();
+        LogicGlobals globalsInstance = LogicDataTables.GetGlobals();
+
+        avatar._diamonds = globalsInstance.GetStartingDiamonds();
+        avatar._freeDiamonds = globalsInstance.GetStartingDiamonds();
+
+        avatar.SetResourceCount(LogicDataTables.GetGoldData(), globalsInstance.GetStartingGold());
+        avatar.SetResourceCount(LogicDataTables.GetElexirData(), globalsInstance.GetStartingElexir());
+
+        return avatar;
+    }
 
     public void SetId(LogicLong id)
     {
@@ -209,11 +225,10 @@ public class LogicClientAvatar : LogicAvatar
 
 
         encoder.WriteInt(0);
-        encoder.WriteInt(_resources.Length);
-        foreach (var item in _resources)
+        encoder.WriteInt(this._resourceCount.Count);
+        for (int i = 0; i < this._resourceCount.Count; i++)
         {
-            encoder.WriteInt((int)item);
-            encoder.WriteInt(400000);
+            this._resourceCount[i].Encode(encoder);
         }
 
         encoder.WriteInt(0);
@@ -236,5 +251,17 @@ public class LogicClientAvatar : LogicAvatar
         encoder.WriteInt(0);
         encoder.WriteInt(0);
         encoder.WriteInt(0);
+    }
+
+    public bool HasEnoughDiamonds(int count, bool callListener, LogicLevel level)
+    {
+        bool enough = this._diamonds >= count;
+
+        if (!enough && callListener)
+        {
+            // TODO: level.GetGameListener().NotEnoughDiamonds();
+        }
+
+        return enough;
     }
 }

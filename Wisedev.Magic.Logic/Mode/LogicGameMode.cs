@@ -15,7 +15,7 @@ public class LogicGameMode
     private LogicCommandManager _commandManager;
     private bool _battleOver;
 
-    private int _shieldTime;
+    private int _shieldRemainingSeconds;
 
     public LogicGameMode()
     {
@@ -36,7 +36,7 @@ public class LogicGameMode
 
             logicAvatar.SetLevel(this._level);
 
-            this._shieldTime = 60 * logicHome.GetShieldDurationSeconds();
+            this._shieldRemainingSeconds = 60 * logicHome.GetShieldDurationSeconds();
         }
     }
 
@@ -76,5 +76,15 @@ public class LogicGameMode
     public LogicCommandManager GetCommandManager()
     {
         return this._commandManager;
+    }
+
+    public void SetShieldRemainingSeconds(int s)
+    {
+        this._shieldRemainingSeconds = s;
+    }
+
+    public int GetShieldRemainingSeconds()
+    {
+        return this._shieldRemainingSeconds;
     }
 }

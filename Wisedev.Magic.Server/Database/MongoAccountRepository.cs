@@ -45,7 +45,7 @@ class MongoAccountRepository : IAccountRepository
             Id = await GenerateNewLogicLongId(),
             PassToken = GenerateSecureToken(32),
             Home = new LogicClientHome(),
-            ClientAvatar = new LogicClientAvatar(),
+            ClientAvatar = LogicClientAvatar.GetDefaultAvatar(),
             LastLoginAt = DateTime.UtcNow,
             SessionCount = 1,
         };

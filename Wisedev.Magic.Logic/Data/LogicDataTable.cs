@@ -59,14 +59,29 @@ public class LogicDataTable
             case LogicDataType.RESOURCE:
                 item = new LogicResourceData(row, this);
                 break;
+            case LogicDataType.CHARACTER:
+                item = new LogicCharacterData(row, this);
+                break;
             case LogicDataType.TRAP:
                 item = new LogicTrapData(row, this);
+                break;
+            case LogicDataType.ALLIANCE_BADGE:
+                item = new LogicAllianceBadgeData(row, this);
+                break;
+            case LogicDataType.GLOBAL:
+                item = new LogicGlobalData(row, this);
                 break;
             case LogicDataType.DECO:
                 item = new LogicDecoData(row, this);
                 break;
-            case LogicDataType.ALLIANCE_BADGE:
-                item = new LogicAllianceBadgeData(row, this);
+            case LogicDataType.SHIELD:
+                item = new LogicShieldData(row, this);
+                break;
+            case LogicDataType.MISSION:
+                item = new LogicMissionData(row, this);
+                break;
+            case LogicDataType.HERO:
+                item = new LogicHeroData(row, this);
                 break;
             case LogicDataType.LEAGUE:
                 item = new LogicLeagueData(row, this);

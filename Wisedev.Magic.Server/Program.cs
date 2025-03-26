@@ -1,4 +1,5 @@
-﻿using Wisedev.Magic.Server.Debugging;
+﻿using Wisedev.Magic.Logic.Data;
+using Wisedev.Magic.Server.Debugging;
 using Wisedev.Magic.Server.Network.TCP;
 using Wisedev.Magic.Server.Resources;
 using Wisedev.Magic.Titan.Debug;

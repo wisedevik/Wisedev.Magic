@@ -5,7 +5,7 @@ namespace Wisedev.Magic.Logic.Data;
 
 public class LogicCombatItemData : LogicData
 {
-    private int _upgradeLevelCount;
+    protected int _upgradeLevelCount;
 
     private List<string>_iconExportName;
     private List<string> _bigPicture;
@@ -73,6 +73,11 @@ public class LogicCombatItemData : LogicData
 
             }
         }
+    }
+
+    public int GetUpgradeLevelCount()
+    {
+        return this._upgradeLevelCount;
     }
 
     public string GetBigPictureExportName(int idx)
