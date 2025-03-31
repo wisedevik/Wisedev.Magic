@@ -6,16 +6,16 @@ namespace Wisedev.Magic.Titam.JSON;
 
 public class LogicJSONArray : LogicJSONNode
 {
-    private readonly LogicArrayList<LogicJSONNode> m_items;
+    private readonly List<LogicJSONNode> m_items;
 
     public LogicJSONArray()
     {
-        m_items = new LogicArrayList<LogicJSONNode>(20);
+        m_items = new List<LogicJSONNode>(20);
     }
 
     public LogicJSONArray(int capacity)
     {
-        m_items = new LogicArrayList<LogicJSONNode>(capacity);
+        m_items = new List<LogicJSONNode>(capacity);
     }
 
     public LogicJSONNode Get(int idx)

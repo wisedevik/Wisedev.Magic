@@ -1,9 +1,12 @@
 ﻿using MongoDB.Driver;
 using System.Threading.Tasks;
 using Wisedev.Magic.Logic;
+using Wisedev.Magic.Logic.Avatar;
 using Wisedev.Magic.Logic.Command;
+using Wisedev.Magic.Logic.Command.Debug;
 using Wisedev.Magic.Logic.Data;
 using Wisedev.Magic.Logic.Entries;
+using Wisedev.Magic.Logic.Level;
 using Wisedev.Magic.Logic.Message.Alliance;
 using Wisedev.Magic.Logic.Message.Auth;
 using Wisedev.Magic.Logic.Message.Home;
@@ -44,11 +47,17 @@ class MessageManager
             case 10101:
                 await this.OnLoginMessageReceived((LoginMessage)message);
                 break;
+            case GoHomeMessage.MESSAGE_TYPE:
+                await this.OnGoHomeMessageReceived((GoHomeMessage)message);
+                break;
             case 14102:
                 await this.OnEndClientTurnReceived((EndClientTurnMessage)message);
                 break;
             case CreateAllianceMessage.MESSAGE_TYPE:
                 await OnCreateAllianceMessageReceived((CreateAllianceMessage)message);
+                break;
+            case AttackNpcMessage.MESSAGE_TYPE:
+                await this.OnAttackMessageReceived((AttackNpcMessage)message);
                 break;
             case 14325:
                 await this.OnAskForAvatarProfileMessage((AskForAvatarProfileMessage)message);
@@ -124,6 +133,9 @@ class MessageManager
 
         await _connection.SendMessage(loginOkMessage);
 
+        account.ClientAvatar.SetUnitCount((LogicCharacterData)LogicDataTables.GetTable(LogicDataType.CHARACTER).GetItemAt(0), 5);
+
+        this._connection.SetAccountDocument(account);
         this._connection.SetGameMode(await GameMode.LoadHomeState(this._connection, account.Home, account.ClientAvatar));
     }
 
@@ -183,51 +195,43 @@ class MessageManager
             gameMode.OnClientTurnReceived(message.GetSubTick(), message.GetChecksum(), message.GetCommands());
     }
 
+    private async Task OnGoHomeMessageReceived(GoHomeMessage message)
+    {
+        this._connection.SetGameMode(await GameMode.LoadHomeState(this._connection, this._connection.GetAccountDocument().Home, 
+            this._connection.GetAccountDocument().ClientAvatar));
+    }
+
+    private async Task OnAttackMessageReceived(AttackNpcMessage attackNpcMessage)
+    {
+        Debugger.Print($"Received AttackNpcMessage: targetNpcId={attackNpcMessage.GetNpcData().GetGlobalID()}");
+
+        LogicLevel level = this._connection.GetGameMode().GetLogicGameMode().GetLevel();
+        LogicNpcAvatar npcAvatar = new LogicNpcAvatar();
+        npcAvatar.SetNpcData(attackNpcMessage.GetNpcData());
+
+
+        GameMode? gameMode = await GameMode.LoadNpcAttackState(_connection,
+            level.GetHome(), level.GetPlayerAvatar(), npcAvatar);
+
+        if (gameMode != null)
+        {
+            _connection.SetGameMode(gameMode);
+
+            Debugger.Print("MessageManager.OnAttackMessageReceived: NPC attack state loaded successfully.");
+        }
+        else
+        {
+            Debugger.Print("Failed to load NPC attack state.");
+        }
+    }
+
     private async Task OnCreateAllianceMessageReceived(CreateAllianceMessage createAllianceMessage)
     {
+        AvailableServerCommandMessage message = new AvailableServerCommandMessage();
+        message.SetServerCommand(new LogicDebugCommand(3));
+        await _connection.SendMessage(message);
+
         Debugger.Print($"Tryna create alliance: name={createAllianceMessage.GetAllianceName()}, badge_id={createAllianceMessage.GetAllianceBadgeData().GetGlobalID()}, type={createAllianceMessage.GetAllianceType()}, required_score={createAllianceMessage.GetRequiredScore()} desc={createAllianceMessage.GetAllianceDescription()}");
-
-        Alliance? alliance = null;
-
-        alliance = await this._allianceRepository.CreateAsync(createAllianceMessage.GetAllianceName(), createAllianceMessage.GetAllianceDescription());
-
-        AllianceHeaderEntry allianceHeader = new AllianceHeaderEntry();
-        allianceHeader.SetAllianceId(1);
-        allianceHeader.SetAllianceName(createAllianceMessage.GetAllianceName());
-        allianceHeader.SetAllianceBadgeData(createAllianceMessage.GetAllianceBadgeData());
-        allianceHeader.SetAllianceType(createAllianceMessage.GetAllianceType());
-        allianceHeader.SetNumberOfMembers(1);
-        allianceHeader.SetScore(1);
-        allianceHeader.SetRequiredScore(createAllianceMessage.GetRequiredScore());
-
-        List<AllianceMemberEntry> allianceMembers = new List<AllianceMemberEntry>(1)
-        {
-            new()
-        };
-
-        allianceMembers[0].SetAvatarId(1);
-        allianceMembers[0].SetFacebookId(string.Empty);
-        allianceMembers[0].SetName("test_0");
-        allianceMembers[0].SetRole(1);
-        allianceMembers[0].SetExpLevel(1);
-        allianceMembers[0].SetLeagueType((LogicLeagueData)LogicDataTables.GetTable(LogicDataType.LEAGUE).GetItemAt(1));
-        allianceMembers[0].SetScore(1);
-        allianceMembers[0].SetDonations(1);
-        allianceMembers[0].SetDonationsReceived(1);
-        allianceMembers[0].SetOrder(2);
-        allianceMembers[0].SetPreviousOrder(1);
-        allianceMembers[0].SetNewMember(false);
-        allianceMembers[0].SetHomeId(1);
-
-        AllianceFullEntry allianceFullEntry = new AllianceFullEntry();
-        allianceFullEntry.SetAllianceHeaderEntry(allianceHeader);
-        allianceFullEntry.SetAllianceMembers(allianceMembers);
-        allianceFullEntry.SetAllianceDescription(createAllianceMessage.GetAllianceDescription());
-
-        AllianceDataMessage allianceDataMessage = new AllianceDataMessage();
-        allianceDataMessage.SetAllianceFullEntry(allianceFullEntry);
-
-        await _connection.SendMessage(allianceDataMessage);
 
     }
 }

@@ -3,6 +3,7 @@ using Wisedev.Magic.Logic.Data;
 using Wisedev.Magic.Logic.Home;
 using Wisedev.Magic.Logic.Level;
 using Wisedev.Magic.Logic.Util;
+using Wisedev.Magic.Titam.JSON;
 using Wisedev.Magic.Titam.Logic;
 using Wisedev.Magic.Titam.Utils;
 using Wisedev.Magic.Titan.Debug;
@@ -61,9 +62,19 @@ public class LogicAvatar : LogicBase
         this._allianceUnitCount = new List<LogicUnitSlot>();
     }
 
+    public LogicAvatarChangeListener GetChangeListener()
+    {
+        return this._listener;
+    }
+
     public void SetLevel(LogicLevel level)
     {
         this._level = level;
+    }
+
+    public void SaveToReplay(LogicJSONObject logicJSONObject)
+    {
+        ;
     }
 
     public void ClearDataSlotArray(List<LogicDataSlot> logicDataSlots)
@@ -104,6 +115,16 @@ public class LogicAvatar : LogicBase
     public virtual int GetExpLevel()
     {
         return 1;
+    }
+
+    public virtual bool IsNpcAvatar()
+    {
+        return false;
+    }
+
+    public virtual bool IsClientAvatar()
+    {
+        return false;
     }
 
     public void SetResourceCount(LogicResourceData resourceData, int cnt)

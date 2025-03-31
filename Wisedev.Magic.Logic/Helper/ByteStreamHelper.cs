@@ -16,11 +16,11 @@ public static class ByteStreamHelper
         return LogicDataTables.GetDataById(id);
     }
 
-    public static LogicData? ReadDataReference(ByteStream stream, int idx)
+    public static LogicData? ReadDataReference(ByteStream stream, LogicDataType idx)
     {
         int id = stream.ReadInt();
         int classID = GlobalID.GetClassID(id);
-        if (classID == idx + 1)
+        if (classID == (int)idx + 1)
             return LogicDataTables.GetDataById(id);
         return null;
     }

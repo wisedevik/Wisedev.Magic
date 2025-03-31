@@ -2,7 +2,16 @@
 
 public class LogicComponent
 {
+    public const int COMPONENT_TYPE_COUNT = 11; // idk 'bout that
+
+    protected bool _enabled;
+
     public virtual void SubTick()
+    {
+        ;
+    }
+
+    public virtual void Tick()
     {
         ;
     }
@@ -22,5 +31,18 @@ public class LogicComponent
         ;
     }
 
+    public virtual void Destruct()
+    {
+        ;
+    }
 
+    public virtual int GetComponentType()
+    {
+        return 0;
+    }
+
+    public virtual bool IsEnabled()
+    {
+        return this._enabled;
+    }
 }

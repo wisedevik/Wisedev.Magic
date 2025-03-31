@@ -40,6 +40,26 @@ public class LogicRect
         return this._endY;
     }
 
+    public void SetStartX(int sX)
+    {
+        this._startX = sX;
+    }
+
+    public void SetStartY(int sY)
+    {
+        this._startY = sY;
+    }
+
+    public void SetEndX(int eX)
+    {
+        this._endX = eX;
+    }
+
+    public void SetEndY(int eY)
+    {
+        this._endY = eY;
+    }
+
     public bool IsInside(int x, int y)
     {
         return this._startX <= x && this._startY <= y && this._endX >= x && this._endY >= y;

@@ -5,6 +5,7 @@ using Wisedev.Magic.Logic.Command.Listener;
 using Wisedev.Magic.Logic.Level;
 using Wisedev.Magic.Logic.Message;
 using Wisedev.Magic.Titam.DataStream;
+using Wisedev.Magic.Titam.JSON;
 using Wisedev.Magic.Titam.Message;
 using Wisedev.Magic.Titan.Debug;
 
@@ -138,6 +139,12 @@ public class LogicCommandManager
         return command;
     }
 
+    public static void EncodeCommand(ChecksumEncoder encoder, LogicCommand command)
+    {
+        encoder.WriteInt(command.GetCommandType());
+        command.Encode(encoder);
+    }
+
     public static LogicCommand? DecodeCommand(ByteStream stream)
     {
         int commandType = stream.ReadInt();
@@ -154,4 +161,10 @@ public class LogicCommandManager
 
         return command;
     }
+
+    public static void SaveCommandToJSON(LogicJSONObject jsonObject, LogicCommand command)
+    {
+        jsonObject.Put("ct", new LogicJSONNumber(command.GetCommandType()));
+        jsonObject.Put("c", command.GetJSONForReplay());
+    } 
 }

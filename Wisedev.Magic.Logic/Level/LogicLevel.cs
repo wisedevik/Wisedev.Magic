@@ -1,15 +1,25 @@
 ﻿using Wisedev.Magic.Logic.Avatar;
+using Wisedev.Magic.Logic.Avatar.Listener;
+using Wisedev.Magic.Logic.Battle;
+using Wisedev.Magic.Logic.Coldown;
 using Wisedev.Magic.Logic.Data;
+using Wisedev.Magic.Logic.GameObject;
+using Wisedev.Magic.Logic.GameObject.Component;
 using Wisedev.Magic.Logic.Home;
 using Wisedev.Magic.Logic.Mode;
 using Wisedev.Magic.Logic.Time;
+using Wisedev.Magic.Titam.JSON;
+using Wisedev.Magic.Titam.Logic;
 using Wisedev.Magic.Titam.Utils;
+using Wisedev.Magic.Titan.Debug;
 
 namespace Wisedev.Magic.Logic.Level;
 
 public class LogicLevel
 {
     private LogicGameListener _gameListener;
+
+    private bool _battleStarted;
 
     private LogicGameMode _gameMode;
     private LogicTime _logicTime;
@@ -20,19 +30,41 @@ public class LogicLevel
     private LogicAvatar _homeOwnerAvatar;
 
     private LogicClientHome _home;
+    private LogicBattleLog _battleLog;
 
     private LogicArrayList<int> _newShopBuildings;
     private LogicArrayList<int> _newShopTraps;
     private LogicArrayList<int> _newShopDecos;
 
+    private LogicTileMap _tileMap;
+    private LogicGameObjectManager _gameObjectManager;
+    private LogicCooldownManager _cooldownManager;
+    private int _matchType;
+    private LogicLong _revengeId;
+    private bool _npcVillage;
+    private int _waveNumber;
+    private bool _androidClient;
+    private int _lastLeagueRank;
+    private int _lastLeagueShuffle;
+    private bool _editModeShown;
+    private string _troopReqMsg;
+
+
     public LogicLevel(LogicGameMode gameMode)
     {
-        _gameMode = gameMode;
+        this._gameMode = gameMode;
         this._logicTime = new LogicTime();
+        this._tileMap = new LogicTileMap(44, 44);
+        this._gameObjectManager = new LogicGameObjectManager(this);
+        this._battleLog = new LogicBattleLog(this);
+        this._cooldownManager = new LogicCooldownManager();
 
         this._newShopBuildings = new LogicArrayList<int>();
         this._newShopTraps = new LogicArrayList<int>();
         this._newShopDecos = new LogicArrayList<int>();
+
+        this._troopReqMsg = string.Empty;
+        this._lastSeenNews = -1;
 
         LogicDataTable buildingData = LogicDataTables.GetTable(LogicDataType.BUILDING);
         LogicDataTable trapData = LogicDataTables.GetTable(LogicDataType.TRAP);
@@ -58,6 +90,26 @@ public class LogicLevel
         this._home = home;
     }
 
+    public LogicClientHome GetHome()
+    {
+        return this._home;
+    }
+
+    public LogicAvatar GetVisitorAvatar()
+    {
+        return this._visitorAvatar;
+    }
+
+    public LogicAvatar GetHomeOwnerAvatar()
+    {
+        return this._homeOwnerAvatar;
+    }
+
+    public void SetVisitorAvatar(LogicAvatar avatar)
+    {
+        this._visitorAvatar = avatar;
+    }
+
     public void SetHomeOwnerAvatar(LogicAvatar avatar)
     {
         this._homeOwnerAvatar = avatar;
@@ -67,12 +119,60 @@ public class LogicLevel
 
     public void Tick()
     {
+        int state = this.GetState();
+        if (state == 2 && !this._battleStarted && this._battleLog.GetBattleStarted())
+        {
+            this.BattleStarted();
+        }
 
+        this._gameObjectManager.Tick();
+        this._cooldownManager.Tick();
+        /*TODO:
+        LogicMissionManager::tick
+        LogicAchievementManager::tick
+        LogicNpcAttack::tick if != null
+         */
     }
 
     public void SubTick()
     {
 
+    }
+
+    public void BattleStarted()
+    {
+        Debugger.Print("LogicLevel - battleStarted");
+        this._battleStarted = true;
+        if (this._matchType == 4 && !LogicDataTables.GetGlobals().RemoveRevengeWhenBattleIsLoaded())
+        {
+            LogicAvatar avatar = null;
+            if (this._gameMode.GetState() == 1 || this._gameMode.GetState() == 3)
+                avatar = this._homeOwnerAvatar;
+            else
+                avatar = this._visitorAvatar;
+
+            LogicAvatarChangeListener changeListener = avatar.GetChangeListener();
+            changeListener.RevengeUsed(this._revengeId);
+            
+            if (this._revengeId != 0)
+            {
+                Debugger.Print($"Revenge used {this._revengeId.GetHigherInt()}, {this._revengeId.GetHigherInt()}");
+            }
+        }
+    }
+
+    public void SetMatchType(int t, LogicLong id)
+    {
+        this._matchType = t;
+        this._revengeId = id;
+
+        if (t == 2)
+            this._npcVillage = true;
+    }
+
+    public void SetNpcVillage(bool npcVillage)
+    {
+        this._npcVillage= npcVillage;
     }
 
     public void SetLastSeenNews(int lastSeenNews)
@@ -116,5 +216,52 @@ public class LogicLevel
         }
 
         return true;
+    }
+
+    public LogicTileMap GetTileMap()
+    {
+        return this._tileMap;
+    }
+
+    public LogicComponentManager GetComponentManager()
+    {
+        return this._gameObjectManager.GetComponentManager();
+    }
+
+    public bool IsInCombatState()
+    {
+        int state = this.GetState();
+        return state == 2 || state == 3 || state == 5;
+    }
+
+    public void SaveToJSON(LogicJSONObject logicJSONObject)
+    {
+        if (this._waveNumber >= 1)
+            logicJSONObject.Put("wave_num", new LogicJSONNumber(this._waveNumber));
+
+        if (this._androidClient)
+            logicJSONObject.Put("android_client", new LogicJSONBoolean(this._androidClient));
+
+        this._gameObjectManager.Save(logicJSONObject);
+        //TODO: LogicCooldownManager::save
+
+        this.SaveShopNewItems(logicJSONObject);
+
+        logicJSONObject.Put("last_league_rank", new LogicJSONNumber(this._lastLeagueRank));
+        logicJSONObject.Put("last_league_shuffle", new LogicJSONNumber(this._lastLeagueShuffle));
+        logicJSONObject.Put("last_news_seen", new LogicJSONNumber(this._lastSeenNews));
+        logicJSONObject.Put("edit_mode_shown", new LogicJSONBoolean(this._editModeShown));
+
+        if (this._troopReqMsg.Length >= 1)
+            logicJSONObject.Put("troop_req_msg", new LogicJSONString(this._troopReqMsg));
+    }
+
+    private void SaveShopNewItems(LogicJSONObject jsonObject)
+    {
+        LogicDataTable buildingTable = LogicDataTables.GetTable(LogicDataType.BUILDING);
+        LogicDataTable trapTable = LogicDataTables.GetTable(LogicDataType.TRAP);
+        LogicDataTable decoTable = LogicDataTables.GetTable(LogicDataType.DECO);
+
+        //TODO
     }
 }

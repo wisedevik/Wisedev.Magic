@@ -71,6 +71,9 @@ public class LogicDataTable
             case LogicDataType.GLOBAL:
                 item = new LogicGlobalData(row, this);
                 break;
+            case LogicDataType.NPC:
+                item = new LogicNpcData(row, this);
+                break;
             case LogicDataType.DECO:
                 item = new LogicDecoData(row, this);
                 break;

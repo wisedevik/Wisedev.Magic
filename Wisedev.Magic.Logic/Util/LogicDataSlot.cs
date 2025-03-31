@@ -25,6 +25,11 @@ public class LogicDataSlot
         this._count = 0;
     }
 
+    public LogicDataSlot Clone()
+    {
+        return new LogicDataSlot(this._data, this._count);
+    }
+
     public void Encode(ChecksumEncoder encoder)
     {
         ByteStreamHelper.WriteDataReference(encoder, this._data);

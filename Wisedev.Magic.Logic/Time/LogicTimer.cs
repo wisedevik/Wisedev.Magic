@@ -15,4 +15,9 @@ public class LogicTimer
 
         return 0;
     }
+
+    public void Destruct()
+    {
+        ;
+    }
 }

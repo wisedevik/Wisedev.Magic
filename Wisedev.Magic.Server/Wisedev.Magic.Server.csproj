@@ -32,6 +32,9 @@
     <None Update="assets\logic\missions.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="assets\logic\npcs.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="assets\logic\resources.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

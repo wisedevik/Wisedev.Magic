@@ -1,5 +1,7 @@
 ﻿using Wisedev.Magic.Logic.Avatar;
+using Wisedev.Magic.Logic.Battle;
 using Wisedev.Magic.Logic.Command;
+using Wisedev.Magic.Logic.Data;
 using Wisedev.Magic.Logic.Home;
 using Wisedev.Magic.Logic.Level;
 using Wisedev.Magic.Logic.Message.Home;
@@ -14,6 +16,8 @@ public class LogicGameMode
     private LogicLevel _level;
     private LogicCommandManager _commandManager;
     private bool _battleOver;
+    private LogicTimer _battleTimer;
+    private LogicReplay _replay;
 
     private int _shieldRemainingSeconds;
 
@@ -37,6 +41,45 @@ public class LogicGameMode
             logicAvatar.SetLevel(this._level);
 
             this._shieldRemainingSeconds = 60 * logicHome.GetShieldDurationSeconds();
+
+            logicAvatar.SetLevel(this._level);
+        }
+    }
+
+    public void LoadNpcAttackState(LogicClientHome home, LogicAvatar homeOwnerAvatar, LogicAvatar visitorAvatar, int secondsSinceLastSave)
+    {
+        if (this._state == 1)
+        {
+            Debugger.Error("LoadAttackState called from invalid state");
+        }
+        else
+        {
+            this._state = 2;
+            if (this._battleTimer != null)
+            {
+                this._battleTimer.Destruct();
+                this._battleTimer = null;
+            }
+
+            if (homeOwnerAvatar.IsNpcAvatar())
+            {
+                LogicNpcAvatar npcAvatar = (LogicNpcAvatar)homeOwnerAvatar;
+                LogicNpcData npcData = npcAvatar.GetNpcData();
+
+                // TODO: setResource logic
+
+                this._level.SetMatchType(2, 0);
+                this._level.SetHome(null);
+                this._level.SetHomeOwnerAvatar(homeOwnerAvatar);
+                this._level.SetVisitorAvatar(visitorAvatar);
+                //TODO: LogicLevel::fastForwardTime
+                //TODO: LogicLevel::loadingFinished
+            }
+            else
+            {
+                Debugger.Error("loadNpcAttackState called and home owner is not npc avatar");
+            }
+
         }
     }
 
@@ -86,5 +129,11 @@ public class LogicGameMode
     public int GetShieldRemainingSeconds()
     {
         return this._shieldRemainingSeconds;
+    }
+
+    public enum GameModeState
+    {
+        Home = 1,
+        AttackNpc = 2,
     }
 }

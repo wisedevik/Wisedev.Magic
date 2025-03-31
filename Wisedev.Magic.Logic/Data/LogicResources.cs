@@ -15,6 +15,7 @@ public class LogicResources
         arrayList.Add(new LogicDataTableResource("assets/logic/traps.csv", LogicDataType.TRAP, 0));
         arrayList.Add(new LogicDataTableResource("assets/logic/alliance_badges.csv", LogicDataType.ALLIANCE_BADGE, 0));
         arrayList.Add(new LogicDataTableResource("assets/logic/globals.csv", LogicDataType.GLOBAL, 0));
+        arrayList.Add(new LogicDataTableResource("assets/logic/npcs.csv", LogicDataType.NPC, 0));
         arrayList.Add(new LogicDataTableResource("assets/logic/decos.csv", LogicDataType.DECO, 0));
         arrayList.Add(new LogicDataTableResource("assets/logic/shields.csv", LogicDataType.SHIELD, 0));
         arrayList.Add(new LogicDataTableResource("assets/logic/missions.csv", LogicDataType.MISSION, 0));

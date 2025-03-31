@@ -104,8 +104,13 @@ public class LogicDataTables
         return LogicDataTables._goldData;
     }
 
-    public static LogicResourceData GetElexirData()
+    public static LogicResourceData GetElixirData()
     {
         return LogicDataTables._elixirData;
+    }
+
+    public static LogicCharacterData GetCharacterByName(string name, LogicData? caller)
+    {
+        return (LogicCharacterData)LogicDataTables._tables[(int)LogicDataType.CHARACTER].GetDataByName(name, caller);
     }
 }

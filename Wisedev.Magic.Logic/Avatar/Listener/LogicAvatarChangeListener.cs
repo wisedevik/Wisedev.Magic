@@ -1,4 +1,6 @@
-﻿namespace Wisedev.Magic.Logic.Avatar.Listener;
+﻿using Wisedev.Magic.Titam.Logic;
+
+namespace Wisedev.Magic.Logic.Avatar.Listener;
 
 public class LogicAvatarChangeListener
 {
@@ -8,6 +10,11 @@ public class LogicAvatarChangeListener
     }
 
     public virtual void ExpPointsGained(int pnts)
+    {
+        ;
+    }
+
+    public virtual void RevengeUsed(LogicLong id)
     {
         ;
     }

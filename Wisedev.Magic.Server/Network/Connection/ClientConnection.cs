@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Wisedev.Magic.Logic.Mode;
 using Wisedev.Magic.Server.Database;
+using Wisedev.Magic.Server.Database.Model;
 using Wisedev.Magic.Server.Lgoic.Mode;
 using Wisedev.Magic.Server.Protocol;
 using Wisedev.Magic.Titam.Logic;
@@ -18,9 +19,10 @@ public class ClientConnection
 
     private byte[] _receiveBuffer;
 
-    private LogicGameMode _logicGameMode = new();
     private LogicLong _currentAccountId;
     private GameMode _gameMode;
+
+    private Account _accountDocument;
 
     public ClientConnection(Socket socket, IAccountRepository accountRepository, IAllianceRepository allianceRepository)
     {
@@ -33,7 +35,17 @@ public class ClientConnection
 
     public GameMode GetGameMode()
     {
-        return _gameMode;
+        return this._gameMode;
+    }
+
+    public void SetAccountDocument(Account acc)
+    {
+        this._accountDocument = acc;
+    }
+
+    public Account GetAccountDocument()
+    {
+        return this._accountDocument;
     }
 
     public void SetGameMode(GameMode mode)
@@ -44,11 +56,6 @@ public class ClientConnection
     public bool IsConnected()
     {
         return _socket.Connected;
-    }
-
-    public LogicGameMode GetLogicGameMode()
-    {
-        return _logicGameMode;
     }
 
     public void SetCurrentAccountId(LogicLong accountId)

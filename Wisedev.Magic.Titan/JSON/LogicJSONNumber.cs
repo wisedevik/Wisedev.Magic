@@ -11,6 +11,11 @@ public class LogicJSONNumber : LogicJSONNode
         m_value = value;
     }
 
+    public LogicJSONNumber()
+    {
+        this.m_value = 0;
+    }
+
     public int GetIntValue()
     {
         return m_value;

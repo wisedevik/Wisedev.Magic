@@ -1,4 +1,5 @@
-﻿using Wisedev.Magic.Logic.Data;
+﻿using Wisedev.Magic.Logic.Command;
+using Wisedev.Magic.Logic.Data;
 using Wisedev.Magic.Logic.Helper;
 using Wisedev.Magic.Logic.Level;
 using Wisedev.Magic.Titam.DataStream;
@@ -53,6 +54,11 @@ public class LogicClientAvatar : LogicAvatar
     public int CumulativePurchasedDiamonds { get { return this._cumulativePurchasedDiamonds; } set { this._cumulativePurchasedDiamonds = value; } }
     public int LeagueType { get { return this._leagueType; } set { this._leagueType = value; } }
 
+    public LogicClientAvatar() : base()
+    {
+        ;
+    }
+
     public static LogicClientAvatar GetDefaultAvatar()
     {
         LogicClientAvatar avatar = new LogicClientAvatar();
@@ -62,8 +68,9 @@ public class LogicClientAvatar : LogicAvatar
         avatar._freeDiamonds = globalsInstance.GetStartingDiamonds();
 
         avatar.SetResourceCount(LogicDataTables.GetGoldData(), globalsInstance.GetStartingGold());
-        avatar.SetResourceCount(LogicDataTables.GetElexirData(), globalsInstance.GetStartingElexir());
+        avatar.SetResourceCount(LogicDataTables.GetElixirData(), globalsInstance.GetStartingElxir());
 
+        // TODO: Implement tutorial
         for (int i = 0; i < 13; i++)
         {
             LogicMissionData missionData = (LogicMissionData)LogicDataTables.GetDataById(21000000 + i);
@@ -77,6 +84,11 @@ public class LogicClientAvatar : LogicAvatar
     public void SetId(LogicLong id)
     {
         this._id = id;
+    }
+
+    public int GetDiamonds()
+    {
+        return this._diamonds;
     }
 
     public void SetCurrentHomeId(LogicLong id)
@@ -172,6 +184,16 @@ public class LogicClientAvatar : LogicAvatar
     public void SetCumulativePurchasedDiamonds(int diamonds)
     {
         this._cumulativePurchasedDiamonds = diamonds;
+    }
+
+    public string GetName()
+    {
+        return this._name;
+    }
+
+    public override bool IsClientAvatar()
+    {
+        return true;
     }
 
     public override void Encode(ChecksumEncoder encoder)
@@ -318,9 +340,27 @@ public class LogicClientAvatar : LogicAvatar
 
         if (!enough && callListener)
         {
-            // TODO: level.GetGameListener().NotEnoughDiamonds();
+            level.GetGameListener().NotEnoughDiamonds();
         }
 
         return enough;
+    }
+
+    public bool HasEnoughResources(LogicResourceData data, int cnt, LogicCommand command, bool callListener)
+    {
+        bool enough = this.GetResourceCount(data) >= cnt;
+
+        if (!enough && callListener)
+        {
+            if (this._level != null)
+                this._level.GetGameListener().NotEnoughResources(data, cnt, command, callListener);
+        }
+
+        return enough;
+    }
+
+    public bool HasNewbieProtection()
+    {
+        return this._townHallLevel <= LogicDataTables.GetGlobals().GetNewbieProtectionLevel();
     }
 }

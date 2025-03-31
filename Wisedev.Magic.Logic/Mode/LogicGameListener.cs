@@ -1,4 +1,7 @@
-﻿namespace Wisedev.Magic.Logic.Mode;
+﻿using Wisedev.Magic.Logic.Command;
+using Wisedev.Magic.Logic.Data;
+
+namespace Wisedev.Magic.Logic.Mode;
 
 public class LogicGameListener
 {
@@ -8,6 +11,16 @@ public class LogicGameListener
     }
 
     public virtual void MapChanged()
+    {
+        ;
+    }
+
+    public virtual void NotEnoughDiamonds()
+    {
+        ;
+    }
+
+    public virtual void NotEnoughResources(LogicResourceData data, int cnt, LogicCommand command, bool callListener)
     {
         ;
     }

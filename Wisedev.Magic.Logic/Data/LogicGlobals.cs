@@ -7,7 +7,9 @@ public class LogicGlobals : LogicDataTable
 {
     private int _startingDiamonds;
     private int _startingGold;
-    private int _startingElexir;
+    private int _startingElixir;
+    private bool _removeRevengeWhenBattleIsLoaded;
+    private int _newbieProtectionLevel;
 
     public LogicGlobals(CSVTable table, LogicDataType tableIdx) : base(table, tableIdx)
     {
@@ -18,7 +20,9 @@ public class LogicGlobals : LogicDataTable
         base.CreateReferences();
         this._startingDiamonds = this.GetGlobalData("STARTING_DIAMONDS").GetNumberValue();
         this._startingGold = this.GetGlobalData("STARTING_GOLD").GetNumberValue();
-        this._startingElexir = this.GetGlobalData("STARTING_ELIXIR").GetNumberValue();
+        this._startingElixir = this.GetGlobalData("STARTING_ELIXIR").GetNumberValue();
+        this._removeRevengeWhenBattleIsLoaded = this.GetGlobalData("REMOVE_REVENGE_WHEN_BATTLE_IS_LOADED").GetBooleanValue();
+        this._newbieProtectionLevel = this.GetGlobalData("NEWBIE_PROTECTION_LEVEL").GetNumberValue() - 1;
     }
 
     public LogicGlobalData? GetGlobalData(string name)
@@ -43,8 +47,18 @@ public class LogicGlobals : LogicDataTable
         return this._startingGold;
     }
 
-    public int GetStartingElexir()
+    public int GetStartingElxir()
     {
-        return this._startingElexir;
+        return this._startingElixir;
+    }
+
+    public bool RemoveRevengeWhenBattleIsLoaded()
+    {
+        return this._removeRevengeWhenBattleIsLoaded;
+    }
+
+    public int GetNewbieProtectionLevel()
+    {
+        return this._newbieProtectionLevel;
     }
 }

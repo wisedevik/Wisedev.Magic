@@ -4,8 +4,8 @@ namespace Wisedev.Magic.Titam.Math;
 
 public class LogicVector2
 {
-    public int _x;
-    public int _y;
+    private int _x;
+    private int _y;
 
 
     public LogicVector2()
@@ -91,5 +91,15 @@ public class LogicVector2
     {
         _x = stream.ReadInt();
         _y = stream.ReadInt();
+    }
+
+    public int GetX()
+    {
+        return this._x;
+    }
+
+    public int GetY()
+    {
+        return this._y;
     }
 }
