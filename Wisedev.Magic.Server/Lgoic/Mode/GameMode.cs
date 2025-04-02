@@ -13,11 +13,13 @@ namespace Wisedev.Magic.Server.Lgoic.Mode;
 
 public class GameMode
 {
+    private readonly ClientConnection _connection;
     private readonly LogicGameMode _logicGameMode;
 
-    public GameMode()
+    public GameMode(ClientConnection connection)
     {
         _logicGameMode = new LogicGameMode();
+        _connection = connection;
     }
 
     public LogicGameMode GetLogicGameMode()
@@ -38,7 +40,7 @@ public class GameMode
 
         try
         {
-            GameMode gameMode = new GameMode();
+            GameMode gameMode = new GameMode(session);
 
             //TODO: set listeners
 
@@ -657,7 +659,7 @@ public class GameMode
 
         try
         {
-            GameMode gameMode = new GameMode();
+            GameMode gameMode = new GameMode(session);
 
             gameMode._logicGameMode.LoadNpcAttackState(home, npcAvatar, visitorAvatar, 0);
 
@@ -692,6 +694,17 @@ public class GameMode
         for (int i = 0, cnt = subTick - prevSubTick; i < cnt; i++)
         {
             this._logicGameMode.UpdateOneSubTick();
+        }
+
+        this.SaveState();
+    }
+
+    private void SaveState()
+    {
+        if (this._logicGameMode.GetState() == 1)
+        {
+            this._connection.GetAccountDocument().ClientAvatar = this._logicGameMode.GetLevel().GetPlayerAvatar();
+            this._connection.GetAccountDocument().Home = this._logicGameMode.GetLevel().GetHome();
         }
     }
 }

@@ -30,7 +30,7 @@ public class ClientConnection
         this._messaging = new Messaging(this);
         this._messageManager = new MessageManager(this, accountRepository, allianceRepository);
         this._receiveBuffer = GC.AllocateUninitializedArray<byte>(4096 * 2);
-        this._gameMode = new GameMode();
+        this._gameMode = new GameMode(this);
     }
 
     public GameMode GetGameMode()

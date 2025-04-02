@@ -192,7 +192,11 @@ class MessageManager
         GameMode gameMode = this._connection.GetGameMode();
 
         if (gameMode != null)
+        {
             gameMode.OnClientTurnReceived(message.GetSubTick(), message.GetChecksum(), message.GetCommands());
+
+            await this._accountRepository.UpdateAccountAsync(this._connection.GetAccountDocument());
+        }
     }
 
     private async Task OnGoHomeMessageReceived(GoHomeMessage message)

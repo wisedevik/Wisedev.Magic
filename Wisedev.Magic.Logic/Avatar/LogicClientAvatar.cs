@@ -81,6 +81,16 @@ public class LogicClientAvatar : LogicAvatar
         return avatar;
     }
 
+    public void UseDiamonds(int cnt)
+    {
+        this._diamonds -= cnt;
+
+        if (this._freeDiamonds - cnt > 0)
+        {
+            this._freeDiamonds -= cnt;
+        }
+    }
+
     public void SetId(LogicLong id)
     {
         this._id = id;

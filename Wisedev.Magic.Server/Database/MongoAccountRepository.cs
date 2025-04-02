@@ -102,4 +102,10 @@ class MongoAccountRepository : IAccountRepository
         var filter = Builders<Account>.Filter.Eq(a => a.Id, accountId);
         await _collection.UpdateOneAsync(filter, update);
     }
+
+    public async Task UpdateAccountAsync(Account account)
+    {
+        var filter = Builders<Account>.Filter.Eq(a => a.Id, account.Id);
+        await _collection.ReplaceOneAsync(filter, account, new ReplaceOptions { IsUpsert = false });
+    }
 }

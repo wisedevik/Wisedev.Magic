@@ -9,4 +9,6 @@ public interface IAccountRepository
     Task<Account> CreateAsync();
     Task<Account?> GetByIdAsync(LogicLong accountId);
     Task UpdateAccountAsync(LogicLong accountId, UpdateDefinition<Account> update);
+    Task UpdateAccountAsync(Account account);
+
 }

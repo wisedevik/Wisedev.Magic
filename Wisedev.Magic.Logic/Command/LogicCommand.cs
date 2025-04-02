@@ -15,11 +15,6 @@ public class LogicCommand
         _executeSubTick = -1;
     }
 
-    public virtual void Accept(ICommandVisitor visitor)
-    {
-        ;
-    }
-
     public virtual void Destruct()
     {
         ;

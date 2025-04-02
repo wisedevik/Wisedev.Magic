@@ -19,17 +19,8 @@ public class LogicNewsSeenCommand : LogicCommand
     public override int Execute(LogicLevel level)
     {
         level.SetLastSeenNews(this._lastSeenNews);
+        level.GetPlayerAvatar().UseDiamonds(100);
         return 0;
-    }
-
-    public override void Accept(ICommandVisitor visitor)
-    {
-        visitor.Visit(this);
-    }
-
-    public int GetLastSeenNews()
-    {
-        return this._lastSeenNews;
     }
 
     public override int GetCommandType()
