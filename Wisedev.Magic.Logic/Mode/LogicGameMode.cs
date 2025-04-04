@@ -6,6 +6,7 @@ using Wisedev.Magic.Logic.Home;
 using Wisedev.Magic.Logic.Level;
 using Wisedev.Magic.Logic.Message.Home;
 using Wisedev.Magic.Logic.Time;
+using Wisedev.Magic.Titam.JSON;
 using Wisedev.Magic.Titan.Debug;
 
 namespace Wisedev.Magic.Logic.Mode;
@@ -25,6 +26,11 @@ public class LogicGameMode
     {
         this._level = new LogicLevel(this);
         this._commandManager = new LogicCommandManager(this._level);
+    }
+
+    public void SaveToJSON(LogicJSONObject jsonObject)
+    {
+        this._level.SaveToJSON(jsonObject);
     }
 
     public void LoadHomeState(LogicClientHome logicHome, LogicAvatar logicAvatar, int secondsSinceLastSave)

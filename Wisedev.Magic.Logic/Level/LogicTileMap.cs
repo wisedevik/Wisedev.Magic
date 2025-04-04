@@ -6,6 +6,7 @@ public class LogicTileMap
 {
     private int _x;
     private int _y;
+    private bool _roomEnabled;
 
     public LogicTileMap(int x, int y)
     {
@@ -16,5 +17,10 @@ public class LogicTileMap
     public void GameObjectMoved(LogicGameObject gameObject, int x, int y)
     {
 
+    }
+
+    public void EnableRoomIndices(bool enable)
+    {
+        this._roomEnabled = enable;
     }
 }

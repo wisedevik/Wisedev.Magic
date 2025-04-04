@@ -1,6 +1,8 @@
-﻿namespace Wisedev.Magic.Server.Lgoic.Mode.Listener;
+﻿using Wisedev.Magic.Logic.Avatar.Listener;
 
-public class AvatarChangeListener
+namespace Wisedev.Magic.Server.Lgoic.Mode.Listener;
+
+public class AvatarChangeListener : LogicAvatarChangeListener
 {
 
 }

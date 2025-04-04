@@ -1,4 +1,5 @@
-﻿using Wisedev.Magic.Logic.Command;
+﻿using Wisedev.Magic.Logic.Avatar.Listener;
+using Wisedev.Magic.Logic.Command;
 using Wisedev.Magic.Logic.Data;
 using Wisedev.Magic.Logic.Helper;
 using Wisedev.Magic.Logic.Level;
@@ -89,6 +90,11 @@ public class LogicClientAvatar : LogicAvatar
         {
             this._freeDiamonds -= cnt;
         }
+    }
+
+    public void SetChangeListener(LogicAvatarChangeListener listener)
+    {
+        this._listener = listener;
     }
 
     public void SetId(LogicLong id)

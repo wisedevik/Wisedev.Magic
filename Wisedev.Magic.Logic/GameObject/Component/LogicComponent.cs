@@ -1,4 +1,6 @@
-﻿namespace Wisedev.Magic.Logic.GameObject.Component;
+﻿using Wisedev.Magic.Titam.JSON;
+
+namespace Wisedev.Magic.Logic.GameObject.Component;
 
 public class LogicComponent
 {
@@ -44,5 +46,15 @@ public class LogicComponent
     public virtual bool IsEnabled()
     {
         return this._enabled;
+    }
+
+    public virtual void Save(LogicJSONObject jsonObject)
+    {
+        ;
+    }
+
+    public virtual void Load(LogicJSONObject jsonObject)
+    {
+        ;
     }
 }

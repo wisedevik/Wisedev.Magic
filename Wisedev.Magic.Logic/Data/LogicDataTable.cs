@@ -62,6 +62,9 @@ public class LogicDataTable
             case LogicDataType.CHARACTER:
                 item = new LogicCharacterData(row, this);
                 break;
+            case LogicDataType.OBSTACLE:
+                item = new LogicObstacleData(row, this);
+                break;
             case LogicDataType.TRAP:
                 item = new LogicTrapData(row, this);
                 break;

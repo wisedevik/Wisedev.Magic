@@ -55,7 +55,7 @@ public class LogicLevel
         this._gameMode = gameMode;
         this._logicTime = new LogicTime();
         this._tileMap = new LogicTileMap(44, 44);
-        this._gameObjectManager = new LogicGameObjectManager(this);
+        this._gameObjectManager = new LogicGameObjectManager(this._tileMap, this);
         this._battleLog = new LogicBattleLog(this);
         this._cooldownManager = new LogicCooldownManager();
 
@@ -88,6 +88,14 @@ public class LogicLevel
     public void SetHome(LogicClientHome home)
     {
         this._home = home;
+
+        LogicJSONObject homeJSON = LogicJSONParser.ParseObject(home.GetHomeJSON());
+        this._gameObjectManager.Load(homeJSON);
+    }
+
+    public LogicGameObjectManager GetGameObjectManager()
+    {
+        return this._gameObjectManager;
     }
 
     public LogicClientHome GetHome()

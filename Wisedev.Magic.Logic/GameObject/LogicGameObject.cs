@@ -2,6 +2,7 @@
 using Wisedev.Magic.Logic.GameObject.Component;
 using Wisedev.Magic.Logic.GameObject.Listener;
 using Wisedev.Magic.Logic.Level;
+using Wisedev.Magic.Titam.JSON;
 using Wisedev.Magic.Titam.Math;
 using Wisedev.Magic.Titan.Debug;
 
@@ -38,6 +39,11 @@ public class LogicGameObject
         this._listener.RefreshPositionFromLogic();
     }
 
+    public void SetGlobalID(int id)
+    {
+        this._globalId = id;
+    }
+
     public LogicData GetData()
     {
         return this._data;
@@ -62,6 +68,11 @@ public class LogicGameObject
     public bool IsWall()
     {
         return false;
+    }
+
+    public virtual int GetGameObjectType()
+    {
+        return 0;
     }
 
     public virtual bool IsHero()
@@ -211,5 +222,34 @@ public class LogicGameObject
         }
 
         return null;
+    }
+
+    public void Save(LogicJSONObject logicJSON)
+    {
+        logicJSON.Put("x", new LogicJSONNumber(this.GetTileX()));
+        logicJSON.Put("y", new LogicJSONNumber(this.GetTileY()));
+
+        for (int i = 0; i < this._components.Count; i++)
+        {
+            LogicComponent component = this._components[i];
+
+            if (component != null)
+                component.Save(logicJSON);
+        }
+    }
+
+    public void Load(LogicJSONObject logicJSON)
+    {
+        int x = logicJSON.GetJSONNumber("x").GetIntValue();
+        int y = logicJSON.GetJSONNumber("y").GetIntValue();
+
+        for (int i = 0; i < this._components.Count; i++)
+        {
+            LogicComponent component = this._components[i];
+            if (component != null)
+                component.Load(logicJSON);
+        }
+
+        this.SetInitialPosition(x << 9, y << 9);
     }
 }

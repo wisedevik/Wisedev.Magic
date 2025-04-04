@@ -87,7 +87,7 @@ public enum LogicDataType
     ANIMATION,
     PROJECTILE,
     BUILDING_CLASS,
-    OBSSTACLE,
+    OBSTACLE,
     EFFECT,
     PARTICLE_EMITTER,
     EXPERIENCE_LEVEL,
