@@ -7,7 +7,7 @@ namespace Wisedev.Magic.Server.HTTP;
 public class ServerHttpClient
 {
     public static string URL = "https://api.bladewise.xyz/supercell";
-    private static string TOKEN = "LH5qflhvrTMQrxIEsa-IG4C1mB9?x-PZiHflMhbQ2-UkGMenad1rAE?0p7VMqd9q";
+    private static string TOKEN = Config.ApiToken;
 
     private static WebClient CreateWebClient()
     {
