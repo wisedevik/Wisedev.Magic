@@ -1,6 +1,6 @@
 # Wisedev.Magic Server
-
 A minimal private server implementation for Clash of Clans v5.2.4 (2014 version).  
+Educational Clash of Clans 2014 private server emulation in .NET  
 ⚠️ **Note**: Project is under active development.
 
 ## 📋 Current Features
@@ -23,9 +23,15 @@ A minimal private server implementation for Clash of Clans v5.2.4 (2014 version)
  - CDN Mode (default)
     - Set ``"UseLocalResources": false``
     - Files download from:
-        - ``/assets/fingerprint.json``
-        - ``/assets/level/starting_home.json``
-        - ``/csv/{filename}.csv``
+        - ``API_URL/assets/fingerprint.json``
+        - ``API_URL/assets/level/starting_home.json``
+        - Assets:
+        ```json 
+        https://api.example.com/
+        ├─ {FINGERPRINT_SHA}/csv/characters.csv
+        ├─ {FINGERPRINT_SHA}/sc/effects.sc
+        └─ {FINGERPRINT_SHA}/logic/locale.json
+        ```
  - Local Mode
     1. Set ``"UseLocalResources": true``
  - Security Options
@@ -34,6 +40,18 @@ A minimal private server implementation for Clash of Clans v5.2.4 (2014 version)
 
 ## 🌐 CDN Version Control System
  The server implements a robust version-checking mechanism that uses CDN resources when client assets are outdated
+
+## 🔄 Resource Loading Logic
+ CDN Update
+
+ When version mismatch detected:
+ - Client sends ``LoginMessage`` with SHA, Client Version
+ - If client version and sha != server version and sha, server sends ``LoginFailedMessage``
+ - Client receives ``LoginFailedMessage`` with:
+    - ErrorCode (7)
+    - CDN endpoint URLs
+    - Latest fingerprint.json
+ - After that, the client checks the files on the server, and if the file is sha != the sha client file, it downloads a new file
 
 ## 📌 Important
  1. When using CDN mode:
