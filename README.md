@@ -21,7 +21,7 @@ A minimal private server implementation for Clash of Clans v5.2.4 (2014 version)
  ```
  Resource Modes: 
  - CDN Mode (default)
-    - Set "UseLocalResources": false
+    - Set ``"UseLocalResources": false``
     - Files download from:
         - ``/assets/fingerprint.json``
         - ``/assets/level/starting_home.json``
