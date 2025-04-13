@@ -1,7 +1,7 @@
 ﻿
 using MongoDB.Driver;
 using Wisedev.Magic.Server.Database.Model;
-using Wisedev.Magic.Titam.Logic;
+using Wisedev.Magic.Titan.Logic;
 
 namespace Wisedev.Magic.Server.Database;
 

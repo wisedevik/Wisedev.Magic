@@ -4,7 +4,7 @@ using MongoDB.Driver;
 using System.Security.Cryptography;
 using Wisedev.Magic.Server.Database.Model;
 using Wisedev.Magic.Server.Resources;
-using Wisedev.Magic.Titam.Logic;
+using Wisedev.Magic.Titan.Logic;
 using Wisedev.Magic.Logic.Home;
 using Wisedev.Magic.Logic.Avatar;
 

@@ -2,13 +2,14 @@
 using System.Threading.Tasks;
 using Wisedev.Magic.Logic.Avatar;
 using Wisedev.Magic.Logic.Command;
+using Wisedev.Magic.Logic.Data;
 using Wisedev.Magic.Logic.Home;
 using Wisedev.Magic.Logic.Message.Home;
 using Wisedev.Magic.Logic.Mode;
 using Wisedev.Magic.Server.Lgoic.Mode.Listener;
 using Wisedev.Magic.Server.Network.Connection;
-using Wisedev.Magic.Titam.JSON;
-using Wisedev.Magic.Titam.Utils;
+using Wisedev.Magic.Titan.JSON;
+using Wisedev.Magic.Titan.Utils;
 using Wisedev.Magic.Titan.Debug;
 
 namespace Wisedev.Magic.Server.Lgoic.Mode;
@@ -57,7 +58,7 @@ public class GameMode
         }
         catch (Exception e)
         {
-            Debugger.Error(e.Message);
+            Debugger.Error($"{e.Message}\n{e.StackTrace}");
         }
         return null;
     }

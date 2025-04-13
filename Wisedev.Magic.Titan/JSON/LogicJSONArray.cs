@@ -1,8 +1,8 @@
-﻿using Wisedev.Magic.Titam.Utils;
+﻿using Wisedev.Magic.Titan.Utils;
 using System.Diagnostics;
 using System.Text;
 
-namespace Wisedev.Magic.Titam.JSON;
+namespace Wisedev.Magic.Titan.JSON;
 
 public class LogicJSONArray : LogicJSONNode
 {

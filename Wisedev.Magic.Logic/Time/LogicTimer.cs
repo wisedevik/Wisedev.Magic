@@ -20,4 +20,9 @@ public class LogicTimer
     {
         ;
     }
+
+    public void StartTimer(int sec, LogicTime time)
+    {
+        this._remainingTime = time.GetTick() + 60 * sec;
+    }
 }

@@ -1,5 +1,5 @@
 ﻿using System.Text.Json.Nodes;
-using Wisedev.Magic.Titam.JSON;
+using Wisedev.Magic.Titan.JSON;
 
 namespace Wisedev.Magic.Logic.Coldown;
 

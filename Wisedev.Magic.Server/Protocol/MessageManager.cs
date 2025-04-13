@@ -16,8 +16,8 @@ using Wisedev.Magic.Server.Lgoic.Mode;
 using Wisedev.Magic.Server.Network.Connection;
 using Wisedev.Magic.Server.Resources;
 using Wisedev.Magic.Server.Util;
-using Wisedev.Magic.Titam.Logic;
-using Wisedev.Magic.Titam.Message;
+using Wisedev.Magic.Titan.Logic;
+using Wisedev.Magic.Titan.Message;
 using Wisedev.Magic.Titan.Debug;
 
 namespace Wisedev.Magic.Server.Protocol;
@@ -236,6 +236,7 @@ class MessageManager
         await _connection.SendMessage(message);
 
         Debugger.Print($"Tryna create alliance: name={createAllianceMessage.GetAllianceName()}, badge_id={createAllianceMessage.GetAllianceBadgeData().GetGlobalID()}, type={createAllianceMessage.GetAllianceType()}, required_score={createAllianceMessage.GetRequiredScore()} desc={createAllianceMessage.GetAllianceDescription()}");
+
 
     }
 }

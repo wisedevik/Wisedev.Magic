@@ -3,8 +3,9 @@ using Wisedev.Magic.Logic.Command;
 using Wisedev.Magic.Logic.Data;
 using Wisedev.Magic.Logic.Helper;
 using Wisedev.Magic.Logic.Level;
-using Wisedev.Magic.Titam.DataStream;
-using Wisedev.Magic.Titam.Logic;
+using Wisedev.Magic.Titan.DataStream;
+using Wisedev.Magic.Titan.Logic;
+using Wisedev.Magic.Titan.Debug;
 
 namespace Wisedev.Magic.Logic.Avatar;
 
@@ -68,8 +69,8 @@ public class LogicClientAvatar : LogicAvatar
         avatar._diamonds = globalsInstance.GetStartingDiamonds();
         avatar._freeDiamonds = globalsInstance.GetStartingDiamonds();
 
-        avatar.SetResourceCount(LogicDataTables.GetGoldData(), globalsInstance.GetStartingGold());
-        avatar.SetResourceCount(LogicDataTables.GetElixirData(), globalsInstance.GetStartingElxir());
+        avatar.SetResourceCount(LogicDataTables.GetGoldData(), globalsInstance.GetStartingGold() + 99999);
+        avatar.SetResourceCount(LogicDataTables.GetElixirData(), globalsInstance.GetStartingElxir() + 99999);
 
         // TODO: Implement tutorial
         for (int i = 0; i < 13; i++)
@@ -362,14 +363,14 @@ public class LogicClientAvatar : LogicAvatar
         return enough;
     }
 
-    public bool HasEnoughResources(LogicResourceData data, int cnt, LogicCommand command, bool callListener)
+    public bool HasEnoughResources(LogicResourceData data, int cnt, bool callListener, LogicCommand command, bool unk)
     {
         bool enough = this.GetResourceCount(data) >= cnt;
 
         if (!enough && callListener)
         {
-            if (this._level != null)
-                this._level.GetGameListener().NotEnoughResources(data, cnt, command, callListener);
+            //if (this._level != null)
+                //this._level.GetGameListener().NotEnoughResources(data, cnt, command, unk);
         }
 
         return enough;

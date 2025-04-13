@@ -1,9 +1,9 @@
-﻿using Wisedev.Magic.Titam.Logic;
-using Wisedev.Magic.Titam.Utils;
+﻿using Wisedev.Magic.Titan.Logic;
+using Wisedev.Magic.Titan.Utils;
 using System.Text;
 using Wisedev.Magic.Titan.Debug;
 
-namespace Wisedev.Magic.Titam.DataStream
+namespace Wisedev.Magic.Titan.DataStream
 {
     public class ByteStream : ChecksumEncoder
     {

@@ -5,8 +5,8 @@ using Wisedev.Magic.Server.Database;
 using Wisedev.Magic.Server.Database.Model;
 using Wisedev.Magic.Server.Lgoic.Mode;
 using Wisedev.Magic.Server.Protocol;
-using Wisedev.Magic.Titam.Logic;
-using Wisedev.Magic.Titam.Message;
+using Wisedev.Magic.Titan.Logic;
+using Wisedev.Magic.Titan.Message;
 using Wisedev.Magic.Titan.Debug;
 
 namespace Wisedev.Magic.Server.Network.Connection;

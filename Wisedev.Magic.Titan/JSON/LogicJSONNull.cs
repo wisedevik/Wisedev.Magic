@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Wisedev.Magic.Titam.JSON;
+namespace Wisedev.Magic.Titan.JSON;
 
 public class LogicJSONNull : LogicJSONNode
 {

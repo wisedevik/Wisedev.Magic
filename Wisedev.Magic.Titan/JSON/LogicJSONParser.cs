@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Text;
 
-namespace Wisedev.Magic.Titam.JSON;
+namespace Wisedev.Magic.Titan.JSON;
 
 public class LogicJSONParser
 {

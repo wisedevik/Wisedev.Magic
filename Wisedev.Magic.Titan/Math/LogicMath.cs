@@ -1,4 +1,4 @@
-﻿namespace Wisedev.Magic.Titam.Math;
+﻿namespace Wisedev.Magic.Titan.Math;
 
 public unsafe class LogicMath
 {

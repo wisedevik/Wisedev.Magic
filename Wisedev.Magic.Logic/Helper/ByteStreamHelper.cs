@@ -1,5 +1,5 @@
 ﻿using Wisedev.Magic.Logic.Data;
-using Wisedev.Magic.Titam.DataStream;
+using Wisedev.Magic.Titan.DataStream;
 
 namespace Wisedev.Magic.Logic.Helper;
 

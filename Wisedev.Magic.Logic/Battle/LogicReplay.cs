@@ -1,6 +1,6 @@
 ﻿using Wisedev.Magic.Logic.Command;
 using Wisedev.Magic.Logic.Level;
-using Wisedev.Magic.Titam.JSON;
+using Wisedev.Magic.Titan.JSON;
 
 namespace Wisedev.Magic.Logic.Battle;
 

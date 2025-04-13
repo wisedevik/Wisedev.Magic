@@ -1,6 +1,6 @@
-﻿using Wisedev.Magic.Titam.Utils;
+﻿using Wisedev.Magic.Titan.Utils;
 
-namespace Wisedev.Magic.Titam.CSV;
+namespace Wisedev.Magic.Titan.CSV;
 
 public class CSVColumn
 {

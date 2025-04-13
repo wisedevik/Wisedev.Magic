@@ -4,9 +4,9 @@ using System.Reflection;
 using Wisedev.Magic.Logic.Command.Listener;
 using Wisedev.Magic.Logic.Level;
 using Wisedev.Magic.Logic.Message;
-using Wisedev.Magic.Titam.DataStream;
-using Wisedev.Magic.Titam.JSON;
-using Wisedev.Magic.Titam.Message;
+using Wisedev.Magic.Titan.DataStream;
+using Wisedev.Magic.Titan.JSON;
+using Wisedev.Magic.Titan.Message;
 using Wisedev.Magic.Titan.Debug;
 
 namespace Wisedev.Magic.Logic.Command;

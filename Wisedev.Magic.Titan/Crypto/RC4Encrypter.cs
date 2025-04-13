@@ -1,4 +1,4 @@
-﻿namespace Wisedev.Magic.Titam.Crypto
+﻿namespace Wisedev.Magic.Titan.Crypto
 {
     public class RC4Encrypter : StreamEncrypter
     {

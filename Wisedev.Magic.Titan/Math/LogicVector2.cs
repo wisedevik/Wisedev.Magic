@@ -1,6 +1,6 @@
-﻿using Wisedev.Magic.Titam.DataStream;
+﻿using Wisedev.Magic.Titan.DataStream;
 
-namespace Wisedev.Magic.Titam.Math;
+namespace Wisedev.Magic.Titan.Math;
 
 public class LogicVector2
 {

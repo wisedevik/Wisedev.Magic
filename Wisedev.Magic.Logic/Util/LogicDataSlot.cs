@@ -1,7 +1,7 @@
 ﻿using Wisedev.Magic.Logic.Data;
 using Wisedev.Magic.Logic.Helper;
-using Wisedev.Magic.Titam.DataStream;
-using Wisedev.Magic.Titam.JSON;
+using Wisedev.Magic.Titan.DataStream;
+using Wisedev.Magic.Titan.JSON;
 
 namespace Wisedev.Magic.Logic.Util;
 

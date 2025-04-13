@@ -6,8 +6,8 @@ using Wisedev.Magic.Logic.Data;
 using Wisedev.Magic.Logic.GameObject.Component;
 using Wisedev.Magic.Logic.Level;
 using Wisedev.Magic.Logic.Time;
-using Wisedev.Magic.Titam.JSON;
-using Wisedev.Magic.Titam.Utils;
+using Wisedev.Magic.Titan.JSON;
+using Wisedev.Magic.Titan.Utils;
 using Wisedev.Magic.Titan.Debug;
 
 namespace Wisedev.Magic.Logic.GameObject;

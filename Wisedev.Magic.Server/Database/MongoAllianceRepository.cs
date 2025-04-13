@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Wisedev.Magic.Server.Database.Model;
 using Wisedev.Magic.Server.Database;
-using Wisedev.Magic.Titam.Logic;
+using Wisedev.Magic.Titan.Logic;
 
 public class MongoAllianceRepository : IAllianceRepository
 {

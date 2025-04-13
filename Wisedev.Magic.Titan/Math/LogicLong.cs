@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
-using Wisedev.Magic.Titam.DataStream;
+using Wisedev.Magic.Titan.DataStream;
 
-namespace Wisedev.Magic.Titam.Logic
+namespace Wisedev.Magic.Titan.Logic
 {
     public class LogicLong
     {

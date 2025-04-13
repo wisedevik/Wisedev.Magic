@@ -1,6 +1,6 @@
 ﻿using Wisedev.Magic.Logic.Home.Listener;
-using Wisedev.Magic.Titam.DataStream;
-using Wisedev.Magic.Titam.Logic;
+using Wisedev.Magic.Titan.DataStream;
+using Wisedev.Magic.Titan.Logic;
 
 namespace Wisedev.Magic.Logic.Home;
 

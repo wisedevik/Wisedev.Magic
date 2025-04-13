@@ -2,8 +2,8 @@
 using Wisedev.Magic.Logic.GameObject.Component;
 using Wisedev.Magic.Logic.GameObject.Listener;
 using Wisedev.Magic.Logic.Level;
-using Wisedev.Magic.Titam.JSON;
-using Wisedev.Magic.Titam.Math;
+using Wisedev.Magic.Titan.JSON;
+using Wisedev.Magic.Titan.Math;
 using Wisedev.Magic.Titan.Debug;
 
 namespace Wisedev.Magic.Logic.GameObject;
@@ -15,7 +15,7 @@ public class LogicGameObject
     protected int _globalId;
     protected LogicData _data;
     protected LogicLevel _level;
-    protected List<LogicComponent> _components;
+    protected LogicComponent[] _components;
 
     protected LogicVector2 _position;
     protected LogicGameObjectListener _listener;
@@ -28,7 +28,7 @@ public class LogicGameObject
         this._listener = new LogicGameObjectListener();
         this._data = data;
         this._level = level;
-        this._components = new List<LogicComponent>(LogicComponent.COMPONENT_TYPE_COUNT);
+        this._components = new LogicComponent[LogicComponent.COMPONENT_TYPE_COUNT];
 
         this._position = new LogicVector2();
     }
@@ -96,6 +96,11 @@ public class LogicGameObject
     }
 
     public virtual int GetWidthInTiles()
+    {
+        return 1;
+    }
+
+    public virtual int GetHeightInTiles()
     {
         return 1;
     }
@@ -224,12 +229,12 @@ public class LogicGameObject
         return null;
     }
 
-    public void Save(LogicJSONObject logicJSON)
+    public virtual void Save(LogicJSONObject logicJSON)
     {
         logicJSON.Put("x", new LogicJSONNumber(this.GetTileX()));
         logicJSON.Put("y", new LogicJSONNumber(this.GetTileY()));
 
-        for (int i = 0; i < this._components.Count; i++)
+        for (int i = 0; i < this._components.Length; i++)
         {
             LogicComponent component = this._components[i];
 
@@ -238,12 +243,12 @@ public class LogicGameObject
         }
     }
 
-    public void Load(LogicJSONObject logicJSON)
+    public virtual void Load(LogicJSONObject logicJSON)
     {
         int x = logicJSON.GetJSONNumber("x").GetIntValue();
         int y = logicJSON.GetJSONNumber("y").GetIntValue();
 
-        for (int i = 0; i < this._components.Count; i++)
+        for (int i = 0; i < this._components.Length; i++)
         {
             LogicComponent component = this._components[i];
             if (component != null)

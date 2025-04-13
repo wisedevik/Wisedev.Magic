@@ -1,4 +1,4 @@
-﻿using Wisedev.Magic.Titam.DataStream;
+﻿using Wisedev.Magic.Titan.DataStream;
 
 namespace Wisedev.Magic.Logic.Home;
 

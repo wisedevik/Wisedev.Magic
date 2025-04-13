@@ -2,7 +2,7 @@
 using MongoDB.Bson.Serialization.Attributes;
 using Wisedev.Magic.Logic.Avatar;
 using Wisedev.Magic.Logic.Home;
-using Wisedev.Magic.Titam.Logic;
+using Wisedev.Magic.Titan.Logic;
 
 namespace Wisedev.Magic.Server.Database.Model;
 

@@ -1,6 +1,6 @@
-﻿using Wisedev.Magic.Titam.DataStream;
+﻿using Wisedev.Magic.Titan.DataStream;
 
-namespace Wisedev.Magic.Titam.Message
+namespace Wisedev.Magic.Titan.Message
 {
     public class PiranhaMessage
     {

@@ -1,4 +1,4 @@
-﻿using Wisedev.Magic.Titam.Logic;
+﻿using Wisedev.Magic.Titan.Logic;
 
 namespace Wisedev.Magic.Logic.Avatar.Listener;
 

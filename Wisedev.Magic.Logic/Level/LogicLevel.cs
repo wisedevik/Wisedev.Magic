@@ -8,9 +8,10 @@ using Wisedev.Magic.Logic.GameObject.Component;
 using Wisedev.Magic.Logic.Home;
 using Wisedev.Magic.Logic.Mode;
 using Wisedev.Magic.Logic.Time;
-using Wisedev.Magic.Titam.JSON;
-using Wisedev.Magic.Titam.Logic;
-using Wisedev.Magic.Titam.Utils;
+using Wisedev.Magic.Logic.Worker;
+using Wisedev.Magic.Titan.JSON;
+using Wisedev.Magic.Titan.Logic;
+using Wisedev.Magic.Titan.Utils;
 using Wisedev.Magic.Titan.Debug;
 
 namespace Wisedev.Magic.Logic.Level;
@@ -39,6 +40,8 @@ public class LogicLevel
     private LogicTileMap _tileMap;
     private LogicGameObjectManager _gameObjectManager;
     private LogicCooldownManager _cooldownManager;
+    private LogicWorkerManager _workerManager;
+    private LogicRect _playArea;
     private int _matchType;
     private LogicLong _revengeId;
     private bool _npcVillage;
@@ -55,8 +58,10 @@ public class LogicLevel
         this._gameMode = gameMode;
         this._logicTime = new LogicTime();
         this._tileMap = new LogicTileMap(44, 44);
+        this._playArea = new LogicRect(2, 2, 42, 42);
         this._gameObjectManager = new LogicGameObjectManager(this._tileMap, this);
         this._battleLog = new LogicBattleLog(this);
+        this._workerManager = new LogicWorkerManager(this);
         this._cooldownManager = new LogicCooldownManager();
 
         this._newShopBuildings = new LogicArrayList<int>();
@@ -90,6 +95,17 @@ public class LogicLevel
         this._home = home;
 
         LogicJSONObject homeJSON = LogicJSONParser.ParseObject(home.GetHomeJSON());
+
+        this._androidClient = homeJSON.GetJSONBoolean("android_client").IsTrue();
+
+        LogicJSONNumber waveNumObject = homeJSON.GetJSONNumber("wave_num");
+
+        if (waveNumObject != null)
+        {
+            if (this._gameMode.GetState() != 1)
+                this._waveNumber = waveNumObject.GetIntValue();
+        }
+
         this._gameObjectManager.Load(homeJSON);
     }
 
@@ -113,6 +129,11 @@ public class LogicLevel
         return this._homeOwnerAvatar;
     }
 
+    public LogicWorkerManager GetWorkerManager()
+    {
+        return this._workerManager;
+    }
+
     public void SetVisitorAvatar(LogicAvatar avatar)
     {
         this._visitorAvatar = avatar;
@@ -123,6 +144,25 @@ public class LogicLevel
         this._homeOwnerAvatar = avatar;
 
         // TODO: more logic
+    }
+
+    public bool IsValidPlaceForBuilding(int x, int y, int width, int height, LogicGameObject gameObject)
+    {
+        if (this._playArea.IsInside(x, y) && this._playArea.IsInside(x + width, y + height))
+        {
+            for (int i = 0; i < width; i++)
+            {
+                for (int k = 0; k < height; k++)
+                {
+                    if (!this._tileMap.GetTile(x + i, y + k).IsBuildable(gameObject))
+                        return false;
+                }
+            }
+
+            return true;
+        }
+
+        return true;
     }
 
     public void Tick()

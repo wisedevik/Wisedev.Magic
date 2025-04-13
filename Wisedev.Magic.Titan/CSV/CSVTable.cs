@@ -1,7 +1,7 @@
-﻿using Wisedev.Magic.Titam.Utils;
+﻿using Wisedev.Magic.Titan.Utils;
 using System.Diagnostics;
 
-namespace Wisedev.Magic.Titam.CSV;
+namespace Wisedev.Magic.Titan.CSV;
 
 public class CSVTable
 {

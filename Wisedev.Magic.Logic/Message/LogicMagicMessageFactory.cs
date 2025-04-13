@@ -1,6 +1,6 @@
 ﻿using System.Collections.Immutable;
 using System.Reflection;
-using Wisedev.Magic.Titam.Message;
+using Wisedev.Magic.Titan.Message;
 
 namespace Wisedev.Magic.Logic.Message;
 

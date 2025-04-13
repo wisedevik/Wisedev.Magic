@@ -1,6 +1,6 @@
 ﻿using Wisedev.Magic.Server.Network.Connection;
-using Wisedev.Magic.Titam.Crypto;
-using Wisedev.Magic.Titam.Message;
+using Wisedev.Magic.Titan.Crypto;
+using Wisedev.Magic.Titan.Message;
 using Wisedev.Magic.Logic.Message;
 using Wisedev.Magic.Titan.Debug;
 using System.Threading.Tasks;

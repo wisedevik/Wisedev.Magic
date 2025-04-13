@@ -1,5 +1,5 @@
 ﻿using System.Net;
-using Wisedev.Magic.Titam.JSON;
+using Wisedev.Magic.Titan.JSON;
 using Wisedev.Magic.Titan.Debug;
 
 namespace Wisedev.Magic.Server.HTTP;
@@ -43,11 +43,17 @@ public class ServerHttpClient
         {
             using (WebClient client = ServerHttpClient.CreateWebClient())
             {
+                foreach (string header in client.Headers.AllKeys)
+                {
+                    Debugger.Print(string.Format("Header: {0} = {1}", header, client.Headers[header]));
+                }
+
                 return client.DownloadString(string.Format("{0}/{1}", ServerHttpClient.URL, path));
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            Debugger.Error($"{ex.Message}\n{ex.StackTrace}");
             Debugger.Warning(string.Format("ServerHttpClient: file {0} doesn't exist", path));
         }
 

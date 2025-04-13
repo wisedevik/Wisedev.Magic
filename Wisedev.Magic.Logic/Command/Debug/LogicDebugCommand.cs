@@ -1,6 +1,6 @@
 ﻿using Wisedev.Magic.Logic.Avatar;
 using Wisedev.Magic.Logic.Level;
-using Wisedev.Magic.Titam.DataStream;
+using Wisedev.Magic.Titan.DataStream;
 
 namespace Wisedev.Magic.Logic.Command.Debug;
 

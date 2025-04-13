@@ -1,4 +1,4 @@
-﻿using Wisedev.Magic.Titam.JSON;
+﻿using Wisedev.Magic.Titan.JSON;
 using Wisedev.Magic.Titan.Debug;
 
 namespace Wisedev.Magic.Logic.Coldown;

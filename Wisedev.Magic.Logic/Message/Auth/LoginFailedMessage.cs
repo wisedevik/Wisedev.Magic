@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using Wisedev.Magic.Titam.Message;
+using Wisedev.Magic.Titan.Message;
 
 namespace Wisedev.Magic.Logic.Message.Auth;
 

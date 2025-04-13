@@ -1,4 +1,4 @@
-﻿namespace Wisedev.Magic.Titam.Message;
+﻿namespace Wisedev.Magic.Titan.Message;
 
 public abstract class LogicMessageFactory
 {

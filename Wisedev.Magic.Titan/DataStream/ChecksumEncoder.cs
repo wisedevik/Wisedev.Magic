@@ -1,6 +1,6 @@
-﻿namespace Wisedev.Magic.Titam.DataStream
+﻿namespace Wisedev.Magic.Titan.DataStream
 {
-    using Wisedev.Magic.Titam.Logic;
+    using Wisedev.Magic.Titan.Logic;
     using System.Runtime.CompilerServices;
 
     public class ChecksumEncoder

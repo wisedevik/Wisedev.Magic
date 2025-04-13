@@ -1,4 +1,4 @@
-﻿namespace Wisedev.Magic.Titam.CSV;
+﻿namespace Wisedev.Magic.Titan.CSV;
 
 public class CSVRow
 {

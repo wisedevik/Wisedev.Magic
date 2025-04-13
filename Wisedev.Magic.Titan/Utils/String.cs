@@ -1,4 +1,4 @@
-﻿/*namespace Wisedev.Magic.Titam.Utils;
+﻿/*namespace Wisedev.Magic.Titan.Utils;
 
 public class String : IDisposable
 {

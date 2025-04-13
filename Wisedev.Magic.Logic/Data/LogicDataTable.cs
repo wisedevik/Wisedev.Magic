@@ -1,4 +1,4 @@
-﻿using Wisedev.Magic.Titam.CSV;
+﻿using Wisedev.Magic.Titan.CSV;
 using Wisedev.Magic.Titan.Debug;
 
 namespace Wisedev.Magic.Logic.Data;

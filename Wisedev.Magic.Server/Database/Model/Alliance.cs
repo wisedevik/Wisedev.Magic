@@ -1,6 +1,6 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
-using Wisedev.Magic.Titam.Logic;
+using Wisedev.Magic.Titan.Logic;
 
 namespace Wisedev.Magic.Server.Database.Model;
 

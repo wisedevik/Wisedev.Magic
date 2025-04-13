@@ -1,4 +1,4 @@
-﻿using Wisedev.Magic.Titam.JSON;
+﻿using Wisedev.Magic.Titan.JSON;
 
 namespace Wisedev.Magic.Logic.GameObject.Component;
 
@@ -7,6 +7,13 @@ public class LogicComponent
     public const int COMPONENT_TYPE_COUNT = 11; // idk 'bout that
 
     protected bool _enabled;
+    protected LogicGameObject _gameObject;
+
+    public LogicComponent(LogicGameObject gameObject)
+    {
+        this._gameObject = gameObject;
+        this._enabled = true;
+    }
 
     public virtual void SubTick()
     {

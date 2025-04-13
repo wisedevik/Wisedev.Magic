@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Wisedev.Magic.Titam.Utils;
+namespace Wisedev.Magic.Titan.Utils;
 
 public static class LogicStringUtil
 {

@@ -6,7 +6,7 @@ using Wisedev.Magic.Logic.Home;
 using Wisedev.Magic.Logic.Level;
 using Wisedev.Magic.Logic.Message.Home;
 using Wisedev.Magic.Logic.Time;
-using Wisedev.Magic.Titam.JSON;
+using Wisedev.Magic.Titan.JSON;
 using Wisedev.Magic.Titan.Debug;
 
 namespace Wisedev.Magic.Logic.Mode;
@@ -31,6 +31,11 @@ public class LogicGameMode
     public void SaveToJSON(LogicJSONObject jsonObject)
     {
         this._level.SaveToJSON(jsonObject);
+    }
+
+    public void SetShieldRemainingSeconds(int seconds)
+    {
+        this._shieldRemainingSeconds = this._level.GetLogicTime().GetTick() + 60 * 2;
     }
 
     public void LoadHomeState(LogicClientHome logicHome, LogicAvatar logicAvatar, int secondsSinceLastSave)
@@ -75,7 +80,7 @@ public class LogicGameMode
                 // TODO: setResource logic
 
                 this._level.SetMatchType(2, 0);
-                this._level.SetHome(null);
+                this._level.SetHome(home);
                 this._level.SetHomeOwnerAvatar(homeOwnerAvatar);
                 this._level.SetVisitorAvatar(visitorAvatar);
                 //TODO: LogicLevel::fastForwardTime
@@ -125,11 +130,6 @@ public class LogicGameMode
     public LogicCommandManager GetCommandManager()
     {
         return this._commandManager;
-    }
-
-    public void SetShieldRemainingSeconds(int s)
-    {
-        this._shieldRemainingSeconds = s;
     }
 
     public int GetShieldRemainingSeconds()

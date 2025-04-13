@@ -3,9 +3,10 @@ using Wisedev.Magic.Logic.Data;
 using Wisedev.Magic.Logic.Home;
 using Wisedev.Magic.Logic.Level;
 using Wisedev.Magic.Logic.Util;
-using Wisedev.Magic.Titam.JSON;
-using Wisedev.Magic.Titam.Logic;
-using Wisedev.Magic.Titam.Utils;
+using Wisedev.Magic.Titan.JSON;
+using Wisedev.Magic.Titan.Logic;
+using Wisedev.Magic.Titan.Math;
+using Wisedev.Magic.Titan.Utils;
 using Wisedev.Magic.Titan.Debug;
 
 namespace Wisedev.Magic.Logic.Avatar;
@@ -127,6 +128,46 @@ public class LogicAvatar : LogicBase
         return false;
     }
 
+    public void CommodityCountChangeHelper(int commodityType, LogicData data, int count)
+    {
+        switch (data.GetDataType())
+        {
+            case LogicDataType.RESOURCE:
+                switch (commodityType)
+                {
+                    case 0:
+                        int resourceCount = this.GetResourceCount((LogicResourceData)data);
+                        int newResourceCount = Math.Max(resourceCount + count, 0);
+
+                        if (count > 0)
+                        {
+                            int resourceCap = this.GetResourceCap((LogicResourceData)data);
+
+                            if (newResourceCount > resourceCap)
+                            {
+                                newResourceCount = resourceCap;
+                            }
+
+                            if (resourceCount >= resourceCap)
+                            {
+                                newResourceCount = resourceCap;
+                            }
+                        }
+
+                        this.SetResourceCount((LogicResourceData)data, newResourceCount);
+                        break;
+                    case 1:
+                        {
+                            int newCount = this.GetResourceCap((LogicResourceData)data) + count;
+
+                            this.SetResourceCap((LogicResourceData)data, newCount);
+                            break;
+                        }
+                }
+                break;
+        }
+    }
+
     public void SetResourceCount(LogicResourceData resourceData, int cnt)
     {
         if (resourceData.IsPremiumCurrency())
@@ -139,7 +180,7 @@ public class LogicAvatar : LogicBase
 
         for (int i = 0; i < this._resourceCount.Count; i++)
         {
-            if (this._resourceCount[i].GetData() == resourceData)
+            if (this._resourceCount[i].GetData().GlobalID == resourceData.GlobalID)
             {
                 idx = i;
                 break;
@@ -162,28 +203,27 @@ public class LogicAvatar : LogicBase
     {
         if (!data.IsPremiumCurrency())
         {
-            int idx = -1;
+            int index = -1;
 
             for (int i = 0; i < this._resourceCount.Count; i++)
             {
-                if (this._resourceCount[i].GetData() == data)
+                if (this._resourceCount[i].GetData().GlobalID == data.GlobalID)
                 {
-                    idx = i;
+                    index = i;
                     break;
                 }
             }
 
-            if (idx != -1)
+            if (index != -1)
             {
-                return this._resourceCount[idx].GetCount();
+                return this._resourceCount[index].GetCount();
             }
         }
         else
         {
-            Debugger.Warning("LogicClientAvatar.GetResourceCount shouldn't be used for diamonds");
-            return 0;
+            Debugger.Warning("LogicAvatar::getResourceCount shouldn't be used for diamonds");
         }
-       
+
         return 0;
     }
 
@@ -238,6 +278,34 @@ public class LogicAvatar : LogicBase
                 this._unitCount.Add(new LogicDataSlot(data, cnt));
             }
         }
+    }
+
+    public int GetResourceCap(LogicResourceData data)
+    {
+        if (data.IsPremiumCurrency())
+        {
+            Debugger.Warning("LogicClientAvatar::getResourceCap shouldn't be used for diamonds");
+        }
+        else
+        {
+            int index = -1;
+
+            for (int i = 0; i < this._resourceCap.Count; i++)
+            {
+                if (this._resourceCap[i].GetData() == data)
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index != -1)
+            {
+                return this._resourceCap[index].GetCount();
+            }
+        }
+
+        return 0;
     }
 
     public virtual int GetUnitCount(LogicCombatItemData data)
@@ -360,7 +428,7 @@ public class LogicAvatar : LogicBase
 
             for (int i = 0; i < this._resourceCap.Count; i++)
             {
-                if (this._resourceCap[i].GetData() == data)
+                if (this._resourceCap[i].GetData().GlobalID == data.GlobalID)
                 {
                     idx = i;
                     break;

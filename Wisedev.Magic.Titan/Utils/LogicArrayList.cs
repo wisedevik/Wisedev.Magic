@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace Wisedev.Magic.Titam.Utils;
+namespace Wisedev.Magic.Titan.Utils;
 
 public class LogicArrayList<T> : IEnumerable<T>
 {
