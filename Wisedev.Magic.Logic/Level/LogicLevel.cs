@@ -96,7 +96,9 @@ public class LogicLevel
 
         LogicJSONObject homeJSON = LogicJSONParser.ParseObject(home.GetHomeJSON());
 
-        this._androidClient = homeJSON.GetJSONBoolean("android_client").IsTrue();
+        LogicJSONBoolean androidClient = homeJSON.GetJSONBoolean("android_client");
+        if (androidClient != null)
+            this._androidClient = androidClient.IsTrue();
 
         LogicJSONNumber waveNumObject = homeJSON.GetJSONNumber("wave_num");
 
