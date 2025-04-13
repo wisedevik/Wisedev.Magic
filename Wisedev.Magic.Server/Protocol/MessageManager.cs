@@ -145,7 +145,7 @@ class MessageManager
         {
             LoginFailedMessage loginFailedMessage = new LoginFailedMessage();
             loginFailedMessage.SetErrorCode(LoginFailedMessage.ErrorCode.CLIENT_VERSION);
-            loginFailedMessage.SetUpdateURL("https://api.bladewise.xyz/supercell");
+            loginFailedMessage.SetUpdateURL($"{Config.ApiUrl}");
 
             await this._connection.SendMessage(loginFailedMessage);
             return false;
@@ -155,7 +155,7 @@ class MessageManager
         {
             LoginFailedMessage loginFailedMessage = new LoginFailedMessage();
             loginFailedMessage.SetErrorCode(LoginFailedMessage.ErrorCode.DATA_VERSION);
-            loginFailedMessage.SetContentURL("https://api.bladewise.xyz/supercell");
+            loginFailedMessage.SetContentURL($"{Config.ApiUrl}");
             loginFailedMessage.SetResourceFingerprintData(ResourceManager.FINGERPRINT_JSON!);
 
             await this._connection.SendMessage(loginFailedMessage);

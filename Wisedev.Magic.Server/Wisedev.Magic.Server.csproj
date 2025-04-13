@@ -17,6 +17,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="assets\local_res\fingerprint.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="assets\local_res\level\starting_home.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="assets\logic\characters.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

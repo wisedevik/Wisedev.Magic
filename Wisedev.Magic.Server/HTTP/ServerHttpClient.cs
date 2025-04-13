@@ -15,7 +15,9 @@ public class ServerHttpClient
         {
             Proxy = null
         };
-        client.Headers["Authorization"] = $"Bearer {ServerHttpClient.TOKEN}";
+        if (Config.ApiShield)
+            client.Headers["Authorization"] = $"Bearer {ServerHttpClient.TOKEN}";
+
         return client;
 
     }
@@ -43,11 +45,6 @@ public class ServerHttpClient
         {
             using (WebClient client = ServerHttpClient.CreateWebClient())
             {
-                foreach (string header in client.Headers.AllKeys)
-                {
-                    Debugger.Print(string.Format("Header: {0} = {1}", header, client.Headers[header]));
-                }
-
                 return client.DownloadString(string.Format("{0}/{1}", ServerHttpClient.URL, path));
             }
         }

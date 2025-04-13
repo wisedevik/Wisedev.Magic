@@ -7,6 +7,8 @@ public static class Config
 {
     public static string ApiUrl { get; private set; }
     public static string ApiToken { get; private set; }
+    public static bool ApiShield { get; private set; }
+    public static bool UseLocalResources { get; private set; } = false;
     public static string MongoConnectionString { get; private set; }
     public static string DatabaseName { get; private set; }
     public static int ServerPort { get; private set; }
@@ -28,6 +30,8 @@ public static class Config
 
         ApiUrl = config.ApiUrl;
         ApiToken = config.ApiToken;
+        ApiShield = config.ApiShield;
+        UseLocalResources = config.UseLocalResources;
         MongoConnectionString = config.MongoConnectionString;
         DatabaseName = config.DatabaseName;
         ServerPort = config.ServerPort;
@@ -56,6 +60,8 @@ public static class Config
     {
         public string ApiUrl { get; set; }
         public string ApiToken { get; set; }
+        public bool ApiShield { get; set; }
+        public bool UseLocalResources { get; set; }
         public string MongoConnectionString { get; set; }
         public string DatabaseName { get; set; }
         public int ServerPort { get; set; }
