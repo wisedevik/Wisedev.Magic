@@ -9,6 +9,11 @@ Educational Clash of Clans 2014 private server emulation in .NET
 - Minimal core gameplay systems
 - MongoDB integration
 
+## Client
+ Download it https://drive.google.com/file/d/1Qq7AZRYH-ttBgzWqzh8QJKoixINX03Er/view?usp=sharing
+
+ Replace string ``192.168.0.104`` (in 2 places) in ``libg.so`` (i use HxD)
+
 ## ⚙️ Requirements
 - .NET 9.0
 - MongoDB
