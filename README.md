@@ -33,7 +33,7 @@ Educational Clash of Clans 2014 private server emulation in .NET
         └─ {FINGERPRINT_SHA}/logic/locale.json
         ```
  - Local Mode
-    1. Set ``"UseLocalResources": true``
+    - Set ``"UseLocalResources": true``
  - Security Options
     - ``ApiShield: true``: Enforces API token validation
     - ``ApiShield: false``: Disables auth (development only)
