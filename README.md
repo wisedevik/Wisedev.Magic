@@ -75,5 +75,5 @@ Educational Clash of Clans 2014 private server emulation in .NET
 ## ⚠️ Legal Notice
  This project is for educational purposes only. All game assets are copyright of Supercell. Use original client files only if you legally own them.
 
-## Any questions?  
- DM me wisedevfox (Discrod), 
+## ❓ Any questions 
+ DM me wisedevfox (Discrod), @TheBladewise (TG)
