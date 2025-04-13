@@ -32,7 +32,7 @@ A minimal private server implementation for Clash of Clans v5.2.4 (2014 version)
     - ``ApiShield: true``: Enforces API token validation
     - ``ApiShield: false``: Disables auth (development only)
 
-## ## 🌐 CDN Version Control System
+## 🌐 CDN Version Control System
  The server implements a robust version-checking mechanism that uses CDN resources when client assets are outdated
 
 ## 📌 Important
