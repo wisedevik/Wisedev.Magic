@@ -2,11 +2,14 @@
 using Wisedev.Magic.Server.HTTP;
 using Wisedev.Magic.Titan.JSON;
 using Wisedev.Magic.Titan.Debug;
+using System.Runtime.CompilerServices;
 
 namespace Wisedev.Magic.Server.Resources;
 
-class ResourceManager
+public class ResourceManager
 {
+    private static DataLoader _loader;
+
     public static string PATH = Config.AssetsPath;
     public static string LOCAL_RES_PATH = $"{PATH}/local_res";
 
@@ -18,85 +21,50 @@ class ResourceManager
 
     public static void Init()
     {
+        ResourceManager._loader = Config.UseLocalResources
+            ? new LocalDataLoader(ResourceManager.LOCAL_RES_PATH)
+            : new RemoteDataLoader($"assets");
+
         ResourceManager.LoadFingerprint();
         ResourceManager.LoadStartingHome();
-        ResourceManager.LoadResources();
+        ResourceManager.LoadGameResources();
     }
 
     private static void LoadStartingHome()
     {
-        if (Config.UseLocalResources)
-        {
-            if (File.Exists($"{LOCAL_RES_PATH}/level/starting_home.json"))
-            {
-                ResourceManager.STARTING_HOME_JSON = File.ReadAllText($"{LOCAL_RES_PATH}/level/starting_home.json");
-                Debugger.Print("Starting home has been loaded from local resources!");
-            }
-            else
-            {
-                Debugger.Error($"ResourceManager.LoadStartingHome: Unable to load the starting_home.json from local resources!");
-                return;
-            }
-        }
-        else
-        {
-            ResourceManager.STARTING_HOME_JSON = ServerHttpClient.DownloadString($"{ResourceManager.PATH}/level/starting_home.json");
-            if (ResourceManager.STARTING_HOME_JSON == null)
-            {
-                Debugger.Error("ResourceManager.LoadStartingHome: Unable to download the starting_home.json!");
-                return;
-            }
-
-            Debugger.Print("Starting home has been downloaded!");
-        }
-
+        ResourceManager.STARTING_HOME_JSON = ResourceManager.LoadResource("level/starting_home.json");
     }
 
     private static void LoadFingerprint()
     {
-        if (Config.UseLocalResources)
+        ResourceManager.FINGERPRINT_JSON = ResourceManager.LoadResource("fingerprint.json");
+        if (ResourceManager.FINGERPRINT_JSON != null)
         {
-            if (File.Exists($"{LOCAL_RES_PATH}/fingerprint.json"))
-            {
-                ResourceManager.FINGERPRINT_JSON = File.ReadAllText($"{LOCAL_RES_PATH}/fingerprint.json");
-                if (ResourceManager.FINGERPRINT_JSON != null)
-                {
-                    LogicJSONObject jsonObject = (LogicJSONObject)LogicJSONParser.Parse(ResourceManager.FINGERPRINT_JSON!);
+            LogicJSONObject jsonObject = (LogicJSONObject)LogicJSONParser.Parse(ResourceManager.FINGERPRINT_JSON!);
+            ResourceManager.FINGERPRINT_SHA = jsonObject.GetJSONString("sha").GetStringValue();
+            ResourceManager.FINGERPRINT_VERSION = jsonObject.GetJSONString("version").GetStringValue();
 
-                    ResourceManager.FINGERPRINT_SHA = jsonObject.GetJSONString("sha").GetStringValue();
-                    ResourceManager.FINGERPRINT_VERSION = jsonObject.GetJSONString("version").GetStringValue();
-                }
-                Debugger.Print($"Fingerprint(server_sha={ResourceManager.FINGERPRINT_SHA}, v={ResourceManager.FINGERPRINT_VERSION}) has been loaded from local resources!");
-            }
-            else
-            {
-                Debugger.Error($"ResourceManager.LoadFingerprint: Unable to load the fingerprint.json from local resources!");
-                return;
-            }
+            Debugger.Print($"Sha={ResourceManager.FINGERPRINT_SHA}, version={ResourceManager.FINGERPRINT_VERSION}");
         }
-        else
-        {
-            ResourceManager.FINGERPRINT_JSON = ServerHttpClient.DownloadString($"{ResourceManager.PATH}/fingerprint.json");
-            if (ResourceManager.FINGERPRINT_JSON != null)
-            {
-                LogicJSONObject jsonObject = (LogicJSONObject)LogicJSONParser.Parse(ResourceManager.FINGERPRINT_JSON!);
-
-                ResourceManager.FINGERPRINT_SHA = jsonObject.GetJSONString("sha").GetStringValue();
-                ResourceManager.FINGERPRINT_VERSION = jsonObject.GetJSONString("version").GetStringValue();
-            }
-            else
-            {
-                Debugger.Error($"ResourceManager.LoadFingerprint: Unable to download the fingerprint.json!");
-                return;
-            }
-
-            Debugger.Print($"Fingerprint has been downloaded! server sha={ResourceManager.FINGERPRINT_SHA} server fingerprint version={ResourceManager.FINGERPRINT_VERSION}");
-        }
-
-
     }
 
-    private static void LoadResources()
+    private static string LoadResource(string path)
+    {
+        try
+        {
+            string data = ResourceManager._loader.Load(path);
+            Debugger.Print($"{path} has been loaded!");
+
+            return data;
+        }
+        catch (Exception e)
+        {
+            Debugger.Error($"Resource ({path}) loading failed: {e.Message}");
+            return null;
+        }
+    }
+
+    private static void LoadGameResources()
     {
         LogicDataTables.Init();
         List<LogicDataTableResource> resources = LogicResources.CreateDataTableResourcesArray();

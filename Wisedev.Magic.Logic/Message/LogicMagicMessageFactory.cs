@@ -6,6 +6,8 @@ namespace Wisedev.Magic.Logic.Message;
 
 public class LogicMagicMessageFactory : LogicMessageFactory
 {
+    public const string RC4_KEY = "fhsd6f86f67rt8fw78fw789we78r9789wer6re";
+
     private ImmutableDictionary<int, Type> _messages;
 
     public static readonly LogicMessageFactory Instance;

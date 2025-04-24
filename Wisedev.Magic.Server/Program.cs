@@ -25,7 +25,6 @@ class Program
         tcpGateway.Start();
 
         await Program.WaitForExit();
-
         await tcpGateway.Stop();
     }
 

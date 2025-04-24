@@ -6,7 +6,6 @@ using Wisedev.Magic.Titan.Debug;
 using System.Threading.Tasks;
 using System.Text;
 using System.Collections.Concurrent;
-using Wisedev.Magic.Server.Security;
 
 namespace Wisedev.Magic.Server.Protocol;
 
@@ -41,8 +40,8 @@ class Messaging : IConnectionListener
         if (this._sendEncrypter != null)
             this._sendEncrypter.Destruct();
 
-        this._receiveEncrypter = new RC4Encrypter(LogicKey.RC4_KEY, LogicKey.RC4_NONCE);
-        this._sendEncrypter = new RC4Encrypter(LogicKey.RC4_KEY, LogicKey.RC4_NONCE);
+        this._receiveEncrypter = new RC4Encrypter(LogicMagicMessageFactory.RC4_KEY, "nonce");
+        this._sendEncrypter = new RC4Encrypter(LogicMagicMessageFactory.RC4_KEY, "nonce");
     }
 
     public PiranhaMessage? NextMessage()
@@ -119,7 +118,7 @@ class Messaging : IConnectionListener
 
         if (message.IsServerToClientMessage())
         {
-            Debugger.Warning($"Messaging.Send server to client message type {messageType}");
+            Debugger.Warning($"Messaging.Send server to client message type {messageType} to {_connection.GetCurrentAccountId()}");
         }
 
         if (_outgoingQueue.Count >= 50)

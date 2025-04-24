@@ -1,13 +1,17 @@
-﻿using System.Net.Sockets;
+﻿using System.Collections.Concurrent;
+using System.Net.Sockets;
 using Wisedev.Magic.Server.Database;
 using Wisedev.Magic.Titan.Debug;
+using Wisedev.Magic.Titan.Logic;
+using Wisedev.Magic.Titan.Message;
 
 namespace Wisedev.Magic.Server.Network.Connection;
 
-internal class ClientConnectionManager
+public class ClientConnectionManager
 {
     private readonly IAccountRepository _accountRepository;
     private readonly IAllianceRepository _allianceRepository;
+    private readonly ConcurrentDictionary<LogicLong, ClientConnection> _activeConnections = new();
 
     public ClientConnectionManager(IAccountRepository accountRepository, IAllianceRepository allianceRepository)
     {
@@ -21,9 +25,35 @@ internal class ClientConnectionManager
         _ = RunSessionAsync(client);
     }
 
+    public async Task BroadcastMessage(PiranhaMessage message)
+    {
+        foreach (var connection in _activeConnections.Values.ToArray())
+        {
+            if (connection.IsConnected())
+            {
+                try
+                {
+                    await connection.SendMessage(message);
+                }
+                catch (Exception ex)
+                {
+                    Debugger.Error($"Error broadcasting message: {ex.Message}");
+                }
+            }
+        }
+    }
+
+    public void AddConnection(ClientConnection connection)
+    {
+        if (connection.GetCurrentAccountId() != null)
+        {
+            _activeConnections.TryAdd(connection.GetCurrentAccountId(), connection);
+        }
+    }
+
     private async Task RunSessionAsync(Socket client)
     {
-        ClientConnection session = new ClientConnection(client, this._accountRepository, this._allianceRepository);
+        ClientConnection session = new ClientConnection(client, this, this._accountRepository, this._allianceRepository);
         try
         {
             await session.Receive();

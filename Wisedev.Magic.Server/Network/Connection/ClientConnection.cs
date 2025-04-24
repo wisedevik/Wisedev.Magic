@@ -16,6 +16,7 @@ public class ClientConnection
     private Socket _socket;
     private Messaging _messaging;
     private MessageManager _messageManager;
+    private ClientConnectionManager _manager;
 
     private byte[] _receiveBuffer;
 
@@ -24,10 +25,11 @@ public class ClientConnection
 
     private Account _accountDocument;
 
-    public ClientConnection(Socket socket, IAccountRepository accountRepository, IAllianceRepository allianceRepository)
+    public ClientConnection(Socket socket, ClientConnectionManager manager, IAccountRepository accountRepository, IAllianceRepository allianceRepository)
     {
         this._socket = socket;
         this._messaging = new Messaging(this);
+        this._manager = manager;
         this._messageManager = new MessageManager(this, accountRepository, allianceRepository);
         this._receiveBuffer = GC.AllocateUninitializedArray<byte>(4096 * 2);
         this._gameMode = new GameMode(this);
@@ -36,6 +38,11 @@ public class ClientConnection
     public GameMode GetGameMode()
     {
         return this._gameMode;
+    }
+
+    public ClientConnectionManager GetClientConnectionManager()
+    {
+        return this._manager;
     }
 
     public void SetAccountDocument(Account acc)
@@ -61,6 +68,7 @@ public class ClientConnection
     public void SetCurrentAccountId(LogicLong accountId)
     {
         _currentAccountId = accountId;
+        _manager.AddConnection(this);
     }
 
     public LogicLong GetCurrentAccountId()

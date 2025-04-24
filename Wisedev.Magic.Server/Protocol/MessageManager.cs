@@ -19,6 +19,7 @@ using Wisedev.Magic.Server.Util;
 using Wisedev.Magic.Titan.Logic;
 using Wisedev.Magic.Titan.Message;
 using Wisedev.Magic.Titan.Debug;
+using Wisedev.Magic.Logic.Command.Home;
 
 namespace Wisedev.Magic.Server.Protocol;
 
@@ -39,28 +40,31 @@ class MessageManager
     {
         int messageType = message.GetMessageType();
 
-        if (messageType != 14102)
+        if (messageType != EndClientTurnMessage.MESSAGE_TYPE)
             Debugger.Print($"MessageManager.ReceiveMessage: type={messageType}, name=" + message.GetType().Name);
 
         switch (messageType)
         {
-            case 10101:
+            case LoginMessage.MESSAGE_TYPE:
                 await this.OnLoginMessageReceived((LoginMessage)message);
                 break;
             case GoHomeMessage.MESSAGE_TYPE:
                 await this.OnGoHomeMessageReceived((GoHomeMessage)message);
                 break;
-            case 14102:
+            case EndClientTurnMessage.MESSAGE_TYPE:
                 await this.OnEndClientTurnReceived((EndClientTurnMessage)message);
                 break;
             case CreateAllianceMessage.MESSAGE_TYPE:
-                await OnCreateAllianceMessageReceived((CreateAllianceMessage)message);
+                await this.OnCreateAllianceMessageReceived((CreateAllianceMessage)message);
                 break;
             case AttackNpcMessage.MESSAGE_TYPE:
                 await this.OnAttackMessageReceived((AttackNpcMessage)message);
                 break;
-            case 14325:
+            case AskForAvatarProfileMessage.MESSAGE_TYPE:
                 await this.OnAskForAvatarProfileMessage((AskForAvatarProfileMessage)message);
+                break;
+            case SendGlobalChatLineMessage.MESSAGE_TYPE:
+                await this.OnSendGlobalChatLineMessage((SendGlobalChatLineMessage)message);
                 break;
         }
     }
@@ -166,6 +170,54 @@ class MessageManager
         return true;
     }
 
+    private async Task OnSendGlobalChatLineMessage(SendGlobalChatLineMessage message)
+    {
+        string? playerMessage = message.GetMessage();
+        if (playerMessage != null)
+        {
+            GlobalChatLineMessage globalChatLineMessage = new GlobalChatLineMessage();
+            globalChatLineMessage.SetMessage(playerMessage);
+            globalChatLineMessage.SetAvatarName(this._connection.GetAccountDocument().ClientAvatar.Name);
+            globalChatLineMessage.SetExpLvl(this._connection.GetAccountDocument().ClientAvatar.ExpLevel);
+            globalChatLineMessage.SetLeagueType(this._connection.GetAccountDocument().ClientAvatar.LeagueType);
+            globalChatLineMessage.SetAvatarId(this._connection.GetCurrentAccountId());
+            globalChatLineMessage.SetHomeId(this._connection.GetCurrentAccountId());
+
+            Debugger.Print($"GlobalChatLineMessage data: msg={playerMessage} name={this._connection.GetAccountDocument().ClientAvatar.Name} " +
+                $"expLvl={this._connection.GetAccountDocument().ClientAvatar.ExpLevel} lgType={this._connection.GetAccountDocument().ClientAvatar.LeagueType} " +
+                $"avatarId={this._connection.GetCurrentAccountId()} hmId={this._connection.GetCurrentAccountId()}");
+            await _connection.GetClientConnectionManager().BroadcastMessage(globalChatLineMessage);
+
+            if (playerMessage.StartsWith("/change_name"))
+            {
+
+                string[] args = playerMessage.Split(' ');
+
+                LogicChangeAvatarNameCommand command = new LogicChangeAvatarNameCommand();
+                command.SetName(args[0]);
+                AvailableServerCommandMessage availableServerCommandMessage = new AvailableServerCommandMessage();
+                availableServerCommandMessage.SetServerCommand(command);
+                await this._connection.SendMessage(availableServerCommandMessage);
+            }
+            else if (playerMessage.StartsWith("/help"))
+            {
+                GlobalChatLineMessage globalChatLineMessage1 = new GlobalChatLineMessage();
+                globalChatLineMessage1.SetMessage("Available commands:\n/help\n/change_name {new_name}");
+                globalChatLineMessage1.SetAvatarName("Helper");
+                globalChatLineMessage1.SetExpLvl(-1);
+                globalChatLineMessage1.SetLeagueType(-1);
+                globalChatLineMessage1.SetAvatarId(-1);
+                globalChatLineMessage1.SetHomeId(-1);
+
+                await this._connection.SendMessage(globalChatLineMessage1);
+            }
+        }
+        else
+        {
+            Debugger.Print("SendGlobalChatLineMessage: message is NULL!");
+        }
+    }
+
     private async Task OnAskForAvatarProfileMessage(AskForAvatarProfileMessage askProfileMessage)
     {
         Account? account = await this._accountRepository.GetByIdAsync(askProfileMessage.GetAvatarId());
@@ -231,12 +283,6 @@ class MessageManager
 
     private async Task OnCreateAllianceMessageReceived(CreateAllianceMessage createAllianceMessage)
     {
-        AvailableServerCommandMessage message = new AvailableServerCommandMessage();
-        message.SetServerCommand(new LogicDebugCommand(3));
-        await _connection.SendMessage(message);
-
         Debugger.Print($"Tryna create alliance: name={createAllianceMessage.GetAllianceName()}, badge_id={createAllianceMessage.GetAllianceBadgeData().GetGlobalID()}, type={createAllianceMessage.GetAllianceType()}, required_score={createAllianceMessage.GetRequiredScore()} desc={createAllianceMessage.GetAllianceDescription()}");
-
-
     }
 }

@@ -42,7 +42,7 @@ class MongoAccountRepository : IAccountRepository
         var account = new Account
         {
             InternalId = ObjectId.GenerateNewId(),
-            Id = await GenerateNewLogicLongId(),
+            Id = GetNextId(),
             PassToken = GenerateSecureToken(32),
             Home = new LogicClientHome(),
             ClientAvatar = LogicClientAvatar.GetDefaultAvatar(),
@@ -71,7 +71,7 @@ class MongoAccountRepository : IAccountRepository
             .FirstOrDefaultAsync();
     }
 
-    private async Task<LogicLong> GenerateNewLogicLongId()
+    private LogicLong GetNextId()
     {
         var counters = _collection.Database.GetCollection<BsonDocument>("counters");
 
@@ -83,7 +83,7 @@ class MongoAccountRepository : IAccountRepository
             IsUpsert = true
         };
 
-        var result = await counters.FindOneAndUpdateAsync(filter, update, options);
+        var result = counters.FindOneAndUpdate(filter, update, options);
         var sequence = result["seq"].AsInt32;
 
         return new LogicLong(0, sequence);
@@ -91,10 +91,11 @@ class MongoAccountRepository : IAccountRepository
 
     private static string GenerateSecureToken(int length)
     {
-        using var rng = RandomNumberGenerator.Create();
-        var tokenData = new byte[length / 2];
-        rng.GetBytes(tokenData);
-        return BitConverter.ToString(tokenData).Replace("-", "").ToLower();
+        int byteLength = (length + 1) / 2;
+        Span<byte> buffer = stackalloc byte[byteLength];
+        RandomNumberGenerator.Fill(buffer);
+
+        return Convert.ToHexString(buffer).ToLower()[..length];
     }
 
     public async Task UpdateAccountAsync(LogicLong accountId, UpdateDefinition<Account> update)

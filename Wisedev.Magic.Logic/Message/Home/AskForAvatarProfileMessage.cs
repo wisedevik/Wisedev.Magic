@@ -3,7 +3,7 @@ using Wisedev.Magic.Titan.Message;
 
 namespace Wisedev.Magic.Logic.Message.Home;
 
-[PiranhaMessage(14325)]
+[PiranhaMessage(AskForAvatarProfileMessage.MESSAGE_TYPE)]
 public class AskForAvatarProfileMessage : PiranhaMessage
 {
     public const int MESSAGE_TYPE = 14325;
