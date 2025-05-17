@@ -5,8 +5,8 @@ namespace Wisedev.Magic.Logic.Level;
 
 public class LogicTileMap
 {
-    private int _x;
-    private int _y;
+    private int _x; // 4
+    private int _y; // 8
 
     private LogicTile[] _tiles;
 

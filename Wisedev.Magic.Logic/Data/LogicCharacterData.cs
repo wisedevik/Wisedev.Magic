@@ -28,4 +28,9 @@ public class LogicCharacterData : LogicCombatItemData
             }
         }
     }
+
+    public override int GetCombatItemType()
+    {
+        return 0;
+    }
 }

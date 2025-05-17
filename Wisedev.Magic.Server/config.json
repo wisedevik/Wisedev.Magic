@@ -1,8 +1,8 @@
 {
-  "ApiUrl": "https://api.bladewise.xyz/supercell",
-  "ApiToken": "LH5qflhvrTMQrxIEsa-IG4C1mB9?x-PZiHflMhbQ2-UkGMenad1rAE?0p7VMqd9q",
+  "ApiUrl": "https://cdn.bladewise.xyz/supercell",
+  "ApiToken": "pymvabok0nTHIJ3g09ITh6818xG3tr1B6bARCrVp9Gr/+beZgxlNesOkmnkaJ1HF",
   "ApiShield": true,
-  "UseLocalResources": true,
+  "UseLocalResources": false,
   "MongoConnectionString": "mongodb://localhost:27017",
   "DatabaseName": "MagicDatabase",
   "ServerPort": 9339,

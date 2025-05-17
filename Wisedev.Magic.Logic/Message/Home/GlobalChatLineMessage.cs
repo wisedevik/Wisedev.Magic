@@ -18,7 +18,7 @@ public class GlobalChatLineMessage : PiranhaMessage
 
     public GlobalChatLineMessage() : base(0)
     {
-        this._allianceId = null;
+        this._allianceId = 0;
     }
 
     public override void Encode()
@@ -30,12 +30,63 @@ public class GlobalChatLineMessage : PiranhaMessage
         this._stream.WriteInt(this._leagueType);
         this._stream.WriteLong(this._avatarId);
         this._stream.WriteLong(this._homeId);
-        if (this._allianceId == null)
+        if (this._allianceId == 0)
             this._stream.WriteBoolean(false);
         else
         {
             // TODO
         }
+    }
+
+    public override void Decode()
+    {
+        base.Decode();
+        this._message = this._stream.ReadString();
+        this._avatarName = this._stream.ReadString();
+        this._expLvl = this._stream.ReadInt();
+        this._leagueType = this._stream.ReadInt();
+        this._avatarId = this._stream.ReadLong();
+        this._homeId = this._stream.ReadLong();
+    }
+
+    public string GetMessage()
+    {
+        return this._message;
+    }
+
+    public string GetAvatarName()
+    {
+        return this._avatarName;
+    }
+
+    public int GetExpLvl()
+    {
+        return this._expLvl;
+    }
+
+    public int GetLeagueType()
+    {
+        return this._leagueType;
+    }
+
+    public LogicLong GetAvatarId()
+    {
+        return this._avatarId;
+    }
+
+    public LogicLong GetHomeId()
+    {
+        return this._homeId;
+    }
+
+    public LogicLong GetAllianceId()
+    {
+        return this._allianceId;
+    }
+
+    public override string ToString()
+    {
+        return $"{this._message}, {this._avatarName}, {this._expLvl}, {this._leagueType}, {this._avatarId}, {this._homeId}";
     }
 
     public void SetMessage(string message)

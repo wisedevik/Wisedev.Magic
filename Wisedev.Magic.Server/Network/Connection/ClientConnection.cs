@@ -8,6 +8,7 @@ using Wisedev.Magic.Server.Protocol;
 using Wisedev.Magic.Titan.Logic;
 using Wisedev.Magic.Titan.Message;
 using Wisedev.Magic.Titan.Debug;
+using Wisedev.Magic.Server.Logic.Chat;
 
 namespace Wisedev.Magic.Server.Network.Connection;
 
@@ -24,8 +25,14 @@ public class ClientConnection
     private GameMode _gameMode;
 
     private Account _accountDocument;
+    public GlobalChat ChatInstance;
 
-    public ClientConnection(Socket socket, ClientConnectionManager manager, IAccountRepository accountRepository, IAllianceRepository allianceRepository)
+    public ClientConnection(
+        Socket socket, 
+        ClientConnectionManager manager, 
+        IAccountRepository accountRepository, 
+        IAllianceRepository allianceRepository,
+        GlobalChat chat)
     {
         this._socket = socket;
         this._messaging = new Messaging(this);
@@ -33,6 +40,8 @@ public class ClientConnection
         this._messageManager = new MessageManager(this, accountRepository, allianceRepository);
         this._receiveBuffer = GC.AllocateUninitializedArray<byte>(4096 * 2);
         this._gameMode = new GameMode(this);
+
+        this.ChatInstance = chat;
     }
 
     public GameMode GetGameMode()
@@ -69,6 +78,9 @@ public class ClientConnection
     {
         _currentAccountId = accountId;
         _manager.AddConnection(this);
+
+        ChatInstance.Add(this);
+        Console.WriteLine($"added for: {accountId}");
     }
 
     public LogicLong GetCurrentAccountId()

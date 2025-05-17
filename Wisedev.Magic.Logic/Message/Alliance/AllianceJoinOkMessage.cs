@@ -1,4 +1,5 @@
-﻿using Wisedev.Magic.Logic.Command.Home;
+﻿using Wisedev.Magic.Logic.Command.Alliance;
+using Wisedev.Magic.Logic.Command.Home;
 using Wisedev.Magic.Titan.Logic;
 using Wisedev.Magic.Titan.Message;
 

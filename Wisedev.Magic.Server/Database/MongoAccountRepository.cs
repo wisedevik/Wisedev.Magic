@@ -57,7 +57,7 @@ class MongoAccountRepository : IAccountRepository
         account.ClientAvatar.SetAllianceId(0);
         account.ClientAvatar.SetLastLeagueInstanceId(0);
         account.ClientAvatar.SetLeagueInstanceId(0);
-        account.ClientAvatar.SetName("wisedev <3");
+        account.ClientAvatar.SetName("wisedev <3"); // TODO: Get name from client
         account.ClientAvatar.SetExpLevel(1);
 
         await _collection.InsertOneAsync(account);
@@ -101,7 +101,7 @@ class MongoAccountRepository : IAccountRepository
     public async Task UpdateAccountAsync(LogicLong accountId, UpdateDefinition<Account> update)
     {
         var filter = Builders<Account>.Filter.Eq(a => a.Id, accountId);
-        await _collection.UpdateOneAsync(filter, update);
+        var result = await _collection.UpdateOneAsync(filter, update);
     }
 
     public async Task UpdateAccountAsync(Account account)

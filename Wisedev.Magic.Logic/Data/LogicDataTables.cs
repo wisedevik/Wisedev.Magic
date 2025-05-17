@@ -84,9 +84,19 @@ public class LogicDataTables
         return LogicDataTables._tables[(int)dataType].GetDataByName(name, caller);
     }
 
+    public static LogicBuildingClassData GetBuildingClassByName(string name, LogicData? caller)
+    {
+        return (LogicBuildingClassData)LogicDataTables._tables[(int)LogicDataType.BUILDING_CLASS].GetDataByName(name, caller);
+    }
+
     public static LogicResourceData GetResourceByName(string name, LogicData? caller)
     {
         return (LogicResourceData)LogicDataTables._tables[(int)LogicDataType.RESOURCE].GetDataByName(name, caller);
+    }
+
+    public static LogicHeroData GetHeroByName(string name, LogicData? caller)
+    {
+        return (LogicHeroData)LogicDataTables._tables[(int)LogicDataType.HERO].GetDataByName(name, caller);
     }
 
     public static LogicAllianceBadgeData GetBadgeByName(string name, LogicData? caller)
@@ -112,5 +122,25 @@ public class LogicDataTables
     public static LogicCharacterData GetCharacterByName(string name, LogicData? caller)
     {
         return (LogicCharacterData)LogicDataTables._tables[(int)LogicDataType.CHARACTER].GetDataByName(name, caller);
+    }
+
+    public static int GetTownHallLevelCount()
+    {
+        return _tables[(int)LogicDataType.TOWN_HALL_LEVEL].GetItemCount();
+    }
+
+    public static LogicTownhallLevelData GetTownHallLevel(int levelIndex)
+    {
+        if (levelIndex > -1)
+        {
+            if (levelIndex < LogicDataTables._tables[(int)LogicDataType.TOWN_HALL_LEVEL].GetItemCount())
+            {
+                return (LogicTownhallLevelData)LogicDataTables._tables[(int)LogicDataType.TOWN_HALL_LEVEL].GetItemAt(levelIndex);
+            }
+        }
+
+        Debugger.Error("LogicDataTables::getTownHallLevel parameter out of bounds");
+
+        return null;
     }
 }

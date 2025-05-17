@@ -6,6 +6,7 @@ using Wisedev.Magic.Titan.Debug;
 using System.Threading.Tasks;
 using System.Text;
 using System.Collections.Concurrent;
+using Wisedev.Magic.Logic.Message.Home;
 
 namespace Wisedev.Magic.Server.Protocol;
 
@@ -142,12 +143,13 @@ class Messaging : IConnectionListener
             int encryptedLength = encodingLength;
 
             byte[] encodingBytes = message.GetMessageBytes();
-            byte[] encryptedBytes = encodingBytes;
 
+            byte[] encryptedBytes = new byte[encodingBytes.Length];
             _sendEncrypter.Encrypt(encodingBytes, encryptedBytes, encodingLength);
 
             byte[] stream = new byte[encryptedLength + Messaging.HEADER_SIZE];
             Messaging.WriteHeader(message, stream, encryptedLength);
+
             Buffer.BlockCopy(encryptedBytes, 0, stream, Messaging.HEADER_SIZE, encryptedLength);
             await this._connection.Send(stream);
         }

@@ -30,6 +30,11 @@ public class LogicComponent
         ;
     }
 
+    public virtual void SetEnabled(bool enabled)
+    {
+        _enabled = enabled;
+    }
+
     public virtual int GetChecksum()
     {
         return 0;

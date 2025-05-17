@@ -72,6 +72,8 @@ public class LogicClientAvatar : LogicAvatar
         avatar.SetResourceCount(LogicDataTables.GetGoldData(), globalsInstance.GetStartingGold() + 99999);
         avatar.SetResourceCount(LogicDataTables.GetElixirData(), globalsInstance.GetStartingElxir() + 99999);
 
+        avatar.SetUnitCount(LogicDataTables.GetCharacterByName("Barbarian", null), 2);
+
         // TODO: Implement tutorial
         for (int i = 0; i < 13; i++)
         {
@@ -91,6 +93,11 @@ public class LogicClientAvatar : LogicAvatar
         {
             this._freeDiamonds -= cnt;
         }
+    }
+
+    public bool IsInAlliance()
+    {
+        return this._allianceId != 0;
     }
 
     public void SetChangeListener(LogicAvatarChangeListener listener)
@@ -336,12 +343,6 @@ public class LogicClientAvatar : LogicAvatar
             ByteStreamHelper.WriteDataReference(encoder, this._missionCompleted[i]);
         }
 
-
-        //encoder.WriteInt(TutorialSteps.Length);
-        //foreach (int step in TutorialSteps)
-        //{
-        //    encoder.WriteInt(step);
-        //}
 
         // TODO:
         encoder.WriteInt(0); // this._achievementRewardClaimed

@@ -20,6 +20,9 @@ using Wisedev.Magic.Titan.Logic;
 using Wisedev.Magic.Titan.Message;
 using Wisedev.Magic.Titan.Debug;
 using Wisedev.Magic.Logic.Command.Home;
+using Wisedev.Magic.Logic.Command.Alliance;
+using Wisedev.Magic.Server.Network;
+using Wisedev.Magic.Logic.Notifications;
 
 namespace Wisedev.Magic.Server.Protocol;
 
@@ -47,6 +50,9 @@ class MessageManager
         {
             case LoginMessage.MESSAGE_TYPE:
                 await this.OnLoginMessageReceived((LoginMessage)message);
+                break;
+            case ReportUserMessage.MESSAGE_TYPE:
+                await this.OnReportUserMessage((ReportUserMessage)message);
                 break;
             case GoHomeMessage.MESSAGE_TYPE:
                 await this.OnGoHomeMessageReceived((GoHomeMessage)message);
@@ -95,18 +101,15 @@ class MessageManager
                 return;
             }
 
-            await _accountRepository.UpdateAccountAsync(accountId, Builders<Account>.Update
-                                        .Set(a => a.LastLoginAt, DateTime.UtcNow));
 
             var timeSinceLastLogin = DateTime.UtcNow - account.LastLoginAt;
             var totalPlayTime = account.PlayTimeSeconds + (int)timeSinceLastLogin.TotalSeconds;
-
-            await _accountRepository.UpdateAccountAsync(accountId, Builders<Account>.Update
-                                        .Set(a => a.PlayTimeSeconds, totalPlayTime));
-
             var daysSinceStarted = (DateTime.UtcNow - account.CreatedAt).Days;
-            await _accountRepository.UpdateAccountAsync(accountId, Builders<Account>.Update
-                                        .Set(a => a.DaysSinceStartedPlaying, daysSinceStarted));
+
+            _accountRepository.UpdateAccountAsync(account.Id, Builders<Account>.Update
+                .Set(a => a.LastLoginAt, DateTime.UtcNow)
+                .Set(a => a.PlayTimeSeconds, totalPlayTime)
+                .Set(a => a.DaysSinceStartedPlaying, daysSinceStarted));
         }
         else
         {
@@ -115,6 +118,18 @@ class MessageManager
         }
 
         this._connection.SetCurrentAccountId(account.Id);
+
+        Console.WriteLine($"BanEndTime: {account.BanEndTime}");
+        if (account.BanEndTime != null && account.BanEndTime > DateTime.UtcNow)
+        {
+            Console.WriteLine($"SUKA BAN! {account.Id}");
+            var remainingBanTime = account.BanEndTime.Value - DateTime.UtcNow;
+            await _connection.SendMessage(new ChatAccountBanStatusMessage()
+            {
+                BanTime = (int)remainingBanTime.TotalMilliseconds
+            });
+            Console.WriteLine($"[BAN] {account.Id} is banned until {account.BanEndTime}");
+        }
 
         LoginOkMessage loginOkMessage = new LoginOkMessage();
         loginOkMessage.SetAccountId(account.Id);
@@ -170,51 +185,130 @@ class MessageManager
         return true;
     }
 
+    public async Task OnReportUserMessage(ReportUserMessage message)
+    {
+        Console.WriteLine($"[REPORT] Reported to {message.ReportedAvatarId} ({message.Count})");
+        var reportedId = message.ReportedAvatarId;
+        var account = await _accountRepository.GetByIdAsync(reportedId);
+        if (account == null)
+            return;
+
+        Console.WriteLine($"[LOADED] {account.Id} {account.CreatedAt} {account.PlayTimeSeconds}");
+
+        if (account.ReportCount >= 1)
+        {
+            DateTime banEndTime = DateTime.UtcNow.AddMinutes(5);
+            account.BanEndTime = banEndTime;
+
+            if (_connection.GetClientConnectionManager().GetActiveConnections().TryGetValue(reportedId, out var connection))
+            {
+                await connection.SendMessage(new ChatAccountBanStatusMessage()
+                {
+                    BanTime = (int)(banEndTime - DateTime.UtcNow).TotalMilliseconds
+                });
+            }
+
+            await _accountRepository.UpdateAccountAsync(reportedId, Builders<Account>.Update
+                .Set(a => a.BanEndTime, banEndTime)
+                .Set(a => a.ReportCount, account.ReportCount + 1));
+
+            Console.WriteLine($"[BAN] {reportedId} banned until {account.BanEndTime}");
+        }
+    }
+
     private async Task OnSendGlobalChatLineMessage(SendGlobalChatLineMessage message)
     {
         string? playerMessage = message.GetMessage();
-        if (playerMessage != null)
+        if (playerMessage.Length > 0)
         {
-            GlobalChatLineMessage globalChatLineMessage = new GlobalChatLineMessage();
-            globalChatLineMessage.SetMessage(playerMessage);
-            globalChatLineMessage.SetAvatarName(this._connection.GetAccountDocument().ClientAvatar.Name);
-            globalChatLineMessage.SetExpLvl(this._connection.GetAccountDocument().ClientAvatar.ExpLevel);
-            globalChatLineMessage.SetLeagueType(this._connection.GetAccountDocument().ClientAvatar.LeagueType);
-            globalChatLineMessage.SetAvatarId(this._connection.GetCurrentAccountId());
-            globalChatLineMessage.SetHomeId(this._connection.GetCurrentAccountId());
-
-            Debugger.Print($"GlobalChatLineMessage data: msg={playerMessage} name={this._connection.GetAccountDocument().ClientAvatar.Name} " +
-                $"expLvl={this._connection.GetAccountDocument().ClientAvatar.ExpLevel} lgType={this._connection.GetAccountDocument().ClientAvatar.LeagueType} " +
-                $"avatarId={this._connection.GetCurrentAccountId()} hmId={this._connection.GetCurrentAccountId()}");
-            await _connection.GetClientConnectionManager().BroadcastMessage(globalChatLineMessage);
-
-            if (playerMessage.StartsWith("/change_name"))
+            if (playerMessage.Length > 128)
+                playerMessage = playerMessage.Substring(0, 128);
+            if (playerMessage.StartsWith("/"))
             {
+                LogicClientAvatar logicClientAvatar = _connection.GetAccountDocument().ClientAvatar;
+                GlobalChatLineMessage globalChatLineMessage = new GlobalChatLineMessage();
 
-                string[] args = playerMessage.Split(' ');
+                globalChatLineMessage.SetAvatarName(logicClientAvatar.GetName());
+                globalChatLineMessage.SetExpLvl(logicClientAvatar.GetExpLevel());
+                globalChatLineMessage.SetLeagueType(logicClientAvatar.LeagueType);
+                globalChatLineMessage.SetAvatarId(logicClientAvatar.Id);
+                globalChatLineMessage.SetHomeId(logicClientAvatar.CurrentHomeId);
 
-                LogicChangeAvatarNameCommand command = new LogicChangeAvatarNameCommand();
-                command.SetName(args[0]);
-                AvailableServerCommandMessage availableServerCommandMessage = new AvailableServerCommandMessage();
-                availableServerCommandMessage.SetServerCommand(command);
-                await this._connection.SendMessage(availableServerCommandMessage);
+                if (logicClientAvatar.IsInAlliance())
+                {
+                    globalChatLineMessage.SetAllianceId(logicClientAvatar.AllianceId);
+                }
+
+                string commandLine = playerMessage.Substring(1);
+                string[] commandParts = commandLine.Split(' ');
+
+                string command = commandParts[0].ToLower();
+
+                switch (command)
+                {
+                    case "help":
+                        string helpMessage = "Available commands: /help, /info";
+                        globalChatLineMessage.SetMessage(helpMessage);
+                        break;
+                    case "info":
+                        TimeSpan uptime = DateTime.UtcNow - ServerStats.StartTime;
+                        string formattedUptime = $"{(int)uptime.TotalHours:D2}:{uptime.Minutes:D2}:{uptime.Seconds:D2}";
+                        string currentTime = DateTime.UtcNow.ToString("HH:mm") + " (UTC)";
+
+                        var proc = System.Diagnostics.Process.GetCurrentProcess();
+                        long workingSetBytes = proc.WorkingSet64;
+                        int usedMemoryMB = (int)(workingSetBytes / 1024 / 1024);
+
+                        long managed = GC.GetTotalMemory(false) / 1024 / 1024;
+                        long total = System.Diagnostics.Process.GetCurrentProcess().WorkingSet64 / 1024 / 1024;
+
+                        string info = $"Managed: {managed} MB | Total: {total} MB";
+
+                        int gcGen0 = GC.CollectionCount(0);
+                        int gcGen1 = GC.CollectionCount(1);
+                        int gcGen2 = GC.CollectionCount(2);
+
+                        string infoMessage =
+                            $"[SERVER INFO]\n" +
+                            $"Version: {LogicVersion.MAJOR_VERSION}.{LogicVersion.BUILD}.{LogicVersion.CONTENT_VERSION}\n" +
+                            $"Uptime: {formattedUptime}\n" +
+                            $"Players Online: {_connection.GetClientConnectionManager().GetOnlineCount()}\n" +
+                            $"Time: {currentTime}\n\n" +
+                            $"[Performance]\n" +
+                            $"Used Total Memory: {usedMemoryMB} MB\n" +
+                            $"GC Gen0: {gcGen0} / Gen1: {gcGen1} / Gen2: {gcGen2}";
+
+                        globalChatLineMessage.SetMessage(infoMessage);
+                        break;
+                    case "add_d":
+                        if (commandParts.Length > 1 && int.TryParse(commandParts[1], out int amount))
+                        {
+                            LogicDiamondsAddedCommand logicDiamondsAddedCommand = new LogicDiamondsAddedCommand();
+                            logicDiamondsAddedCommand.Amount = amount;
+
+                            AvailableServerCommandMessage availableServerCommandMessage = new AvailableServerCommandMessage();
+                            availableServerCommandMessage.SetServerCommand(logicDiamondsAddedCommand);
+
+                            await _connection.SendMessage(availableServerCommandMessage);
+
+                            globalChatLineMessage.SetMessage($"Added {amount} diamonds.");
+                        }
+                        else
+                        {
+                            globalChatLineMessage.SetMessage("Usage: /add_d <amount>");
+                        }
+                        break;
+                    default:
+                        globalChatLineMessage.SetMessage("Unknown command. Type /help for a list of commands.");
+                        break;
+                }
+
+                await _connection.SendMessage(globalChatLineMessage);
             }
-            else if (playerMessage.StartsWith("/help"))
+            else
             {
-                GlobalChatLineMessage globalChatLineMessage1 = new GlobalChatLineMessage();
-                globalChatLineMessage1.SetMessage("Available commands:\n/help\n/change_name {new_name}");
-                globalChatLineMessage1.SetAvatarName("Helper");
-                globalChatLineMessage1.SetExpLvl(-1);
-                globalChatLineMessage1.SetLeagueType(-1);
-                globalChatLineMessage1.SetAvatarId(-1);
-                globalChatLineMessage1.SetHomeId(-1);
-
-                await this._connection.SendMessage(globalChatLineMessage1);
+                await _connection.ChatInstance.PublishMessage(_connection.GetAccountDocument().ClientAvatar, playerMessage);
             }
-        }
-        else
-        {
-            Debugger.Print("SendGlobalChatLineMessage: message is NULL!");
         }
     }
 
@@ -239,6 +333,21 @@ class MessageManager
         await this._connection.SendMessage(avatarProfileMessage);
     }
 
+    private async Task SaveAccountData(bool fullSave = false)
+    {
+        var account = this._connection.GetAccountDocument();
+        if (fullSave)
+        {
+            await _accountRepository.UpdateAccountAsync(account);
+        }
+        else
+        {
+            await _accountRepository.UpdateAccountAsync(account.Id, Builders<Account>.Update
+                .Set(a => a.ClientAvatar, account.ClientAvatar)
+                .Set(a => a.Home, account.Home));
+        }
+    }
+
     private async Task OnEndClientTurnReceived(EndClientTurnMessage message)
     {
         GameMode gameMode = this._connection.GetGameMode();
@@ -247,7 +356,11 @@ class MessageManager
         {
             gameMode.OnClientTurnReceived(message.GetSubTick(), message.GetChecksum(), message.GetCommands());
 
-            await this._accountRepository.UpdateAccountAsync(this._connection.GetAccountDocument());
+            Account account = _connection.GetAccountDocument();
+            await _accountRepository.UpdateAccountAsync(account.Id, Builders<Account>.Update
+                .Set(a => a.ClientAvatar, account.ClientAvatar)
+                .Set(a => a.Home, account.Home)
+                .Set(a => a.LastSaveTime, DateTime.UtcNow));
         }
     }
 
@@ -284,5 +397,56 @@ class MessageManager
     private async Task OnCreateAllianceMessageReceived(CreateAllianceMessage createAllianceMessage)
     {
         Debugger.Print($"Tryna create alliance: name={createAllianceMessage.GetAllianceName()}, badge_id={createAllianceMessage.GetAllianceBadgeData().GetGlobalID()}, type={createAllianceMessage.GetAllianceType()}, required_score={createAllianceMessage.GetRequiredScore()} desc={createAllianceMessage.GetAllianceDescription()}");
+
+        AllianceDataMessage allianceDataMessage = new AllianceDataMessage();
+        AllianceFullEntry allianceFullEntry = new AllianceFullEntry();
+        AllianceHeaderEntry allianceHeaderEntry = new AllianceHeaderEntry();
+
+        allianceHeaderEntry.SetAllianceId(1);
+        allianceHeaderEntry.SetAllianceName(createAllianceMessage.GetAllianceName());
+        allianceHeaderEntry.SetAllianceBadgeData(createAllianceMessage.GetAllianceBadgeData());
+        allianceHeaderEntry.SetAllianceType(createAllianceMessage.GetAllianceType());
+        allianceHeaderEntry.SetNumberOfMembers(1);
+        allianceHeaderEntry.SetScore(999);
+        allianceHeaderEntry.SetRequiredScore(createAllianceMessage.GetRequiredScore());
+
+        allianceFullEntry.SetAllianceHeaderEntry(allianceHeaderEntry);
+
+        AllianceMemberEntry allianceMemberEntry = new AllianceMemberEntry();
+        allianceMemberEntry.SetAvatarId(this._connection.GetCurrentAccountId());
+        allianceMemberEntry.SetFacebookId(null);
+        allianceMemberEntry.SetName(this._connection.GetAccountDocument().ClientAvatar.GetName());
+        allianceMemberEntry.SetRole(1);
+        allianceMemberEntry.SetExpLevel(this._connection.GetAccountDocument().ClientAvatar.GetExpLevel());
+        allianceMemberEntry.SetLeagueType((LogicLeagueData)LogicDataTables.GetDataById(29000000));
+        allianceMemberEntry.SetScore(999);
+        allianceMemberEntry.SetDonations(0);
+        allianceMemberEntry.SetDonationsReceived(0);
+        allianceMemberEntry.SetOrder(1);
+        allianceMemberEntry.SetPreviousOrder(1);
+        allianceMemberEntry.SetNewMember(true);
+        allianceMemberEntry.SetHomeId(this._connection.GetCurrentAccountId());
+
+        allianceFullEntry.SetAllianceMembers(new List<AllianceMemberEntry>()
+        {
+            allianceMemberEntry
+        });
+
+        allianceFullEntry.SetAllianceDescription(createAllianceMessage.GetAllianceDescription());
+
+        allianceDataMessage.SetAllianceFullEntry(allianceFullEntry);
+
+        await this._connection.SendMessage(allianceDataMessage);
+        LogicJoinAllianceCommand logicJoinAllianceCommand = new LogicJoinAllianceCommand()
+        {
+            AllianceId = 1,
+            AllianceName = createAllianceMessage.GetAllianceName(),
+            AllianceBadgeData = createAllianceMessage.GetAllianceBadgeData(),
+            IsAllianceCreator = false,
+        };
+
+        AvailableServerCommandMessage availableServerCommandMessage = new AvailableServerCommandMessage();
+        availableServerCommandMessage.SetServerCommand(logicJoinAllianceCommand);
+        await this._connection.SendMessage(availableServerCommandMessage);
     }
 }

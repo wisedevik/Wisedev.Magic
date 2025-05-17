@@ -2,6 +2,7 @@
 using Wisedev.Magic.Logic.Util;
 using Wisedev.Magic.Titan.JSON;
 using Wisedev.Magic.Titan.Debug;
+using System;
 
 namespace Wisedev.Magic.Logic.GameObject.Component;
 
@@ -20,6 +21,40 @@ public class LogicUnitStorageComponent : LogicComponent
         {
             this._storageType = ((LogicBuilding)gameObject).GetBuildingData().IsForgesSpells() ? 1 : 0;
         }
+    }
+
+    public void AddUnitImpl(LogicCombatItemData data, int level)
+    {
+        if (data != null)
+        {
+            // TODO: Add this.CanAddUnit(data);
+            int idx = -1;
+
+            for (int i = 0; i < this._slots.Count; i++)
+            {
+                LogicUnitSlot slot = this._slots[i];
+                if (slot.GetData().GlobalID == data.GlobalID && slot.GetLevel() == level)
+                {
+                    idx = i;
+                    break;
+                }
+            }
+
+            if (idx != -1)
+            {
+                this._slots[idx].SetCount(this._slots[idx].GetCount() + 1);
+            }
+            else
+            {
+                this._slots.Add(new LogicUnitSlot(data, level, 1));
+                Console.WriteLine($"added: {data.GlobalID}");
+            }
+        }
+    }
+
+    public void AddUnit(LogicCombatItemData data)
+    {
+        this.AddUnitImpl(data, -1);
     }
 
     public override void Save(LogicJSONObject jsonObject)
@@ -80,6 +115,11 @@ public class LogicUnitStorageComponent : LogicComponent
                             }
 
                             this._slots.Add(new LogicUnitSlot(data, -1, countObject.GetIntValue()));
+                            foreach (LogicUnitSlot slot in this._slots)
+                            {
+                                Console.WriteLine($"{slot.GetData().GetGlobalID()}");
+                                Console.WriteLine($"{slot.GetCount()}");
+                            }
                         }
                     }
                 }

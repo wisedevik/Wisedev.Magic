@@ -25,4 +25,11 @@ public class Account
 
     [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
     public DateTime LastLoginAt { get; set; }
+    [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
+    public DateTime LastSaveTime { get; set; }
+
+    public int ReportCount { get; set; }
+
+    [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
+    public DateTime? BanEndTime { get; set; }
 }

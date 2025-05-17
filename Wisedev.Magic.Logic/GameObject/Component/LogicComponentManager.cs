@@ -1,4 +1,5 @@
 ﻿using Wisedev.Magic.Logic.Level;
+using Wisedev.Magic.Titan.Utils;
 
 namespace Wisedev.Magic.Logic.GameObject.Component;
 
@@ -20,7 +21,6 @@ public class LogicComponentManager
 
     public void Tick()
     {
-        //! TODO: this.DoDestructing();
         bool isInCombatState = this._level.IsInCombatState();
 
         for (int i = 0; i < LogicComponent.COMPONENT_TYPE_COUNT; ++i)
@@ -37,8 +37,28 @@ public class LogicComponentManager
         }
     }
 
+    public void SubTick()
+    {
+        ;
+    }
+
     public void AddComponent(LogicComponent component)
     {
         this._components[component.GetComponentType()].Add(component);
+    }
+
+
+    public void RemoveComponent(LogicComponent component)
+    {
+        List<LogicComponent> components = this._components[component.GetComponentType()];
+
+        for (int i = 0, j = components.Count; i < j; i++)
+        {
+            if (components[i] == component)
+            {
+                components.RemoveAt(i);
+                break;
+            }
+        }
     }
 }

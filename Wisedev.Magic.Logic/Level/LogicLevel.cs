@@ -13,6 +13,8 @@ using Wisedev.Magic.Titan.JSON;
 using Wisedev.Magic.Titan.Logic;
 using Wisedev.Magic.Titan.Utils;
 using Wisedev.Magic.Titan.Debug;
+using Wisedev.Magic.Logic.Achievement;
+using Wisedev.Magic.Logic.Command;
 
 namespace Wisedev.Magic.Logic.Level;
 
@@ -41,6 +43,7 @@ public class LogicLevel
     private LogicGameObjectManager _gameObjectManager;
     private LogicCooldownManager _cooldownManager;
     private LogicWorkerManager _workerManager;
+    private LogicAchievementManager _achievementManager;
     private LogicRect _playArea;
     private int _matchType;
     private LogicLong _revengeId;
@@ -51,6 +54,7 @@ public class LogicLevel
     private int _lastLeagueShuffle;
     private bool _editModeShown;
     private string _troopReqMsg;
+    private bool _battleEndPending;
 
 
     public LogicLevel(LogicGameMode gameMode)
@@ -62,6 +66,7 @@ public class LogicLevel
         this._gameObjectManager = new LogicGameObjectManager(this._tileMap, this);
         this._battleLog = new LogicBattleLog(this);
         this._workerManager = new LogicWorkerManager(this);
+        this._achievementManager = new LogicAchievementManager(this);
         this._cooldownManager = new LogicCooldownManager();
 
         this._newShopBuildings = new LogicArrayList<int>();
@@ -85,9 +90,34 @@ public class LogicLevel
         return _gameMode.GetState();
     }
 
+    public LogicGameMode GetGameMode()
+    {
+        return this._gameMode;
+    }
+
     public LogicTime GetLogicTime()
     {
         return this._logicTime;
+    }
+
+    public bool GetBattleEndPending()
+    {
+        return this._battleEndPending;
+    }
+
+    public LogicAchievementManager GetAchievementManager()
+    {
+        return this._achievementManager;
+    }
+
+    public void EndBattle()
+    {
+        _battleEndPending = true;
+    }
+
+    public bool HasFreeWorkers(LogicCommand command)
+    {
+        return _workerManager.GetFreeWorkers() > 0;
     }
 
     public void SetHome(LogicClientHome home)
@@ -114,6 +144,18 @@ public class LogicLevel
     public LogicGameObjectManager GetGameObjectManager()
     {
         return this._gameObjectManager;
+    }
+
+    public int GetTownHallLevel()
+    {
+        LogicBuilding townHall = _gameObjectManager.GetTownHall();
+        if (townHall != null)
+        {
+            return townHall.GetUpgradeLevel();
+
+        }
+
+        return 0;
     }
 
     public LogicClientHome GetHome()
@@ -177,9 +219,9 @@ public class LogicLevel
 
         this._gameObjectManager.Tick();
         this._cooldownManager.Tick();
+        this._achievementManager.Tick();
         /*TODO:
         LogicMissionManager::tick
-        LogicAchievementManager::tick
         LogicNpcAttack::tick if != null
          */
     }

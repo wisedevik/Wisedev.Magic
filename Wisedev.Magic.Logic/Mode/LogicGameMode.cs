@@ -8,6 +8,7 @@ using Wisedev.Magic.Logic.Message.Home;
 using Wisedev.Magic.Logic.Time;
 using Wisedev.Magic.Titan.JSON;
 using Wisedev.Magic.Titan.Debug;
+using Wisedev.Magic.Titan.Math;
 
 namespace Wisedev.Magic.Logic.Mode;
 
@@ -94,6 +95,42 @@ public class LogicGameMode
         }
     }
 
+    public bool IsInAttackPreparationMode()
+    {
+        if (_state == 2 || _state == 5)
+        {
+            LogicAvatar homeOwnerAvatar = _level.GetHomeOwnerAvatar();
+
+            if (homeOwnerAvatar.IsClientAvatar())
+            {
+                if (_battleTimer != null)
+                {
+                    int remainingSeconds;
+
+                    remainingSeconds = Math.Max(_battleTimer.GetRemainingSeconds(_level.GetLogicTime()), 1);
+                    return remainingSeconds > LogicDataTables.GetGlobals().GetAttackLengthSec();
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public int GetRemainingAttackSeconds()
+    {
+        if ((this._state == 2 || this._state == 5) && !this._battleOver)
+        {
+            if (this._battleTimer != null)
+            {
+                return LogicMath.Max(this._battleTimer.GetRemainingSeconds(this._level.GetLogicTime()), 1);
+            }
+
+            return 1;
+        }
+
+        return 0;
+    }
+
     public void UpdateOneSubTick()
     {
         LogicTime logicTime = this._level.GetLogicTime();
@@ -109,7 +146,37 @@ public class LogicGameMode
             }
         }
 
+        if (_level.IsInCombatState())
+        {
+            if (_battleTimer != null &&
+                _battleTimer.GetRemainingSeconds(logicTime) == 0 ||
+                _level.GetBattleEndPending())
+            {
+                this.SetBattleOver();
+            }
+        }
+
         logicTime.IncreaseSubTick();
+    }
+
+    public void EndAttackPreparation()
+    {
+        if (_battleTimer != null)
+        {
+            int attackLengthSec = LogicDataTables.GetGlobals().GetAttackLengthSec();
+            int battleRemainingSecs = this._battleTimer.GetRemainingSeconds(this._level.GetLogicTime());
+
+            if (battleRemainingSecs > attackLengthSec)
+                _battleTimer.StartTimer(attackLengthSec, this._level.GetLogicTime());
+        }
+    }
+
+    public void SetBattleOver()
+    {
+        if (_battleOver)
+            return;
+
+        _battleOver = true;
     }
 
     public void SubTick()

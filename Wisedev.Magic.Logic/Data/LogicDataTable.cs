@@ -62,6 +62,9 @@ public class LogicDataTable
             case LogicDataType.CHARACTER:
                 item = new LogicCharacterData(row, this);
                 break;
+            case LogicDataType.BUILDING_CLASS:
+                item = new LogicBuildingClassData(row, this);
+                break;
             case LogicDataType.OBSTACLE:
                 item = new LogicObstacleData(row, this);
                 break;
@@ -73,6 +76,9 @@ public class LogicDataTable
                 break;
             case LogicDataType.GLOBAL:
                 item = new LogicGlobalData(row, this);
+                break;
+            case LogicDataType.TOWN_HALL_LEVEL:
+                item = new LogicTownhallLevelData(row, this);
                 break;
             case LogicDataType.NPC:
                 item = new LogicNpcData(row, this);
@@ -86,12 +92,16 @@ public class LogicDataTable
             case LogicDataType.MISSION:
                 item = new LogicMissionData(row, this);
                 break;
+            case LogicDataType.SPELL:
+                item = new LogicSpellData(row, this);
+                break;
             case LogicDataType.HERO:
                 item = new LogicHeroData(row, this);
                 break;
             case LogicDataType.LEAGUE:
                 item = new LogicLeagueData(row, this);
                 break;
+
             default:
                 {
                     Debugger.Error("Invalid data table id: " + this._tableIdx);

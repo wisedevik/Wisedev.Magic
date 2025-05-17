@@ -27,6 +27,7 @@ public class LogicAvatar : LogicBase
     protected List<LogicDataSlot> _unitUpgrade;
     protected List<LogicDataSlot> _spellUpgrade;
     protected List<LogicDataSlot> _heroUpgrade;
+    protected List<LogicDataSlot> _achievementProgress;
 
     protected List<LogicUnitSlot> _allianceUnitCount;
 
@@ -39,6 +40,7 @@ public class LogicAvatar : LogicBase
     public List<LogicDataSlot> ResourceCount { get { return this._resourceCount; } set { this._resourceCount = value; } }
     public List<LogicData> MissionCompleted { get { return this._missionCompleted; } set { this._missionCompleted = value; } }
     public List<LogicDataSlot> UnitCount { get { return this._unitCount; } set { this._unitCount = value; } }
+    public List<LogicDataSlot> AchievementProgress { get { return this._achievementProgress; } set { this._achievementProgress = value; } }
 
 
     public LogicAvatar()
@@ -61,7 +63,14 @@ public class LogicAvatar : LogicBase
         this._spellUpgrade = new List<LogicDataSlot>();
         this._heroUpgrade = new List<LogicDataSlot>();
         this._allianceUnitCount = new List<LogicUnitSlot>();
+        this._achievementProgress = new List<LogicDataSlot>();
     }
+
+    public void SetTownHallLevel(int lvl)
+    {
+        _townHallLevel = lvl;
+    }
+
 
     public LogicAvatarChangeListener GetChangeListener()
     {
@@ -96,6 +105,50 @@ public class LogicAvatar : LogicBase
                 logicUnitSlots[i].Destruct();
             logicUnitSlots.Clear();
         }
+    }
+
+    public void SetAchievementProgress(LogicAchievementData data, int count)
+    {
+        int index = -1;
+
+        for (int i = 0; i < this._achievementProgress.Count; i++)
+        {
+            if (this._achievementProgress[i].GetData().GlobalID == data.GlobalID)
+            {
+                index = i;
+                break;
+            }
+        }
+
+        if (index != -1)
+        {
+            this._achievementProgress[index].SetCount(count);
+        }
+        else
+        {
+            this._achievementProgress.Add(new LogicDataSlot(data, count));
+        }
+    }
+
+    public virtual int GetAchievementProgress(LogicAchievementData data)
+    {
+        int idx = -1;
+
+        for (int i = 0; i < _achievementProgress.Count; i++)
+        {
+            if (_achievementProgress[i].GetData().GlobalID == data.GlobalID)
+            {
+                idx = i;
+                break;
+            }
+        }
+
+        if (idx != -1)
+        {
+            return _achievementProgress[idx].GetCount();
+        }
+
+        return 0;
     }
 
     public virtual LogicLong GetAllianceId()
@@ -199,6 +252,11 @@ public class LogicAvatar : LogicBase
         // TODO: add DivideAvatarResourcesToStorages
     }
 
+    public virtual int GetUnitUpgradeLevel(LogicCombatItemData data)
+    {
+        return 0;
+    }
+
     public virtual int GetResourceCount(LogicResourceData data)
     {
         if (!data.IsPremiumCurrency())
@@ -234,6 +292,7 @@ public class LogicAvatar : LogicBase
 
     public virtual void SetUnitCount(LogicCombatItemData data, int cnt)
     {
+        Console.WriteLine($"SetUnitCount: {data.GlobalID} {data.GetCombatItemType()}");
         if (data.GetCombatItemType() != 0)
         {
             int idx = -1;
@@ -276,6 +335,7 @@ public class LogicAvatar : LogicBase
             else
             {
                 this._unitCount.Add(new LogicDataSlot(data, cnt));
+                Console.WriteLine($"added unit with id {data.GetGlobalID()}");
             }
         }
     }

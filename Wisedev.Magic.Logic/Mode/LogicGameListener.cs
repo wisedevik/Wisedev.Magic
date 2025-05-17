@@ -24,4 +24,14 @@ public class LogicGameListener
     {
         ;
     }
+
+    public virtual void AchievementCompleted(LogicAchievementData data)
+    {
+        ;
+    }
+
+    public virtual void AchievementProgress(LogicAchievementData data)
+    {
+        ;
+    } 
 }

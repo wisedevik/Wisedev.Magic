@@ -19,6 +19,8 @@ public class LogicGameObjectManager
     private readonly int[] _gameObjectIds;
     private LogicTileMap _tileMap;
 
+    private LogicBuilding _townHall;
+
     private List<LogicGameObject>[] _gameObjects;
 
     public LogicGameObjectManager(LogicTileMap tileMap, LogicLevel level)
@@ -124,7 +126,7 @@ public class LogicGameObjectManager
 
         if ((int)type >= LogicGameObject.GAMEOBJECT_TYPE_COUNT)
         {
-            Debugger.Error("LogicGameObjectManager::generateGameObjectGlobalID(). Index is out of bounds.");
+            Debugger.Error("LogicGameObjectManager.GenerateGameObjectGlobalID(). Index is out of bounds.");
         }
 
         return GlobalID.CreateGlobalID((int)type + 500, this._gameObjectIds[(int)type]++);
@@ -145,7 +147,7 @@ public class LogicGameObjectManager
 
             if (table - 500 != (int)gameObjectType)
             {
-                Debugger.Error(string.Format("LogicGameObjectManager::addGameObject with global ID {0}, doesn't have right index", globalId));
+                Debugger.Error(string.Format("LogicGameObjectManager.AddGameObject with global ID {0}, doesn't have right index", globalId));
             }
 
             if (this.GetGameObjectByID(globalId) != null)
@@ -164,6 +166,17 @@ public class LogicGameObjectManager
         if (gameObjectType == 0)
         {
             LogicBuilding building = (LogicBuilding)gameObject;
+            LogicBuildingData buildingData = building.GetBuildingData();
+
+            if (buildingData.IsTownHall())
+            {
+                _townHall = building;
+            }
+
+            if (buildingData.IsWorkerBuilding())
+            {
+                this._level.GetWorkerManager().IncreaseWorkerCount();
+            }
         }
         else if (gameObjectType == 3)
         {
@@ -189,6 +202,11 @@ public class LogicGameObjectManager
         }
 
         return null;
+    }
+
+    public LogicBuilding GetTownHall()
+    {
+        return _townHall;
     }
 
     public void LoadGameObjectsFromJSonArray(LogicJSONArray jsonArray)
@@ -228,6 +246,18 @@ public class LogicGameObjectManager
         }
     }
 
+    public void AdjustConstructionTimers(int secondsPassed)
+    {
+        List<LogicGameObject> buildings = _gameObjects[0];
+        foreach (LogicGameObject gameObject in buildings)
+        {
+            if (gameObject is LogicBuilding building && building.IsConstructing())
+            {
+                building.AdjustConstructionTime(secondsPassed);
+            }
+        }
+    }
+
     public void Load(LogicJSONObject jsonObject)
     {
         LogicJSONArray buildingArray = jsonObject.GetJSONArray("buildings");
@@ -250,6 +280,7 @@ public class LogicGameObjectManager
         {
             Debugger.Print("LogicGameObjectManager.Load: obstaclesArray != null");
             this.LoadGameObjectsFromJSonArray(obstaclesArray);
+            
         }
         else
         {

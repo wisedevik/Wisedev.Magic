@@ -5,12 +5,13 @@ using Wisedev.Magic.Logic.Level;
 using Wisedev.Magic.Titan.JSON;
 using Wisedev.Magic.Titan.Math;
 using Wisedev.Magic.Titan.Debug;
+using Wisedev.Magic.Logic.Avatar;
 
 namespace Wisedev.Magic.Logic.GameObject;
 
 public class LogicGameObject
 {
-    public const int GAMEOBJECT_TYPE_COUNT = 8;
+    public const int GAMEOBJECT_TYPE_COUNT = 11;
 
     protected int _globalId;
     protected LogicData _data;
@@ -28,12 +29,12 @@ public class LogicGameObject
         this._listener = new LogicGameObjectListener();
         this._data = data;
         this._level = level;
-        this._components = new LogicComponent[LogicComponent.COMPONENT_TYPE_COUNT];
-
         this._position = new LogicVector2();
+
+        this._components = new LogicComponent[LogicComponent.COMPONENT_TYPE_COUNT];
     }
 
-    public void SetInitialPosition(int x, int y)
+    public virtual void SetInitialPosition(int x, int y)
     {
         this._position.Set(x, y);
         this._listener.RefreshPositionFromLogic();
@@ -42,6 +43,11 @@ public class LogicGameObject
     public void SetGlobalID(int id)
     {
         this._globalId = id;
+    }
+
+    public void XpGainHelper(int xp, LogicAvatar homeOwnerAvatar, bool inHomeState)
+    {
+        LogicClientAvatar playerAvatar = this._level.GetPlayerAvatar();
     }
 
     public LogicData GetData()
@@ -63,6 +69,11 @@ public class LogicGameObject
     public virtual int PathFinderCost()
     {
         return 0;
+    }
+
+    public virtual int GetType()
+    {
+        return -1;
     }
 
     public bool IsWall()
@@ -123,6 +134,26 @@ public class LogicGameObject
     public virtual int GetRemainingBoostTime()
     {
         return 0;
+    }
+
+    public int GetX()
+    {
+        return this._position.GetX();
+    }
+
+    public int GetY()
+    {
+        return this._position.GetY();
+    }
+
+    public virtual int GetMidX()
+    {
+        return this._position.GetX() + (this.GetWidthInTiles() << 8);
+    }
+
+    public virtual int GetMidY()
+    {
+        return this._position.GetY() + (this.GetHeightInTiles() << 8);
     }
 
     public virtual int GetMaxFastForwardTime()
@@ -229,6 +260,16 @@ public class LogicGameObject
         return null;
     }
 
+    public void EnableComponent(int type, bool enabled)
+    {
+        LogicComponent component = this._components[type];
+
+        if (component != null)
+        {
+            component.SetEnabled(enabled);
+        }
+    }
+
     public virtual void Save(LogicJSONObject logicJSON)
     {
         logicJSON.Put("x", new LogicJSONNumber(this.GetTileX()));
@@ -256,5 +297,10 @@ public class LogicGameObject
         }
 
         this.SetInitialPosition(x << 9, y << 9);
+    }
+
+    public LogicLevel GetLevel()
+    {
+        return this._level;
     }
 }

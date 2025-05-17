@@ -55,9 +55,6 @@ public class LogicCombatItemData : LogicData
                 {
                     Debugger.Error($"UpgradeResource is not defined for {this.GetName()}");
                 }
-
-                
-
             }
         }
 
@@ -71,6 +68,11 @@ public class LogicCombatItemData : LogicData
         this._housingSpace = this._row.GetClampedIntegerValue("HousingSpace", 0);
         this._disableProduction = this._row.GetClampedBooleanValue("DisableProduction", 0);
         this._unitOfType = this._row.GetClampedIntegerValue("UnitOfType", 0);
+    }
+
+    public bool IsProductionEnabled()
+    {
+        return this._disableProduction;
     }
 
     public int GetUpgradeLevelCount()

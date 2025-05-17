@@ -21,6 +21,9 @@ public static class LogicGameObjectFactory
             case LogicDataType.DECO:
                 gameObject = new LogicDeco((LogicDecoData)data, level);
                 break;
+            case LogicDataType.SPELL:
+                gameObject = new LogicSpell((LogicSpellData)data, level);
+                break;
             default:
                 Debugger.Error($"LogicGameObjectFactory.CreateGameObject: Unknown data ({data.GetDataType()})");
                 break;

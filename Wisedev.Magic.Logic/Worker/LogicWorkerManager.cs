@@ -1,4 +1,5 @@
 ﻿using Wisedev.Magic.Logic.GameObject;
+using Wisedev.Magic.Logic.GameObject.Component;
 using Wisedev.Magic.Logic.Level;
 using Wisedev.Magic.Titan.Debug;
 
@@ -13,7 +14,6 @@ public class LogicWorkerManager
     public LogicWorkerManager(LogicLevel level)
     {
         this._level = level;
-        this._totalWorkers = 0;
         this._buildings = new List<LogicGameObject>();
     }
 
@@ -68,12 +68,100 @@ public class LogicWorkerManager
     {
         LogicGameObject gameObject = null;
 
+        int minRemaining = 0;
         for (int i = 0; i < this._buildings.Count; i++)
         {
             LogicGameObject tmp = this._buildings[i];
+            int remaining = 0;
 
+            switch (tmp.GetType())
+            {
+                case 3:
+                    LogicObstacle obstacle = (LogicObstacle)tmp;
+
+                    if (!obstacle.IsClearingOnGoing())
+                    {
+                        Console.WriteLine("LogicWorkerManager - Worker allocated to obstacle with remaining clearing time 0");
+                    }
+                    else 
+                    {
+                        remaining = obstacle.GetRemainingClearingTime();
+                    }
+                    break;
+                case 0:
+                    LogicBuilding building = (LogicBuilding)tmp;
+
+                    LogicHeroBaseComponent heroBaseComponent = building.GetHeroBaseComponent();
+
+                    if (building.IsConstructing())
+                    {
+                        remaining = building.GetRemainingConstructionTime();
+                    }
+                    else
+                    {
+                        if (heroBaseComponent == null)
+                        {
+                            Console.WriteLine("LogicWorkerManager - Worker allocated to building with remaining construction time 0");
+                        }
+                        else
+                        {
+                            if (heroBaseComponent.IsUpgrading())
+                            {
+                                remaining = heroBaseComponent.GetRemainingUpgradeSeconds();
+                            }
+                            else
+                            {
+                                Console.WriteLine("LogicWorkerManager - Worker allocated to altar/herobase without hero upgrading");
+                            }
+                        }
+                    }
+                    break;
+            }
+
+            if (remaining < minRemaining || gameObject == null)
+            {
+                gameObject = tmp;
+                minRemaining = remaining;
+            }
         }
 
-        return null; // TODO: MAKE
+        return gameObject;
+    }
+
+    public bool FinishTaskOfOneWorker()
+    {
+        LogicGameObject gameObject = this.GetShortestTaskGO();
+
+        if (gameObject != null)
+        {
+            switch (gameObject.GetType())
+            {
+                case 0:
+                    LogicBuilding building = (LogicBuilding)gameObject;
+
+                    if (building.IsConstructing())
+                    {
+                        return building.SpeedUpConstruction();
+                    }
+
+                    if (building.GetHeroBaseComponent() != null)
+                    {
+                        return building.GetHeroBaseComponent().SpeedUpUpgrade();
+                    }
+
+                    break;
+                case 3:
+                    LogicObstacle obstacle = (LogicObstacle)gameObject;
+
+                    if (obstacle.IsClearingOnGoing())
+                    {
+                        return obstacle.SpeedUpClearing();
+                    }
+                    break;
+
+            }
+        }
+
+        return false;
     }
 }

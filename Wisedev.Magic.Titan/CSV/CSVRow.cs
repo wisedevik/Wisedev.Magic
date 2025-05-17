@@ -80,7 +80,6 @@ public class CSVRow
     public int GetClampedIntegerValue(string name, int idx)
     {
         int columnIdx = m_table.GetColumnIndexByName(name);
-
         if (columnIdx != -1)
         {
             int arraySize = m_table.GetArraySizeAt(this, columnIdx);

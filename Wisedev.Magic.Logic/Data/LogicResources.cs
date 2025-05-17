@@ -12,14 +12,17 @@ public class LogicResources
         arrayList.Add(new LogicDataTableResource("assets/logic/buildings.csv", LogicDataType.BUILDING, 0));
         arrayList.Add(new LogicDataTableResource("assets/logic/resources.csv", LogicDataType.RESOURCE, 0));
         arrayList.Add(new LogicDataTableResource("assets/logic/characters.csv", LogicDataType.CHARACTER, 0));
+        arrayList.Add(new LogicDataTableResource("assets/logic/building_classes.csv", LogicDataType.BUILDING_CLASS, 0));
         arrayList.Add(new LogicDataTableResource("assets/logic/obstacles.csv", LogicDataType.OBSTACLE, 0));
         arrayList.Add(new LogicDataTableResource("assets/logic/traps.csv", LogicDataType.TRAP, 0));
         arrayList.Add(new LogicDataTableResource("assets/logic/alliance_badges.csv", LogicDataType.ALLIANCE_BADGE, 0));
         arrayList.Add(new LogicDataTableResource("assets/logic/globals.csv", LogicDataType.GLOBAL, 0));
+        arrayList.Add(new LogicDataTableResource("assets/logic/townhall_levels.csv", LogicDataType.TOWN_HALL_LEVEL, 0));
         arrayList.Add(new LogicDataTableResource("assets/logic/npcs.csv", LogicDataType.NPC, 0));
         arrayList.Add(new LogicDataTableResource("assets/logic/decos.csv", LogicDataType.DECO, 0));
         arrayList.Add(new LogicDataTableResource("assets/logic/shields.csv", LogicDataType.SHIELD, 0));
         arrayList.Add(new LogicDataTableResource("assets/logic/missions.csv", LogicDataType.MISSION, 0));
+        arrayList.Add(new LogicDataTableResource("assets/logic/spells.csv", LogicDataType.SPELL, 0));
         arrayList.Add(new LogicDataTableResource("assets/logic/heroes.csv", LogicDataType.HERO, 0));
         arrayList.Add(new LogicDataTableResource("assets/logic/leagues.csv", LogicDataType.LEAGUE, 0));
 

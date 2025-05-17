@@ -34,6 +34,7 @@ internal class TCPGateway : IServerGateway
         _socket.Listen(100);
 
         Debugger.Print($"Started tcp//0.0.0.0:9339");
+        ServerStats.StartTime = DateTime.UtcNow;
 
         _listenTask = HandleAsync(_tokenSource.Token);
     }
