@@ -1,5 +1,4 @@
 ﻿using Wisedev.Magic.Logic.Avatar.Listener;
-using Wisedev.Magic.Logic.Data;
 using Wisedev.Magic.Logic.Home;
 using Wisedev.Magic.Logic.Level;
 using Wisedev.Magic.Logic.Util;
@@ -8,6 +7,8 @@ using Wisedev.Magic.Titan.Logic;
 using Wisedev.Magic.Titan.Math;
 using Wisedev.Magic.Titan.Utils;
 using Wisedev.Magic.Titan.Debug;
+using Wisedev.Magic.Logic.Data.Core;
+using Wisedev.Magic.Logic.Data.Objects;
 
 namespace Wisedev.Magic.Logic.Avatar;
 

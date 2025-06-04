@@ -1,8 +1,10 @@
-﻿using Wisedev.Magic.Logic.Data;
-using Wisedev.Magic.Server.HTTP;
+﻿using Wisedev.Magic.Server.HTTP;
 using Wisedev.Magic.Titan.JSON;
 using Wisedev.Magic.Titan.Debug;
 using System.Runtime.CompilerServices;
+using Wisedev.Magic.Titan.CSV;
+using Wisedev.Magic.Logic.Data.Tables;
+using Wisedev.Magic.Logic.Data.Objects;
 
 namespace Wisedev.Magic.Server.Resources;
 
@@ -72,7 +74,7 @@ public class ResourceManager
         for (int i = 0; i < resources.Count; i++)
         {
             string fileName = resources[i].GetFileName();
-            LogicResources.Load(resources, i, new Titan.CSV.CSVNode(File.ReadAllLines(fileName), fileName));
+            LogicResources.Load(resources, i, new CSVNode(File.ReadAllLines(fileName), fileName));
         }
     }
 }

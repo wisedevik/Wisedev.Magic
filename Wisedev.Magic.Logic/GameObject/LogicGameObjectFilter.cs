@@ -3,4 +3,6 @@
 public class LogicGameObjectFilter
 {
     private List<LogicGameObject> _ignoreGameObjects;
+
+
 }

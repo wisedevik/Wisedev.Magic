@@ -1,4 +1,8 @@
-﻿using Wisedev.Magic.Logic.Data;
+﻿using System.ComponentModel;
+using Wisedev.Magic.Logic.Data;
+using Wisedev.Magic.Logic.Data.Objects;
+using Wisedev.Magic.Logic.Data.String;
+using Wisedev.Magic.Logic.Data.Tables;
 using Wisedev.Magic.Logic.Util;
 using Wisedev.Magic.Server.Debugging;
 using Wisedev.Magic.Server.Network.TCP;
@@ -13,19 +17,28 @@ class Program
 
     private static async Task Main()
     {
-        Program.InitializeConsole();
-        Program.InitializeDebugger();
-        Program.LoadConfiguration();
-        Program.DisplayBanner();
-
-        Debugger.Print("Starting services...\n");
-        ResourceManager.Init();
+        Program.Init();
 
         TCPGateway tcpGateway = new();
         tcpGateway.Start();
 
         await Program.WaitForExit();
         await tcpGateway.Stop();
+    }
+
+    private static void Init()
+    {
+        Program.InitializeConsole();
+        Program.InitializeDebugger();
+        Program.LoadConfiguration();
+        Program.DisplayBanner();
+
+        ResourceManager.Init();
+
+        LogicResourceData resourceData = LogicDataTables.GetResourceByName("Gold", null);
+        Console.WriteLine(resourceData.GetGlobalID());
+
+        Debugger.Print("Starting services...\n");
     }
 
     private static void InitializeConsole()
@@ -64,6 +77,7 @@ class Program
     """);
         Console.ResetColor();
         Console.WriteLine("Copyright WiseDev 2025-2026. All rights reserved.\n");
+
     }
 
     private static async Task WaitForExit()

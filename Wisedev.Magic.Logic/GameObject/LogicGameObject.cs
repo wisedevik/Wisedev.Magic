@@ -1,11 +1,11 @@
-﻿using Wisedev.Magic.Logic.Data;
-using Wisedev.Magic.Logic.GameObject.Component;
+﻿using Wisedev.Magic.Logic.GameObject.Component;
 using Wisedev.Magic.Logic.GameObject.Listener;
 using Wisedev.Magic.Logic.Level;
 using Wisedev.Magic.Titan.JSON;
 using Wisedev.Magic.Titan.Math;
 using Wisedev.Magic.Titan.Debug;
 using Wisedev.Magic.Logic.Avatar;
+using Wisedev.Magic.Logic.Data.Core;
 
 namespace Wisedev.Magic.Logic.GameObject;
 
@@ -45,9 +45,24 @@ public class LogicGameObject
         this._globalId = id;
     }
 
+    public virtual void RemoveGameObjectReferences(LogicGameObject gameObject)
+    {
+
+    }
+
     public void XpGainHelper(int xp, LogicAvatar homeOwnerAvatar, bool inHomeState)
     {
         LogicClientAvatar playerAvatar = this._level.GetPlayerAvatar();
+    }
+
+    public LogicMovementComponent? GetMovementComponent()
+    {
+        return (LogicMovementComponent?)this.GetComponent(4);
+    }
+
+    public LogicHitpointComponent? GetHitpointComponent()
+    {
+        return (LogicHitpointComponent?)this.GetComponent(2);
     }
 
     public LogicData GetData()

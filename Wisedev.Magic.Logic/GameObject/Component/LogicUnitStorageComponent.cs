@@ -1,8 +1,10 @@
-﻿using Wisedev.Magic.Logic.Data;
-using Wisedev.Magic.Logic.Util;
+﻿using Wisedev.Magic.Logic.Util;
 using Wisedev.Magic.Titan.JSON;
 using Wisedev.Magic.Titan.Debug;
 using System;
+using Wisedev.Magic.Logic.Data.Tables;
+using Wisedev.Magic.Logic.Data.Core;
+using Wisedev.Magic.Logic.Data.Objects;
 
 namespace Wisedev.Magic.Logic.GameObject.Component;
 

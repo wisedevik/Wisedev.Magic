@@ -19,7 +19,7 @@ public static class CensorUtil
             string toLower = str.ToLower();
 
             if (_badWords.Contains(toLower))
-                array[i] = "***";
+                array[i] = toLower.Length.ToString();
         }
 
         return string.Join(" ", array);

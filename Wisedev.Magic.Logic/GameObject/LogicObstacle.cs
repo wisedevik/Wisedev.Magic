@@ -1,5 +1,6 @@
 ﻿using Wisedev.Magic.Logic.Avatar;
-using Wisedev.Magic.Logic.Data;
+using Wisedev.Magic.Logic.Data.Objects;
+using Wisedev.Magic.Logic.Data.Tables;
 using Wisedev.Magic.Logic.Level;
 using Wisedev.Magic.Logic.Time;
 using Wisedev.Magic.Logic.Util;

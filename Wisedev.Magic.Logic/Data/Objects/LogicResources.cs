@@ -1,0 +1,58 @@
+﻿using Wisedev.Magic.Titan.CSV;
+using Wisedev.Magic.Titan.Utils;
+using Wisedev.Magic.Titan.Debug;
+using Wisedev.Magic.Logic.Data.String;
+using Wisedev.Magic.Logic.Data.Tables;
+using Wisedev.Magic.Logic.Data.Core;
+
+namespace Wisedev.Magic.Logic.Data.Objects;
+
+public class LogicResources
+{
+    public static List<LogicDataTableResource> CreateDataTableResourcesArray()
+    {
+        List<LogicDataTableResource> arrayList = new List<LogicDataTableResource>(LogicDataTables.TABLE_COUNT);
+        arrayList.Add(new LogicDataTableResource("assets/logic/buildings.csv", LogicDataType.BUILDING, 0));
+        arrayList.Add(new LogicDataTableResource("assets/logic/resources.csv", LogicDataType.RESOURCE, 0));
+        arrayList.Add(new LogicDataTableResource("assets/logic/characters.csv", LogicDataType.CHARACTER, 0));
+        arrayList.Add(new LogicDataTableResource("assets/logic/building_classes.csv", LogicDataType.BUILDING_CLASS, 0));
+        arrayList.Add(new LogicDataTableResource("assets/logic/obstacles.csv", LogicDataType.OBSTACLE, 0));
+        arrayList.Add(new LogicDataTableResource("assets/logic/traps.csv", LogicDataType.TRAP, 0));
+        arrayList.Add(new LogicDataTableResource("assets/logic/alliance_badges.csv", LogicDataType.ALLIANCE_BADGE, 0));
+        arrayList.Add(new LogicDataTableResource("assets/logic/globals.csv", LogicDataType.GLOBAL, 0));
+        arrayList.Add(new LogicDataTableResource("assets/logic/townhall_levels.csv", LogicDataType.TOWN_HALL_LEVEL, 0));
+        arrayList.Add(new LogicDataTableResource("assets/logic/npcs.csv", LogicDataType.NPC, 0));
+        arrayList.Add(new LogicDataTableResource("assets/logic/decos.csv", LogicDataType.DECO, 0));
+        arrayList.Add(new LogicDataTableResource("assets/logic/shields.csv", LogicDataType.SHIELD, 0));
+        arrayList.Add(new LogicDataTableResource("assets/logic/missions.csv", LogicDataType.MISSION, 0));
+        arrayList.Add(new LogicDataTableResource("assets/logic/spells.csv", LogicDataType.SPELL, 0));
+        arrayList.Add(new LogicDataTableResource("assets/logic/heroes.csv", LogicDataType.HERO, 0));
+        arrayList.Add(new LogicDataTableResource("assets/logic/leagues.csv", LogicDataType.LEAGUE, 0));
+
+        arrayList.Add(new LogicDataTableResource("assets/text/texts.csv", 0, 3));
+
+        return arrayList;
+    }
+
+    public static void Load(List<LogicDataTableResource> resources, int idx, CSVNode node)
+    {
+        LogicDataTableResource resource = resources[idx];
+
+        switch (resource.GetTableType())
+        {
+            case 0:
+                LogicDataTables.InitDataTable(node, resource.GetTableIndex());
+                break;
+            case 3:
+                LogicStringTable.CreateInstance(node.GetTable());
+                break;
+            default:
+                Debugger.Error("LogicResources.Invalid resource type");
+                break;
+        }
+
+        if (resources.Count - 1 == idx)
+            LogicDataTables.CreateReferences();
+    }
+}
+

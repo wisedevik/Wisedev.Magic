@@ -2,13 +2,15 @@
 using System.Runtime.InteropServices.JavaScript;
 using System.Text.Json.Nodes;
 using Wisedev.Magic.Logic.Command;
-using Wisedev.Magic.Logic.Data;
 using Wisedev.Magic.Logic.GameObject.Component;
 using Wisedev.Magic.Logic.Level;
 using Wisedev.Magic.Logic.Time;
 using Wisedev.Magic.Titan.JSON;
 using Wisedev.Magic.Titan.Utils;
 using Wisedev.Magic.Titan.Debug;
+using Wisedev.Magic.Logic.Data.Tables;
+using Wisedev.Magic.Logic.Data.Core;
+using Wisedev.Magic.Logic.Data.Objects;
 
 namespace Wisedev.Magic.Logic.GameObject;
 

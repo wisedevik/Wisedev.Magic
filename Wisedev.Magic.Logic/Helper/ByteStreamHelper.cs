@@ -1,4 +1,5 @@
-﻿using Wisedev.Magic.Logic.Data;
+﻿using Wisedev.Magic.Logic.Data.Core;
+using Wisedev.Magic.Logic.Data.Tables;
 using Wisedev.Magic.Titan.DataStream;
 
 namespace Wisedev.Magic.Logic.Helper;

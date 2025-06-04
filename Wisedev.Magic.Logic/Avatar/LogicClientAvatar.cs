@@ -1,11 +1,12 @@
 ﻿using Wisedev.Magic.Logic.Avatar.Listener;
 using Wisedev.Magic.Logic.Command;
-using Wisedev.Magic.Logic.Data;
 using Wisedev.Magic.Logic.Helper;
 using Wisedev.Magic.Logic.Level;
 using Wisedev.Magic.Titan.DataStream;
 using Wisedev.Magic.Titan.Logic;
 using Wisedev.Magic.Titan.Debug;
+using Wisedev.Magic.Logic.Data.Tables;
+using Wisedev.Magic.Logic.Data.Objects;
 
 namespace Wisedev.Magic.Logic.Avatar;
 
@@ -75,14 +76,19 @@ public class LogicClientAvatar : LogicAvatar
         avatar.SetUnitCount(LogicDataTables.GetCharacterByName("Barbarian", null), 2);
 
         // TODO: Implement tutorial
-        for (int i = 0; i < 13; i++)
-        {
-            LogicMissionData missionData = (LogicMissionData)LogicDataTables.GetDataById(21000000 + i);
-            if (missionData != null)
-                avatar.SetMissionCompleted(missionData, true);
-        }
+        //for (int i = 0; i < 13; i++)
+        //{
+        //    LogicMissionData missionData = (LogicMissionData)LogicDataTables.GetDataById(21000000 + i);
+        //    if (missionData != null)
+        //        avatar.SetMissionCompleted(missionData, true);
+        //}
 
         return avatar;
+    }
+
+    public bool IsInExpLevelCap()
+    {
+        return this._expLevel >= LogicExperienceLevelData.GetLevelCap();
     }
 
     public void UseDiamonds(int cnt)

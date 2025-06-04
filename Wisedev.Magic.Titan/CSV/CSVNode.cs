@@ -1,5 +1,5 @@
-﻿using Wisedev.Magic.Titan.Utils;
-using System.Diagnostics;
+﻿using Wisedev.Magic.Titan.Debug;
+using Wisedev.Magic.Titan.Utils;
 
 namespace Wisedev.Magic.Titan.CSV;
 
@@ -63,7 +63,6 @@ public class CSVNode
                 for (int i = 2; i < lines.Length; i++)
                 {
                     LogicArrayList<string> values = ParseLine(lines[i]);
-
                     if (values.Count > 0)
                     {
                         if (!string.IsNullOrEmpty(values[0]))

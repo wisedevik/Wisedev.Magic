@@ -4,7 +4,6 @@ using Wisedev.Magic.Logic;
 using Wisedev.Magic.Logic.Avatar;
 using Wisedev.Magic.Logic.Command;
 using Wisedev.Magic.Logic.Command.Debug;
-using Wisedev.Magic.Logic.Data;
 using Wisedev.Magic.Logic.Entries;
 using Wisedev.Magic.Logic.Level;
 using Wisedev.Magic.Logic.Message.Alliance;
@@ -23,6 +22,9 @@ using Wisedev.Magic.Logic.Command.Home;
 using Wisedev.Magic.Logic.Command.Alliance;
 using Wisedev.Magic.Server.Network;
 using Wisedev.Magic.Logic.Notifications;
+using Wisedev.Magic.Logic.Data.Tables;
+using Wisedev.Magic.Logic.Data.Core;
+using Wisedev.Magic.Logic.Data.Objects;
 
 namespace Wisedev.Magic.Server.Protocol;
 
@@ -83,11 +85,11 @@ class MessageManager
         Debugger.Print($"Tryna login id={accountId}, passToken={passToken}, client version={loginMessage.GetMajorVersion()}.{loginMessage.GetBuild()}.{loginMessage.GetMinorVersion() + 1}, server version={LogicVersion.MAJOR_VERSION}.{LogicVersion.BUILD}.{LogicVersion.CONTENT_VERSION}, device language={loginMessage.GetPreferredDeviceLanguage()}");
         Debugger.Print($"client sha={loginMessage.GetResourceSHA()}");
 
-        if (!await this.CheckClientVersion(loginMessage.GetMajorVersion(), loginMessage.GetBuild(), loginMessage.GetResourceSHA()))
-        {
-            Debugger.Print("Client version is invalid, rejecting login.");
-            return;
-        }
+        //if (!await this.CheckClientVersion(loginMessage.GetMajorVersion(), loginMessage.GetBuild(), loginMessage.GetResourceSHA()))
+        //{
+        //    Debugger.Print("Client version is invalid, rejecting login.");
+        //    return;
+        //}
 
         Account? account = null;
 

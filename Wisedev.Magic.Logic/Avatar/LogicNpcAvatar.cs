@@ -1,4 +1,5 @@
-﻿using Wisedev.Magic.Logic.Data;
+﻿using Wisedev.Magic.Logic.Data.Objects;
+using Wisedev.Magic.Logic.Data.Tables;
 using Wisedev.Magic.Logic.Helper;
 using Wisedev.Magic.Titan.DataStream;
 

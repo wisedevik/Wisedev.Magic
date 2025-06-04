@@ -73,7 +73,12 @@ public class CSVColumn
 
     public int GetIntegerValue(int idx)
     {
-        return m_integerValues[idx];
+        int value = m_integerValues[idx];
+
+        if (value != 0x7FFFFFFF)
+            return value;
+
+        return 0;
     }
 
     public bool GetBooleanValue(int index)
@@ -153,7 +158,7 @@ public class CSVColumn
         }
     }
 
-    public int GetType()
+    public int GetColumnType()
     {
         return m_type;
     }

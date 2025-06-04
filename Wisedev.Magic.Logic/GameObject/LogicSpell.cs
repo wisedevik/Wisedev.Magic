@@ -1,4 +1,5 @@
-﻿using Wisedev.Magic.Logic.Data;
+﻿using Wisedev.Magic.Logic.Data.Core;
+using Wisedev.Magic.Logic.Data.Objects;
 using Wisedev.Magic.Logic.Level;
 
 namespace Wisedev.Magic.Logic.GameObject;

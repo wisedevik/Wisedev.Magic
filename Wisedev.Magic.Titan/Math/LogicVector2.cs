@@ -18,6 +18,12 @@ public class LogicVector2
         _y = y;
     }
 
+    public void Destruct()
+    {
+        _x = 0;
+        _y = 0;
+    }
+
     public void Add(LogicVector2 vector)
     {
         _x += vector._x;
@@ -30,10 +36,45 @@ public class LogicVector2
         _y *= vector2._y;
     }
 
+    public int GetDistanceSquaredTo(int x, int y)
+    {
+        int distance = 0x7FFFFFFF;
+
+        x -= _x;
+
+        if ((uint)(x + 46340) <= 92680)
+        {
+            y -= _y;
+
+            if ((uint)(y + 46340) <= 92680)
+            {
+                int distanceX = x * x;
+                int distanceY = y * y;
+
+                if ((uint)distanceY < (distanceX ^ 0x7FFFFFFFu))
+                {
+                    distance = distanceX + distanceY;
+                }
+            }
+        }
+
+        return distance;
+    }
+
     public void Substruct(LogicVector2 vector)
     {
         _x -= vector._x;
         _y -= vector._y;
+    }
+
+    public void SetX(int x)
+    {
+        _x = x;
+    }
+
+    public void SetY(int y)
+    {
+        _y = y;
     }
 
     public void Set(int x, int y)

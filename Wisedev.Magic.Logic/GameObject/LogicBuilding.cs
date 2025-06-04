@@ -1,5 +1,4 @@
-﻿using Wisedev.Magic.Logic.Data;
-using Wisedev.Magic.Logic.GameObject.Component;
+﻿using Wisedev.Magic.Logic.GameObject.Component;
 using Wisedev.Magic.Logic.Level;
 using Wisedev.Magic.Logic.Time;
 using Wisedev.Magic.Titan.JSON;
@@ -7,6 +6,8 @@ using Wisedev.Magic.Titan.Debug;
 using Wisedev.Magic.Logic.Avatar;
 using Wisedev.Magic.Logic.Util;
 using Wisedev.Magic.Titan.Math;
+using Wisedev.Magic.Logic.Data.Tables;
+using Wisedev.Magic.Logic.Data.Objects;
 
 namespace Wisedev.Magic.Logic.GameObject;
 

@@ -39,7 +39,7 @@ public class CSVTable
 
         if (!string.IsNullOrEmpty(value))
         {
-            switch (column.GetType())
+            switch (column.GetColumnType())
             {
                 case 0:
                     column.AddStringValue(value);
@@ -143,7 +143,7 @@ public class CSVTable
 
     public int GetColumnType(int idx)
     {
-        return m_columnList[idx].GetType();
+        return m_columnList[idx].GetColumnType();
     }
 
     public int GetRowCount()

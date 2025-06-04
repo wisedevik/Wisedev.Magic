@@ -1,5 +1,5 @@
 ﻿using Wisedev.Magic.Logic.Command;
-using Wisedev.Magic.Logic.Data;
+using Wisedev.Magic.Logic.Data.Objects;
 
 namespace Wisedev.Magic.Logic.Mode;
 

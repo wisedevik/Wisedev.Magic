@@ -12,6 +12,7 @@ public class LocalDataLoader : DataLoader
     public override string Load(string path)
     {
         this.ValidatePath(path);
+
         string fullPath = Path.Combine(_basePath, path);
 
         if (!File.Exists(fullPath))

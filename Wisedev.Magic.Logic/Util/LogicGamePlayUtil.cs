@@ -1,4 +1,4 @@
-﻿using Wisedev.Magic.Logic.Data;
+﻿using Wisedev.Magic.Logic.Data.Tables;
 
 namespace Wisedev.Magic.Logic.Util;
 

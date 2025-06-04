@@ -1,4 +1,4 @@
-﻿using Wisedev.Magic.Logic.Data;
+﻿using Wisedev.Magic.Logic.Data.Core;
 using Wisedev.Magic.Logic.Helper;
 using Wisedev.Magic.Titan.DataStream;
 using Wisedev.Magic.Titan.JSON;

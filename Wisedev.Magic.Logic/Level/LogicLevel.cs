@@ -2,7 +2,6 @@
 using Wisedev.Magic.Logic.Avatar.Listener;
 using Wisedev.Magic.Logic.Battle;
 using Wisedev.Magic.Logic.Coldown;
-using Wisedev.Magic.Logic.Data;
 using Wisedev.Magic.Logic.GameObject;
 using Wisedev.Magic.Logic.GameObject.Component;
 using Wisedev.Magic.Logic.Home;
@@ -15,6 +14,8 @@ using Wisedev.Magic.Titan.Utils;
 using Wisedev.Magic.Titan.Debug;
 using Wisedev.Magic.Logic.Achievement;
 using Wisedev.Magic.Logic.Command;
+using Wisedev.Magic.Logic.Data.Tables;
+using Wisedev.Magic.Logic.Data.Core;
 
 namespace Wisedev.Magic.Logic.Level;
 

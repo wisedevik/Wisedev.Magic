@@ -48,9 +48,8 @@ class Messaging : IConnectionListener
     public PiranhaMessage? NextMessage()
     {
         if (_incomingQueue.TryDequeue(out PiranhaMessage? message))
-        {
             return message;
-        }
+
         return null;
     }
 
@@ -80,15 +79,11 @@ class Messaging : IConnectionListener
                         message.Decode();
 
                         if (this._incomingQueue.Count >= 50)
-                        {
                             Debugger.Warning($"Incoming message queue full. Message of type {messageType} discarded.");
-                        }
                         else
                         {
                             if (!message.IsServerToClientMessage())
-                            {
                                 this._incomingQueue.Enqueue(message);
-                            }
                         }
                     }
                     catch (Exception exception)
@@ -113,23 +108,15 @@ class Messaging : IConnectionListener
         int messageType = message.GetMessageType();
 
         if (!_connection.IsConnected())
-        {
             Debugger.Warning($"Messaging.Send message type {messageType} when not connected");
-        }
 
         if (message.IsServerToClientMessage())
-        {
             Debugger.Warning($"Messaging.Send server to client message type {messageType} to {_connection.GetCurrentAccountId()}");
-        }
 
         if (_outgoingQueue.Count >= 50)
-        {
             Debugger.Warning($"Outgoing message queue full. Message of type {messageType} discarded.");
-        }
         else
-        {
             _outgoingQueue.Enqueue(message);
-        }
     }
 
     public async Task OnWakeup()
